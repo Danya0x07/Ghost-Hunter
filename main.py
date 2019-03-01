@@ -3,8 +3,8 @@ from pygame import *
 import maps
 
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 WALL_LENGTH = 32
 WALL_COLOR = "#662218"
 
@@ -54,6 +54,35 @@ class Hunter(sprite.Sprite):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
 
+class Camera:
+
+    def __init__(self, width, height):
+        self.state = Rect(0, 0, width, height)
+
+    def apply(self, target):
+        return target.rect.move(self.state.topleft)
+
+    def update(self, target):
+        targ_left, targ_top, targ_width, targ_height = target.rect
+        cam_left, cam_top, cam_width, cam_height = self.state
+        targ_left = SCREEN_WIDTH // 2 - targ_left
+        targ_top = SCREEN_HEIGHT // 2 - targ_top
+        targ_left = min(0, targ_left)
+        targ_left = max(SCREEN_WIDTH - self.state.width, targ_left)
+        targ_top = max(SCREEN_HEIGHT - self.state.height, targ_top)
+        targ_top = min(0, targ_top)
+        self.state = Rect(targ_left, targ_top, cam_width, cam_height)
+
+
+class Wall(sprite.Sprite):
+
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = Surface((WALL_LENGTH, WALL_LENGTH))
+        self.image.fill(Color(WALL_COLOR))
+        self.rect = Rect(x, y, WALL_LENGTH, WALL_LENGTH)
+
+
 class MainScene:
 
     def __init__(self, hunter):
@@ -64,6 +93,15 @@ class MainScene:
         self.bg.fill(Color('#000077'))
         self.timer = time.Clock()
         self.hunter = hunter
+        self.entities = sprite.Group(self.hunter)
+        self.walls = []
+        self.camera = Camera(*MainScene.get_total_level_size(maps.hotel_map))
+
+    @staticmethod
+    def get_total_level_size(level):
+        t_width = len(level[0]) * WALL_LENGTH
+        t_height = len(level) * WALL_LENGTH
+        return (t_width, t_height)
 
     def check_events(self):
         for e in event.get():
@@ -80,25 +118,27 @@ class MainScene:
                 if e.key == K_a: self.hunter.dir.a = False
                 if e.key == K_d: self.hunter.dir.d = False
 
-    def draw_map(self):
+    def create_map(self):
         x = y = 0
         for row in maps.hotel_map:
             for col in row:
                 if col == '-':
-                    wall = Surface((WALL_LENGTH, WALL_LENGTH))
-                    wall.fill(Color(WALL_COLOR))
-                    self.screen.blit(wall, (x, y))
+                    wall = Wall(x, y)
+                    self.entities.add(wall)
+                    self.walls.append(wall)
                 x += WALL_LENGTH
             y += WALL_LENGTH
             x = 0
 
     def mainloop(self):
+        self.create_map()
         while True:
             self.check_events()
             self.screen.blit(self.bg, (0, 0))
-            self.draw_map()
             self.hunter.update()
-            self.hunter.draw(self.screen)
+            self.camera.update(self.hunter)
+            for e in self.entities:
+                self.screen.blit(e.image, self.camera.apply(e))
             self.timer.tick(60)
             display.update()
 

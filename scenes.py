@@ -1,50 +1,31 @@
-from pygame import (init, display, event, time, Surface, Color)
+from pygame import display, event, time, Surface, Color
 from pygame.sprite import Group
 from pygame.locals import *
 
 import maps
-from objects import Wall, Camera
+from objects import Wall, Camera, Hunter
 from settings import *
 
 
 class MainScene:
 
-    def __init__(self, hunter):
-        init()
-        self.screen = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        display.set_caption("Ghost&Hunter")
+    def __init__(self, screen):
+        self.screen = screen
+        self.create_objects()
+        self.create_map(maps.hotel_map)
+
+    def create_objects(self):
         self.bg = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.bg.fill(Color('#000077'))
-        self.timer = time.Clock()
-        self.hunter = hunter
+        self.hunter = Hunter(0, 0)
         self.entities = Group(self.hunter)
         self.walls = []
-        self.camera = Camera(*MainScene.get_total_level_size(maps.hotel_map))
+        self.camera = Camera(maps.hotel_map)
+        self.timer = time.Clock()
 
-    @staticmethod
-    def get_total_level_size(level):
-        t_width = len(level[0]) * WALL_LENGTH
-        t_height = len(level) * WALL_LENGTH
-        return t_width, t_height
-
-    def check_events(self):
-        for e in event.get():
-            if e.type == QUIT:
-                raise SystemExit
-            if e.type == KEYDOWN:
-                if e.key == K_w: self.hunter.dir.w = True
-                if e.key == K_s: self.hunter.dir.s = True
-                if e.key == K_a: self.hunter.dir.a = True
-                if e.key == K_d: self.hunter.dir.d = True
-            if e.type == KEYUP:
-                if e.key == K_w: self.hunter.dir.w = False
-                if e.key == K_s: self.hunter.dir.s = False
-                if e.key == K_a: self.hunter.dir.a = False
-                if e.key == K_d: self.hunter.dir.d = False
-
-    def create_map(self):
+    def create_map(self, level_map):
         x = y = 0
-        for row in maps.hotel_map:
+        for row in level_map:
             for col in row:
                 if col == '-':
                     wall = Wall(x, y)
@@ -54,14 +35,28 @@ class MainScene:
             y += WALL_LENGTH
             x = 0
 
+    def check_events(self):
+        for e in event.get():
+            if e.type == QUIT:
+                raise SystemExit
+            elif e.type == KEYDOWN:
+                self.hunter.set_direction(e.key, True)
+            elif e.type == KEYUP:
+                self.hunter.set_direction(e.key, False)
+
+    def update_objects(self):
+        self.hunter.update()
+        self.camera.update(self.hunter)
+
+    def draw_objects(self):
+        self.screen.blit(self.bg, (0, 0))
+        for e in self.entities:
+            self.screen.blit(e.image, self.camera.apply(e))
+
     def mainloop(self):
-        self.create_map()
         while True:
             self.check_events()
-            self.screen.blit(self.bg, (0, 0))
-            self.hunter.update()
-            self.camera.update(self.hunter)
-            for e in self.entities:
-                self.screen.blit(e.image, self.camera.apply(e))
+            self.update_objects()
+            self.draw_objects()
             self.timer.tick(60)
             display.update()

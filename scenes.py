@@ -45,7 +45,7 @@ class MainScene:
                 self.hunter.set_direction(e.key, False)
 
     def update_objects(self):
-        self.hunter.update()
+        self.hunter.update(self.walls)
         self.camera.update(self.hunter)
 
     def draw_objects(self):

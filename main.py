@@ -1,6 +1,6 @@
 from pygame import init, display
 
-from scenes import MainScene
+from scenes import MainScene, Menu
 from settings import *
 
 
@@ -13,5 +13,5 @@ def init_game():
 
 if __name__ == '__main__':
     screen = init_game()
-    game = MainScene(screen)
+    game = Menu(screen)
     game.mainloop()

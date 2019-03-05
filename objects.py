@@ -1,5 +1,6 @@
 from pygame import Surface, Color, Rect
 from pygame.sprite import Sprite, collide_rect
+from pygame.font import Font
 from pygame.locals import *
 
 from settings import *
@@ -98,3 +99,51 @@ class Camera:
         targ_top = max(SCREEN_HEIGHT - self.state.height, targ_top)
         targ_top = min(0, targ_top)
         self.state = Rect(targ_left, targ_top, cam_width, cam_height)
+
+
+class Button(Sprite):
+    USUAL_COLOR = Color(BTN_USUAL_COLOR)
+    SELECTED_COLOR = Color(BTN_SELECTED_COLOR)
+    BG_COLOR = Color(BTN_BG_COLOR)
+    BLIT_LEFT_X = SCREEN_WIDTH // 2 - BTN_WIDTH // 2
+
+
+    def __init__(self, text, screen_rect):
+        super().__init__()
+        self.text = text
+        self.font = Font('resources/freesansbold.ttf', 34)
+        self.image = self.font.render(text, True, Button.USUAL_COLOR)
+        self.sensetive_rect = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT)
+        self.sensetive_rect.center = screen_rect.center
+
+        self.rect = self.image.get_rect()
+        print(self.rect.height)
+        self.surface = Surface((BTN_WIDTH, BTN_HEIGHT))
+        self.surface.fill(Button.BG_COLOR)
+        self.x_blit = BTN_WIDTH // 2 - self.rect.width // 2
+        self.y_blit = BTN_HEIGHT // 2 - self.rect.height // 2
+
+
+        self.current_color = Button.USUAL_COLOR
+        self.last_color = self.current_color
+
+    def check_pressed(self, position):
+        return self.sensetive_rect.collidepoint(*position)
+
+    def update(self, position):
+        if self.sensetive_rect.collidepoint(*position):
+            if self.current_color != Button.SELECTED_COLOR:
+                self.current_color = Button.SELECTED_COLOR
+                self.image = self.font.render(self.text, True, self.current_color, Button.BG_COLOR)
+        else:
+            if self.current_color != Button.USUAL_COLOR:
+                self.current_color = Button.USUAL_COLOR
+                self.image = self.font.render(self.text, True, self.current_color, Button.BG_COLOR)
+
+    def draw(self, screen):
+        y = SCREEN_HEIGHT // 2 - BTN_HEIGHT // 2
+        self.surface.blit(self.image, (self.x_blit, self.y_blit))
+        screen.blit(self.surface, (Button.BLIT_LEFT_X, y))
+
+
+

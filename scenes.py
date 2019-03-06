@@ -16,15 +16,15 @@ class Menu:
         self.bg = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.bg.fill(Color('#333377'))
         self.clock = Clock()
-        self.btn_frame = Surface((BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS))
-        self.btn_rect = self.btn_frame.get_rect(center=self.bg.get_rect().center)
-        print(self.btn_rect.center)
+        self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
+        self.frame_btn.center = self.bg.get_rect().center
         self.create_buttons()
 
     def create_buttons(self):
-        Button.frame_rect = self.btn_rect
-        self.btn_play = Button("btn 1", 0)
-        self.buttons = Group(self.btn_play, Button("btn 2", 1), Button("btn 3", 2))
+        btn_1 = Button("btn 1", self.frame_btn, 0)
+        btn_2 = Button("btn 2", self.frame_btn, 1)
+        btn_3 = Button("btn 3", self.frame_btn, 2)
+        self.buttons = Group(btn_1, btn_2, btn_3)
 
     def check_events(self):
         for e in event.get():
@@ -39,8 +39,8 @@ class Menu:
         self.buttons.update(mouse.get_pos())
 
     def draw_objects(self):
-        self.buttons.draw(self.btn_frame)
-        self.bg.blit(self.btn_frame, self.btn_rect)
+        for btn in iter(self.buttons):
+            btn.draw(self.bg)
         self.screen.blit(self.bg, (0, 0))
 
     def mainloop(self):

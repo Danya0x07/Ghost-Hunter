@@ -102,45 +102,35 @@ class Button(Sprite):
     TXT_USUAL_COLOR = Color(BTN_TXT_USUAL_COLOR)
     TXT_SELECTED_COLOR = Color(BTN_TXT_SELECTED_COLOR)
     BG_COLOR = Color(BTN_BG_COLOR)
-    frame_rect = None
 
-    def __init__(self, text, position):
+    def __init__(self, text, frame, position):
         super().__init__()
         self.text = text
         self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
         self.txt_color = Button.TXT_USUAL_COLOR
-        self.txt_image = self.font.render(text, True, self.txt_color)
+        self.txt_image = self.font.render(text, True, self.txt_color, Button.BG_COLOR)
         self.txt_rect = self.txt_image.get_rect()
         self.txt_rect.center = (BTN_WIDTH // 2, BTN_HEIGHT // 2)
 
-        self.image = Surface((BTN_WIDTH, BTN_HEIGHT))
-        self.image.fill(Button.BG_COLOR)
-        self.rect = Rect(0, position * BTN_HEIGHT, BTN_WIDTH, BTN_HEIGHT)
-        print(self.rect.center)
-
-        self.image.blit(self.txt_image, self.txt_rect)
-
-        self.sens_rect = Rect(self.rect)
-        self.sens_rect.topleft = Button.get_abs_pos(position)
-
-    @staticmethod
-    def get_abs_pos(position):
-        left = Button.frame_rect.left
-        top = Button.frame_rect.top + position * BTN_HEIGHT
-        return left, top
+        self.tile_image = Surface((BTN_WIDTH, BTN_HEIGHT))
+        self.tile_image.fill(Button.BG_COLOR)
+        self.tile_rect = Rect(frame.left, frame.top + position * BTN_HEIGHT, BTN_WIDTH, BTN_HEIGHT)
 
     def check_pressed(self, position):
-        return self.sens_rect.collidepoint(*position)
+        return self.tile_rect.collidepoint(*position)
 
     def refresh_txt_img(self, txt_color):
         if self.txt_color != txt_color:
             self.txt_color = txt_color
-            self.txt_image = self.font.render(self.text, True, txt_color)
-            self.image.blit(self.txt_image, self.txt_rect)
-            print('r', end='')
+            self.txt_image = self.font.render(self.text, True, txt_color, Button.BG_COLOR)
+            self.tile_image.blit(self.txt_image, self.txt_rect)
 
     def update(self, position):
-        if self.sens_rect.collidepoint(*position):
+        if self.tile_rect.collidepoint(*position):
             self.refresh_txt_img(Button.TXT_SELECTED_COLOR)
         else:
             self.refresh_txt_img(Button.TXT_USUAL_COLOR)
+
+    def draw(self, surface):
+        self.tile_image.blit(self.txt_image, self.txt_rect)
+        surface.blit(self.tile_image, self.tile_rect)

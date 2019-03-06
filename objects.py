@@ -102,8 +102,9 @@ class Button(Sprite):
     TXT_USUAL_COLOR = Color(BTN_TXT_USUAL_COLOR)
     TXT_SELECTED_COLOR = Color(BTN_TXT_SELECTED_COLOR)
     BG_COLOR = Color(BTN_BG_COLOR)
+    frame_rect = None
 
-    def __init__(self, text, screen_rect):
+    def __init__(self, text, position):
         super().__init__()
         self.text = text
         self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
@@ -114,22 +115,32 @@ class Button(Sprite):
 
         self.image = Surface((BTN_WIDTH, BTN_HEIGHT))
         self.image.fill(Button.BG_COLOR)
-        self.rect = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT)
-        self.rect.center = screen_rect.center
+        self.rect = Rect(0, position * BTN_HEIGHT, BTN_WIDTH, BTN_HEIGHT)
+        print(self.rect.center)
 
         self.image.blit(self.txt_image, self.txt_rect)
 
+        self.sens_rect = Rect(self.rect)
+        self.sens_rect.topleft = Button.get_abs_pos(position)
+
+    @staticmethod
+    def get_abs_pos(position):
+        left = Button.frame_rect.left
+        top = Button.frame_rect.top + position * BTN_HEIGHT
+        return left, top
+
     def check_pressed(self, position):
-        return self.rect.collidepoint(*position)
+        return self.sens_rect.collidepoint(*position)
 
     def refresh_txt_img(self, txt_color):
         if self.txt_color != txt_color:
             self.txt_color = txt_color
             self.txt_image = self.font.render(self.text, True, txt_color)
             self.image.blit(self.txt_image, self.txt_rect)
+            print('r', end='')
 
     def update(self, position):
-        if self.rect.collidepoint(*position):
+        if self.sens_rect.collidepoint(*position):
             self.refresh_txt_img(Button.TXT_SELECTED_COLOR)
         else:
             self.refresh_txt_img(Button.TXT_USUAL_COLOR)

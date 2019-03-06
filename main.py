@@ -13,5 +13,6 @@ def init_game():
 
 if __name__ == '__main__':
     screen = init_game()
+    #game = MainScene(screen)
     game = Menu(screen)
     game.mainloop()

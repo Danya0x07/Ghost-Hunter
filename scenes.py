@@ -31,12 +31,12 @@ class Menu:
                         print('button pressed')
 
     def update_objects(self):
-        for btn in iter(self.buttons):
-            btn.update(mouse.get_pos())
+        self.buttons.update(mouse.get_pos())
 
     def draw_objects(self):
-        for btn in iter(self.buttons):
-            btn.draw(self.bg)
+        #for btn in iter(self.buttons):
+         #   btn.draw(self.bg)
+        self.buttons.draw(self.bg)
         self.screen.blit(self.bg, (0, 0))
 
     def mainloop(self):

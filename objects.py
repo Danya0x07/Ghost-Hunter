@@ -61,9 +61,6 @@ class Hunter(Sprite):
                 if y_vel > 0:   self.rect.bottom = wall.rect.top
                 elif y_vel < 0: self.rect.top = wall.rect.bottom
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
 
 class Wall(Sprite):
 
@@ -102,48 +99,37 @@ class Camera:
 
 
 class Button(Sprite):
-    USUAL_COLOR = Color(BTN_USUAL_COLOR)
-    SELECTED_COLOR = Color(BTN_SELECTED_COLOR)
+    TXT_USUAL_COLOR = Color(BTN_TXT_USUAL_COLOR)
+    TXT_SELECTED_COLOR = Color(BTN_TXT_SELECTED_COLOR)
     BG_COLOR = Color(BTN_BG_COLOR)
-    BLIT_LEFT_X = SCREEN_WIDTH // 2 - BTN_WIDTH // 2
-
 
     def __init__(self, text, screen_rect):
         super().__init__()
         self.text = text
-        self.font = Font('resources/freesansbold.ttf', 34)
-        self.image = self.font.render(text, True, Button.USUAL_COLOR)
-        self.sensetive_rect = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT)
-        self.sensetive_rect.center = screen_rect.center
+        self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
+        self.txt_color = Button.TXT_USUAL_COLOR
+        self.txt_image = self.font.render(text, True, self.txt_color)
+        self.txt_rect = self.txt_image.get_rect()
+        self.txt_rect.center = (BTN_WIDTH // 2, BTN_HEIGHT // 2)
 
-        self.rect = self.image.get_rect()
-        print(self.rect.height)
-        self.surface = Surface((BTN_WIDTH, BTN_HEIGHT))
-        self.surface.fill(Button.BG_COLOR)
-        self.x_blit = BTN_WIDTH // 2 - self.rect.width // 2
-        self.y_blit = BTN_HEIGHT // 2 - self.rect.height // 2
+        self.image = Surface((BTN_WIDTH, BTN_HEIGHT))
+        self.image.fill(Button.BG_COLOR)
+        self.rect = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT)
+        self.rect.center = screen_rect.center
 
-
-        self.current_color = Button.USUAL_COLOR
-        self.last_color = self.current_color
+        self.image.blit(self.txt_image, self.txt_rect)
 
     def check_pressed(self, position):
-        return self.sensetive_rect.collidepoint(*position)
+        return self.rect.collidepoint(*position)
+
+    def refresh_txt_img(self, txt_color):
+        if self.txt_color != txt_color:
+            self.txt_color = txt_color
+            self.txt_image = self.font.render(self.text, True, txt_color)
+            self.image.blit(self.txt_image, self.txt_rect)
 
     def update(self, position):
-        if self.sensetive_rect.collidepoint(*position):
-            if self.current_color != Button.SELECTED_COLOR:
-                self.current_color = Button.SELECTED_COLOR
-                self.image = self.font.render(self.text, True, self.current_color, Button.BG_COLOR)
+        if self.rect.collidepoint(*position):
+            self.refresh_txt_img(Button.TXT_SELECTED_COLOR)
         else:
-            if self.current_color != Button.USUAL_COLOR:
-                self.current_color = Button.USUAL_COLOR
-                self.image = self.font.render(self.text, True, self.current_color, Button.BG_COLOR)
-
-    def draw(self, screen):
-        y = SCREEN_HEIGHT // 2 - BTN_HEIGHT // 2
-        self.surface.blit(self.image, (self.x_blit, self.y_blit))
-        screen.blit(self.surface, (Button.BLIT_LEFT_X, y))
-
-
-
+            self.refresh_txt_img(Button.TXT_USUAL_COLOR)

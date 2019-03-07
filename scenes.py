@@ -4,6 +4,7 @@ from pygame.time import Clock
 from pygame.locals import *
 
 import maps
+from maps import get_total_level_size
 from objects import Wall, Camera, Hunter, Button
 from settings import *
 
@@ -13,18 +14,19 @@ class Menu:
 
     def __init__(self, screen):
         self.screen = screen
-        self.bg = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.bg.fill(Color('#333377'))
+        self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.space.fill(Color('#333377'))
         self.clock = Clock()
+        self.buttons = Group()
         self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
-        self.frame_btn.center = self.bg.get_rect().center
+        self.frame_btn.center = self.screen.get_rect().center
         self.create_buttons()
 
     def create_buttons(self):
-        btn_1 = Button("btn 1", self.frame_btn, 0)
-        btn_2 = Button("btn 2", self.frame_btn, 1)
-        btn_3 = Button("btn 3", self.frame_btn, 2)
-        self.buttons = Group(btn_1, btn_2, btn_3)
+        btn_1 = Button("btn 1", Button.get_btn_pos(self.frame_btn, 0))
+        btn_2 = Button("btn 2", Button.get_btn_pos(self.frame_btn, 1))
+        btn_3 = Button("btn 3", Button.get_btn_pos(self.frame_btn, 2))
+        self.buttons.add(btn_1, btn_2, btn_3)
 
     def check_events(self):
         for e in event.get():
@@ -40,8 +42,8 @@ class Menu:
 
     def draw_objects(self):
         for btn in iter(self.buttons):
-            btn.draw(self.bg)
-        self.screen.blit(self.bg, (0, 0))
+            btn.draw(self.space)
+        self.screen.blit(self.space, (0, 0))
 
     def mainloop(self):
         while True:
@@ -55,17 +57,14 @@ class MainScene:
 
     def __init__(self, screen):
         self.screen = screen
-        self.create_objects()
-        self.create_map(maps.hotel_map)
-
-    def create_objects(self):
-        self.bg = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.bg.fill(Color('#000077'))
+        self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.space.fill(Color('#000077'))
         self.hunter = Hunter(0, 0)
         self.entities = Group(self.hunter)
         self.walls = []
-        self.camera = Camera(maps.hotel_map)
+        self.camera = Camera(*get_total_level_size(maps.hotel_map))
         self.clock = Clock()
+        self.create_map(maps.hotel_map)
 
     def create_map(self, level_map):
         x = y = 0
@@ -75,7 +74,6 @@ class MainScene:
                     wall = Wall(x, y)
                     self.entities.add(wall)
                     self.walls.append(wall)
-                    #self.walls += (wall,)
                 x += WALL_LENGTH
             y += WALL_LENGTH
             x = 0
@@ -94,7 +92,7 @@ class MainScene:
         self.camera.update(self.hunter)
 
     def draw_objects(self):
-        self.screen.blit(self.bg, (0, 0))
+        self.screen.blit(self.space, (0, 0))
         for e in self.entities:
             self.screen.blit(e.image, self.camera.apply(e))
 

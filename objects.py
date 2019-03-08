@@ -97,9 +97,10 @@ class Button(Sprite):
     TXT_SELECTED_COLOR = Color(BTN_TXT_SELECTED_COLOR)
     BG_COLOR = Color(BTN_BG_COLOR)
 
-    def __init__(self, text, position, size=(BTN_WIDTH, BTN_HEIGHT)):
+    def __init__(self, text, id, position, size=(BTN_WIDTH, BTN_HEIGHT)):
         super().__init__()
         self.text = text
+        self.__id = id
         self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
         self.txt_color = Button.TXT_USUAL_COLOR
         self.txt_image = self.font.render(text, True, self.txt_color, Button.BG_COLOR)
@@ -127,6 +128,10 @@ class Button(Sprite):
     def draw(self, surface):
         self.tile_image.blit(self.txt_image, self.txt_rect)
         surface.blit(self.tile_image, self.tile_rect)
+
+    @property
+    def id(self):
+        return self.__id
 
     @staticmethod
     def get_btn_pos(frame, position):

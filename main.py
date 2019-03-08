@@ -1,4 +1,4 @@
-from pygame import init, display
+from pygame import init, display, quit as quit_game
 
 from scenes import MainScene, Menu
 from settings import *
@@ -15,5 +15,10 @@ if __name__ == '__main__':
     screen = init_game()
     game = MainScene(screen)
     menu = Menu(screen)
-    menu.mainloop()
-    #game.mainloop()
+    while True:
+        event_code = menu.mainloop()
+        if event_code == 'exit':
+            quit_game()
+            break
+        elif event_code == 'play':
+            game.mainloop()

@@ -24,20 +24,25 @@ class Menu:
         self.return_code = None
 
     def create_buttons(self):
-        btn_1 = Button("Play", 'play', Button.get_btn_pos(self.frame_btn, 0))
-        btn_2 = Button("btn 2", 'btn_2', Button.get_btn_pos(self.frame_btn, 1))
-        btn_3 = Button("Quit", 'exit', Button.get_btn_pos(self.frame_btn, 2))
-        self.buttons.add(btn_1, btn_2, btn_3)
+        self.btn_play = Button("New Game", 'newgame',      Button.get_btn_pos(self.frame_btn, 0))
+        self.btn_continue = Button("Continue", 'continue', Button.get_btn_pos(self.frame_btn, 1), active=False)
+        self.btn_quit = Button("Quit", 'exit',             Button.get_btn_pos(self.frame_btn, 2))
+        self.buttons.add(self.btn_play, self.btn_continue, self.btn_quit)
+
+    def handle_buttons(self, position):
+        for btn in iter(self.buttons):
+            if btn.check_pressed(position):
+                self.return_code = btn.id
+                print(btn.id)
+                if btn.id == 'newgame':
+                    self.btn_continue.active = True
 
     def check_events(self):
         for e in event.get():
             if e.type == QUIT:
                 self.return_code = 'exit'
             elif e.type == MOUSEBUTTONDOWN:
-                for btn in iter(self.buttons):
-                    if btn.check_pressed(e.pos):
-                        self.return_code = btn.id
-                        print(btn.id)
+                self.handle_buttons(e.pos)
 
     def update_objects(self):
         self.buttons.update(mouse.get_pos())
@@ -56,6 +61,7 @@ class Menu:
             self.clock.tick(60)
             display.update()
         return self.return_code
+
 
 class MainScene:
 

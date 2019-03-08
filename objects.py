@@ -95,12 +95,14 @@ class Camera:
 class Button(Sprite):
     TXT_USUAL_COLOR = Color(BTN_TXT_USUAL_COLOR)
     TXT_SELECTED_COLOR = Color(BTN_TXT_SELECTED_COLOR)
+    TXT_INACTIVE_COLOR = Color(BTN_TXT_INACTIVE_COLOR)
     BG_COLOR = Color(BTN_BG_COLOR)
 
-    def __init__(self, text, id, position, size=(BTN_WIDTH, BTN_HEIGHT)):
+    def __init__(self, text, id, position, size=(BTN_WIDTH, BTN_HEIGHT), active=True):
         super().__init__()
         self.text = text
         self.__id = id
+        self.active = active
         self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
         self.txt_color = Button.TXT_USUAL_COLOR
         self.txt_image = self.font.render(text, True, self.txt_color, Button.BG_COLOR)
@@ -112,7 +114,7 @@ class Button(Sprite):
         self.tile_rect = Rect(position, size)
 
     def check_pressed(self, position):
-        return self.tile_rect.collidepoint(*position)
+        return self.active and self.tile_rect.collidepoint(*position)
 
     def refresh_txt_img(self, txt_color):
         if self.txt_color != txt_color:
@@ -120,6 +122,9 @@ class Button(Sprite):
             self.txt_image = self.font.render(self.text, True, txt_color, Button.BG_COLOR)
 
     def update(self, position):
+        if not self.active:
+            self.refresh_txt_img(Button.TXT_INACTIVE_COLOR)
+            return
         if self.tile_rect.collidepoint(*position):
             self.refresh_txt_img(Button.TXT_SELECTED_COLOR)
         else:

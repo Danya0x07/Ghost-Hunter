@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pygame import init, display, quit as quit_game
 
 from scenes import MainScene, Menu
@@ -13,12 +14,15 @@ def init_game():
 
 if __name__ == '__main__':
     screen = init_game()
-    game = MainScene(screen)
     menu = Menu(screen)
+    game = MainScene(screen)
     while True:
         event_code = menu.mainloop()
         if event_code == 'exit':
             quit_game()
             break
-        elif event_code == 'play':
+        elif event_code == 'newgame':
+            game = MainScene(screen)
+            game.mainloop()
+        elif event_code == 'continue':
             game.mainloop()

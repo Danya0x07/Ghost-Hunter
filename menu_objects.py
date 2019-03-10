@@ -54,3 +54,15 @@ class Button(Sprite):
     @staticmethod
     def get_btn_pos(frame, position):
         return frame.left, frame.top + position * BTN_HEIGHT
+
+
+class Label(Sprite):
+
+    def __init__(self, text, fontsize=LBL_FONT_SIZE, color=LBL_TXT_COLOR):
+        super().__init__()
+        self.font = Font('resources/freesansbold.ttf', fontsize)
+        self.image = self.font.render(text, True, Color(color))
+        self.rect = self.image.get_rect()
+
+    def set_text(self, text, color=LBL_TXT_COLOR):
+        self.image = self.font.render(text, True, Color(color))

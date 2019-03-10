@@ -5,7 +5,7 @@ from pygame.locals import *
 
 import maps
 from maps import get_total_level_size
-from menu_objects import Button
+from menu_objects import Button, Label
 from game_objects import Wall, Camera, Hunter
 from settings import *
 
@@ -17,18 +17,20 @@ class Menu:
         self.screen = screen
         self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.space.fill(Color('#333377'))
-        self.clock = Clock()
-        self.buttons = Group()
         self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
         self.frame_btn.center = self.screen.get_rect().center
-        self.create_buttons()
+        self.create_widgets()
+        self.clock = Clock()
         self.return_code = None
 
-    def create_buttons(self):
-        self.btn_play = Button("New Game", 'newgame',      Button.get_btn_pos(self.frame_btn, 0))
+    def create_widgets(self):
+        self.btn_play = Button("New Game", 'newgame', Button.get_btn_pos(self.frame_btn, 0))
         self.btn_continue = Button("Continue", 'continue', Button.get_btn_pos(self.frame_btn, 1), active=False)
-        self.btn_quit = Button("Quit", 'exit',             Button.get_btn_pos(self.frame_btn, 2))
-        self.buttons.add(self.btn_play, self.btn_continue, self.btn_quit)
+        self.btn_quit = Button("Quit", 'exit', Button.get_btn_pos(self.frame_btn, 2))
+        self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
+        self.lbl_v = Label('v0.1')
+        self.lbl_v.rect.bottomright = self.screen.get_rect().bottomright
+        self.labels = Group(self.lbl_v)
 
     def handle_buttons(self, position):
         for btn in iter(self.buttons):
@@ -51,6 +53,7 @@ class Menu:
     def draw_objects(self):
         for btn in iter(self.buttons):
             btn.draw(self.space)
+        self.labels.draw(self.space)
         self.screen.blit(self.space, (0, 0))
 
     def mainloop(self):

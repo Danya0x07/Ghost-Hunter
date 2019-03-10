@@ -5,7 +5,8 @@ from pygame.locals import *
 
 import maps
 from maps import get_total_level_size
-from objects import Wall, Camera, Hunter, Button
+from menu_objects import Button
+from game_objects import Wall, Camera, Hunter
 from settings import *
 
 

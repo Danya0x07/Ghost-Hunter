@@ -60,5 +60,6 @@ class Label(Sprite):
         self.image = self.font.render(text, True, color)
         self.rect = self.image.get_rect()
 
-    def set_text(self, text, color=LBL_TXT_COLOR):
+    def set_text(self, text, color=LBL_TXT_COLOR, **kwargs):
         self.image = self.font.render(text, True, color)
+        self.rect = self.image.get_rect(**kwargs)

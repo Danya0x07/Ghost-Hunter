@@ -51,10 +51,10 @@ class Menu:
         self.buttons.update(mouse.get_pos())
 
     def draw_objects(self):
-        for btn in iter(self.buttons):
-            btn.draw(self.space)
-        self.labels.draw(self.space)
         self.screen.blit(self.space, (0, 0))
+        for btn in iter(self.buttons):
+            btn.draw(self.screen)
+        self.labels.draw(self.screen)
 
     def mainloop(self):
         self.return_code = None

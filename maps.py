@@ -1,9 +1,9 @@
-from settings import *
+from config import *
 
 
 def get_total_level_size(level):
-    width = len(level[0]) * WALL_LENGTH
-    height = len(level) * WALL_LENGTH
+    width = len(level[0]) * WALL_WIDTH
+    height = len(level) * WALL_HEIGHT
     return width, height
 
 

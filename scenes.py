@@ -1,4 +1,4 @@
-from pygame import display, event, mouse, Surface, Color
+from pygame import display, event, mouse, Surface
 from pygame.sprite import Group
 from pygame.time import Clock
 from pygame.locals import *
@@ -7,7 +7,7 @@ import maps
 from maps import get_total_level_size
 from menu_objects import Button, Label
 from game_objects import Wall, Camera, Hunter
-from settings import *
+from config import *
 
 
 class Menu:
@@ -16,7 +16,7 @@ class Menu:
     def __init__(self, screen):
         self.screen = screen
         self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.space.fill(Color('#333377'))
+        self.space.fill(MENU_BG_COLOR)
         self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
         self.frame_btn.center = self.screen.get_rect().center
         self.create_widgets()
@@ -72,7 +72,7 @@ class MainScene:
     def __init__(self, screen):
         self.screen = screen
         self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.space.fill(Color('#000077'))
+        self.space.fill(GAME_BG_COLOR)
         self.hunter = Hunter(0, 0)
         self.entities = Group(self.hunter)
         self.walls = []
@@ -89,8 +89,8 @@ class MainScene:
                     wall = Wall(x, y)
                     self.entities.add(wall)
                     self.walls.append(wall)
-                x += WALL_LENGTH
-            y += WALL_LENGTH
+                x += WALL_WIDTH
+            y += WALL_HEIGHT
             x = 0
 
     def check_events(self):

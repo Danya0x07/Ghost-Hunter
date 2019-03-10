@@ -1,8 +1,8 @@
-from pygame import Surface, Color, Rect
+from pygame import Surface, Rect
 from pygame.sprite import Sprite, collide_rect
 from pygame.locals import *
 
-from settings import *
+from config import *
 
 
 class Direction:
@@ -18,10 +18,6 @@ class Direction:
 
 
 class Hunter(Sprite):
-    WIDTH = 32
-    HEIGHT = 32
-    MOVE_SPEED = 5
-    COLOR = "#AAAAAA"
 
     def __init__(self, x, y):
         super().__init__()
@@ -30,9 +26,9 @@ class Hunter(Sprite):
         self.x_vel = 0
         self.y_vel = 0
         self.dir = Direction()
-        self.image = Surface((Hunter.WIDTH, Hunter.HEIGHT))
-        self.image.fill(Color(Hunter.COLOR))
-        self.rect = Rect(x, y, Hunter.WIDTH, Hunter.HEIGHT)
+        self.image = Surface(HUNTER_SIZE)
+        self.image.fill(HUNTER_COLOR)
+        self.rect = Rect((x, y), HUNTER_SIZE)
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -42,10 +38,10 @@ class Hunter(Sprite):
 
     def update(self, walls):
         front, back, left, right = self.dir.get_dir_state()
-        if front: self.y_vel = -Hunter.MOVE_SPEED
-        if back:  self.y_vel = Hunter.MOVE_SPEED
-        if left:  self.x_vel = -Hunter.MOVE_SPEED
-        if right: self.x_vel = Hunter.MOVE_SPEED
+        if front: self.y_vel = -HUNTER_SPEED
+        if back:  self.y_vel = HUNTER_SPEED
+        if left:  self.x_vel = -HUNTER_SPEED
+        if right: self.x_vel = HUNTER_SPEED
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
         self.rect.x += self.x_vel
@@ -66,9 +62,9 @@ class Wall(Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = Surface((WALL_LENGTH, WALL_LENGTH))
-        self.image.fill(Color(WALL_COLOR))
-        self.rect = Rect(x, y, WALL_LENGTH, WALL_LENGTH)
+        self.image = Surface(WALL_SIZE)
+        self.image.fill(WALL_COLOR)
+        self.rect = Rect((x, y), WALL_SIZE)
 
 
 class Camera:

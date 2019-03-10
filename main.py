@@ -2,7 +2,7 @@
 from pygame import init, display, quit as quit_game
 
 from scenes import MainScene, Menu
-from settings import *
+from config import *
 
 
 def init_game():

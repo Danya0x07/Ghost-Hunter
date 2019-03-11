@@ -28,15 +28,14 @@ class Menu:
         self.btn_continue = Button("Continue", 'continue', Button.get_btn_pos(self.frame_btn, 1), active=False)
         self.btn_quit = Button("Quit", 'exit', Button.get_btn_pos(self.frame_btn, 2))
         self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
-        self.lbl_v = Label('v0.1')
-        self.lbl_v.rect.bottomright = self.screen.get_rect().bottomright
+
+        self.lbl_v = Label('v0.1', bottomright=self.screen.get_rect().bottomright)
         self.labels = Group(self.lbl_v)
 
     def handle_buttons(self, position):
         for btn in iter(self.buttons):
             if btn.check_pressed(position):
                 self.return_code = btn.id
-                print(btn.id)
                 if btn.id == 'newgame':
                     self.btn_continue.active = True
 

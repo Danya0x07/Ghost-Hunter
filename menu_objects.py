@@ -54,11 +54,11 @@ class Button(Sprite):
 
 class Label(Sprite):
 
-    def __init__(self, text, fontsize=LBL_FONT_SIZE, color=LBL_TXT_COLOR):
+    def __init__(self, text, fontsize=LBL_FONT_SIZE, color=LBL_TXT_COLOR, **kwargs):
         super().__init__()
         self.font = Font('resources/freesansbold.ttf', fontsize)
         self.image = self.font.render(text, True, color)
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(**kwargs)
 
     def set_text(self, text, color=LBL_TXT_COLOR, **kwargs):
         self.image = self.font.render(text, True, color)

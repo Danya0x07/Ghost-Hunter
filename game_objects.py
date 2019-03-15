@@ -2,6 +2,8 @@ from pygame import Surface, Rect
 from pygame.sprite import Sprite, collide_rect
 from pygame.locals import *
 
+from random import choice, randint
+
 from config import *
 
 
@@ -12,6 +14,12 @@ class Direction:
         self.back = False
         self.left = False
         self.right = False
+
+    def set_dir_state(self, front, back, left, right):
+        self.front = front
+        self.back = back
+        self.left = left
+        self.right = right
 
     def get_dir_state(self):
         return self.front, self.back, self.left, self.right
@@ -56,6 +64,44 @@ class Hunter(Sprite):
                 elif x_vel < 0: self.rect.left = wall.rect.right
                 if y_vel > 0:   self.rect.bottom = wall.rect.top
                 elif y_vel < 0: self.rect.top = wall.rect.bottom
+
+
+class Enemy(Sprite):
+
+    def __init__(self, x, y):
+        super().__init__()
+        self.start_x = x
+        self.start_y = y
+        self.x_vel = 0
+        self.y_vel = -ENEMY_SPEED
+        self.dir = Direction()
+        self.image = Surface(ENEMY_SIZE)
+        self.image.fill(ENEMY_COLOR)
+        self.rect = Rect((x, y), ENEMY_SIZE)
+        self.frame_rect = Rect((0, 0), ENEMY_FRAME_SIZE)
+        self.frame_rect.center = self.rect.center
+
+    def update(self, walls):
+        self.frame_rect.x += self.x_vel
+        self.check_collision(walls, self.x_vel, 0)
+        self.frame_rect.y += self.y_vel
+        self.check_collision(walls, 0, self.y_vel)
+        self.rect.center = self.frame_rect.center
+
+    def check_collision(self, walls, x_vel, y_vel):
+        for wall in walls:
+            if self.frame_rect.colliderect(wall):
+                if x_vel > 0:   self.frame_rect.right = wall.rect.left
+                elif x_vel < 0: self.frame_rect.left = wall.rect.right
+                if y_vel > 0:   self.frame_rect.bottom = wall.rect.top
+                elif y_vel < 0: self.frame_rect.top = wall.rect.bottom
+
+                if x_vel != 0:
+                    self.x_vel = 0
+                    self.y_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
+                elif y_vel != 0:
+                    self.y_vel = 0
+                    self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
 
 
 class Wall(Sprite):

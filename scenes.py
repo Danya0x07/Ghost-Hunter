@@ -6,7 +6,7 @@ from pygame.locals import *
 import maps
 from maps import get_total_level_size
 from menu_objects import Button, Label
-from game_objects import Wall, Camera, Hunter
+from game_objects import Wall, Camera, Hunter, Enemy
 from config import *
 
 
@@ -72,22 +72,28 @@ class MainScene:
         self.screen = screen
         self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.space.fill(GAME_BG_COLOR)
-        self.hunter = Hunter(0, 0)
-        self.entities = Group(self.hunter)
+        self.entities = Group()
+        self.enemies = Group()
         self.walls = []
+        self.create_map(maps.hotel_map)
         self.camera = Camera(*get_total_level_size(maps.hotel_map))
         self.clock = Clock()
-        self.create_map(maps.hotel_map)
         self.running = True
 
     def create_map(self, level_map):
         x = y = 0
         for row in level_map:
             for col in row:
-                if col == '-':
+                if col == '#':
                     wall = Wall(x, y)
                     self.entities.add(wall)
                     self.walls.append(wall)
+                elif col == 'h':
+                    self.hunter = Hunter(x, y)
+                    self.entities.add(self.hunter)
+                elif col == 'e':
+                    enemy = Enemy(x, y)
+                    self.enemies.add(enemy)
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
@@ -106,11 +112,14 @@ class MainScene:
 
     def update_objects(self):
         self.hunter.update(self.walls)
+        self.enemies.update(self.walls)
         self.camera.update(self.hunter)
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
         for e in self.entities:
+            self.screen.blit(e.image, self.camera.apply(e))
+        for e in self.enemies:
             self.screen.blit(e.image, self.camera.apply(e))
 
     def mainloop(self):

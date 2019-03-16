@@ -75,6 +75,7 @@ class MainScene:
         self.entities = Group()
         self.enemies = Group()
         self.plasmas = Group()
+        self.bombs = Group()
         self.walls = []
         self.create_map(maps.hotel_map)
         self.camera = Camera(*get_total_level_size(maps.hotel_map))
@@ -107,7 +108,10 @@ class MainScene:
                 if e.key == K_ESCAPE:
                     self.running = False
                     return
-                self.hunter.set_direction(e.key, True)
+                elif e.key == K_SPACE:
+                    self.hunter.lay_bomb(self.bombs)
+                else:
+                    self.hunter.set_direction(e.key, True)
             elif e.type == KEYUP:
                 self.hunter.set_direction(e.key, False)
 
@@ -115,6 +119,7 @@ class MainScene:
         self.hunter.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas)
+        self.bombs.update(self.enemies, self.bombs)
         self.camera.update(self.hunter)
 
     def draw_objects(self):
@@ -125,6 +130,8 @@ class MainScene:
             self.screen.blit(e.image, self.camera.apply(e))
         for p in self.plasmas:
             self.screen.blit(p.image, self.camera.apply(p))
+        for b in self.bombs:
+            self.screen.blit(b.image, self.camera.apply(b))
 
     def mainloop(self):
         self.running = True

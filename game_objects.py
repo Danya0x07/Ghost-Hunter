@@ -66,6 +66,10 @@ class Hunter(Sprite):
                 if y_vel > 0:   self.rect.bottom = wall.rect.top
                 elif y_vel < 0: self.rect.top = wall.rect.bottom
 
+    def lay_bomb(self, bombs):
+        bomb = Bomb(self.rect.center)
+        bombs.add(bomb)
+
 
 class Enemy(Sprite):
 
@@ -159,6 +163,21 @@ class Plasma(Sprite):
         for wall in walls:
             if collide_rect(self, wall):
                 plasmas.remove(self)
+
+
+class Bomb(Sprite):
+
+    def __init__(self, center):
+        super().__init__()
+        self.image = Surface(BOMB_SIZE)
+        self.image.fill(BOMB_COLOR)
+        self.rect = self.image.get_rect(center=center)
+
+    def update(self, enemies, bombs):
+        for enemy in enemies:
+            if collide_rect(self, enemy):
+                enemies.remove(enemy)
+                bombs.remove(self)
 
 
 class Camera:

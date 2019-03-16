@@ -51,7 +51,7 @@ class Menu:
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
-        for btn in iter(self.buttons):
+        for btn in self.buttons:
             btn.draw(self.screen)
         self.labels.draw(self.screen)
 
@@ -72,11 +72,10 @@ class MainScene:
         self.screen = screen
         self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.space.fill(GAME_BG_COLOR)
-        self.entities = Group()
+        self.walls = Group()
         self.enemies = Group()
         self.plasmas = Group()
         self.bombs = Group()
-        self.walls = []
         self.create_map(maps.hotel_map)
         self.camera = Camera(*get_total_level_size(maps.hotel_map))
         self.clock = Clock()
@@ -88,11 +87,9 @@ class MainScene:
             for col in row:
                 if col == '#':
                     wall = Wall(x, y)
-                    self.entities.add(wall)
-                    self.walls.append(wall)
+                    self.walls.add(wall)
                 elif col == 'h':
                     self.hunter = Hunter(x, y)
-                    self.entities.add(self.hunter)
                 elif col == 'e':
                     enemy = Enemy(x, y)
                     self.enemies.add(enemy)
@@ -124,14 +121,15 @@ class MainScene:
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
-        for e in self.entities:
+        for e in self.walls:
             self.screen.blit(e.image, self.camera.apply(e))
-        for e in self.enemies:
-            self.screen.blit(e.image, self.camera.apply(e))
-        for p in self.plasmas:
-            self.screen.blit(p.image, self.camera.apply(p))
         for b in self.bombs:
             self.screen.blit(b.image, self.camera.apply(b))
+        for p in self.plasmas:
+            self.screen.blit(p.image, self.camera.apply(p))
+        for e in self.enemies:
+            self.screen.blit(e.image, self.camera.apply(e))
+        self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
 
     def mainloop(self):
         self.running = True

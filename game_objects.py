@@ -38,6 +38,7 @@ class Hunter(Sprite):
         self.image = Surface(HUNTER_SIZE)
         self.image.fill(HUNTER_COLOR)
         self.rect = Rect((x, y), HUNTER_SIZE)
+        self.alive = True
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -172,12 +173,18 @@ class Bomb(Sprite):
         self.image = Surface(BOMB_SIZE)
         self.image.fill(BOMB_COLOR)
         self.rect = self.image.get_rect(center=center)
+        self.timeout = 0
 
-    def update(self, enemies, bombs):
+    def update(self, enemies, bombs, hunter):
+        if self.timeout < BOMB_TIMEOUT:
+            self.timeout += 1
         for enemy in enemies:
             if collide_rect(self, enemy):
                 enemies.remove(enemy)
                 bombs.remove(self)
+        if collide_rect(self, hunter) and self.timeout >= BOMB_TIMEOUT:
+            hunter.alive = False
+            bombs.remove(self)
 
 
 class Camera:

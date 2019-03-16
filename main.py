@@ -21,8 +21,11 @@ if __name__ == '__main__':
         if event_code == 'exit':
             quit_game()
             break
-        elif event_code == 'newgame':
-            game = MainScene(screen)
-            game.mainloop()
-        elif event_code == 'continue':
-            game.mainloop()
+        else:
+            if event_code == 'newgame':
+                game = MainScene(screen)
+                event_code = game.mainloop()
+            elif event_code == 'continue':
+                event_code = game.mainloop()
+            if event_code == 'gameover':
+                menu = Menu(screen)

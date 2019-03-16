@@ -79,7 +79,7 @@ class MainScene:
         self.create_map(maps.hotel_map)
         self.camera = Camera(*get_total_level_size(maps.hotel_map))
         self.clock = Clock()
-        self.running = True
+        self.return_code = None
 
     def create_map(self, level_map):
         x = y = 0
@@ -103,7 +103,7 @@ class MainScene:
                 raise SystemExit
             elif e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
-                    self.running = False
+                    self.return_code = 'tomenu'
                     return
                 elif e.key == K_SPACE:
                     self.hunter.lay_bomb(self.bombs)
@@ -116,8 +116,10 @@ class MainScene:
         self.hunter.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas)
-        self.bombs.update(self.enemies, self.bombs)
+        self.bombs.update(self.enemies, self.bombs, self.hunter)
         self.camera.update(self.hunter)
+        if not self.hunter.alive:
+            self.return_code = 'gameover'
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
@@ -132,10 +134,11 @@ class MainScene:
         self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
 
     def mainloop(self):
-        self.running = True
-        while self.running:
+        self.return_code = None
+        while self.return_code is None:
             self.check_events()
             self.update_objects()
             self.draw_objects()
             self.clock.tick(60)
             display.update()
+        return self.return_code

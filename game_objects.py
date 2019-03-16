@@ -3,6 +3,7 @@ from pygame.sprite import Sprite, collide_rect
 from pygame.locals import *
 
 from random import choice, randint
+from math import sqrt
 
 from config import *
 
@@ -80,13 +81,35 @@ class Enemy(Sprite):
         self.rect = Rect((x, y), ENEMY_SIZE)
         self.frame_rect = Rect((0, 0), ENEMY_FRAME_SIZE)
         self.frame_rect.center = self.rect.center
+        self.shoot_counter = 0
+        self.move_counter = 0
+        self.move_time = 120
 
-    def update(self, walls):
+    def update(self, walls, plasmas):
         self.frame_rect.x += self.x_vel
         self.check_collision(walls, self.x_vel, 0)
         self.frame_rect.y += self.y_vel
         self.check_collision(walls, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
+
+        if self.shoot_counter >= ENEMY_SHOOT_TIME:
+            self.shoot(plasmas)
+            self.shoot_counter = 0
+        else: self.shoot_counter += 1
+
+        if self.move_counter >= self.move_time:
+            self.move_counter = 0
+            self.move_time = randint(60, 180)
+            self.change_direction(self.x_vel, self.y_vel)
+        else: self.move_counter += 1
+
+    def change_direction(self, x_vel, y_vel):
+        if x_vel != 0:
+            self.x_vel = 0
+            self.y_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
+        elif y_vel != 0:
+            self.y_vel = 0
+            self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
 
     def check_collision(self, walls, x_vel, y_vel):
         for wall in walls:
@@ -95,13 +118,13 @@ class Enemy(Sprite):
                 elif x_vel < 0: self.frame_rect.left = wall.rect.right
                 if y_vel > 0:   self.frame_rect.bottom = wall.rect.top
                 elif y_vel < 0: self.frame_rect.top = wall.rect.bottom
+                self.change_direction(x_vel, y_vel)
 
-                if x_vel != 0:
-                    self.x_vel = 0
-                    self.y_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
-                elif y_vel != 0:
-                    self.y_vel = 0
-                    self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
+    def shoot(self, plasmas):
+        x_vel = randint(-PLASMA_SPEED, PLASMA_SPEED)
+        y_vel = int(sqrt(PLASMA_SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
+        plasma = Plasma(x_vel, y_vel, self.rect.center)
+        plasmas.add(plasma)
 
 
 class Wall(Sprite):
@@ -111,6 +134,27 @@ class Wall(Sprite):
         self.image = Surface(WALL_SIZE)
         self.image.fill(WALL_COLOR)
         self.rect = Rect((x, y), WALL_SIZE)
+
+
+class Plasma(Sprite):
+
+    def __init__(self, x_vel, y_vel, center):
+        super().__init__()
+        self.image = Surface(PLASMA_SIZE)
+        self.image.fill(PLASMA_COLOR)
+        self.rect = self.image.get_rect(center=center)
+        self.x_vel = x_vel
+        self.y_vel = y_vel
+
+    def update(self, walls, plasmas):
+        self.rect.x += self.x_vel
+        self.rect.y += self.y_vel
+        self.check_collision(walls, plasmas)
+
+    def check_collision(self, walls, plasmas):
+        for wall in walls:
+            if collide_rect(self, wall):
+                plasmas.remove(self)
 
 
 class Camera:

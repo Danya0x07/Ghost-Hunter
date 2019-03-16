@@ -74,6 +74,7 @@ class MainScene:
         self.space.fill(GAME_BG_COLOR)
         self.entities = Group()
         self.enemies = Group()
+        self.plasmas = Group()
         self.walls = []
         self.create_map(maps.hotel_map)
         self.camera = Camera(*get_total_level_size(maps.hotel_map))
@@ -112,7 +113,8 @@ class MainScene:
 
     def update_objects(self):
         self.hunter.update(self.walls)
-        self.enemies.update(self.walls)
+        self.enemies.update(self.walls, self.plasmas)
+        self.plasmas.update(self.walls, self.plasmas)
         self.camera.update(self.hunter)
 
     def draw_objects(self):
@@ -121,6 +123,8 @@ class MainScene:
             self.screen.blit(e.image, self.camera.apply(e))
         for e in self.enemies:
             self.screen.blit(e.image, self.camera.apply(e))
+        for p in self.plasmas:
+            self.screen.blit(p.image, self.camera.apply(p))
 
     def mainloop(self):
         self.running = True

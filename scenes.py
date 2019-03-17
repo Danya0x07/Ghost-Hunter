@@ -33,7 +33,7 @@ class Menu:
         self.labels = Group(self.lbl_v)
 
     def handle_buttons(self, position):
-        for btn in iter(self.buttons):
+        for btn in self.buttons:
             if btn.check_pressed(position):
                 self.return_code = btn.id
                 if btn.id == 'newgame':
@@ -51,9 +51,9 @@ class Menu:
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
+        self.labels.draw(self.screen)
         for btn in self.buttons:
             btn.draw(self.screen)
-        self.labels.draw(self.screen)
 
     def mainloop(self):
         self.return_code = None
@@ -86,13 +86,11 @@ class MainScene:
         for row in level_map:
             for col in row:
                 if col == '#':
-                    wall = Wall(x, y)
-                    self.walls.add(wall)
+                    self.walls.add(Wall(x, y))
                 elif col == 'h':
                     self.hunter = Hunter(x, y)
                 elif col == 'e':
-                    enemy = Enemy(x, y)
-                    self.enemies.add(enemy)
+                    self.enemies.add(Enemy(x, y))
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
@@ -104,7 +102,6 @@ class MainScene:
             elif e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     self.return_code = 'tomenu'
-                    return
                 elif e.key == K_SPACE:
                     self.hunter.lay_bomb(self.bombs)
                 else:
@@ -118,19 +115,19 @@ class MainScene:
         self.plasmas.update(self.walls, self.plasmas)
         self.bombs.update(self.enemies, self.bombs, self.hunter)
         self.camera.update(self.hunter)
-        if not self.hunter.alive:
+        if not self.hunter.is_alive:
             self.return_code = 'gameover'
+
+    def draw_group(self, group):
+        for obj in group:
+            self.screen.blit(obj.image, self.camera.apply(obj))
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
-        for e in self.walls:
-            self.screen.blit(e.image, self.camera.apply(e))
-        for b in self.bombs:
-            self.screen.blit(b.image, self.camera.apply(b))
-        for p in self.plasmas:
-            self.screen.blit(p.image, self.camera.apply(p))
-        for e in self.enemies:
-            self.screen.blit(e.image, self.camera.apply(e))
+        self.draw_group(self.walls)
+        self.draw_group(self.bombs)
+        self.draw_group(self.plasmas)
+        self.draw_group(self.enemies)
         self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
 
     def mainloop(self):

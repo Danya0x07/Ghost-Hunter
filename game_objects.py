@@ -26,19 +26,42 @@ class Direction:
         return self.front, self.back, self.left, self.right
 
 
-class Hunter(Sprite):
+class Thing(Sprite):
+
+    def __init__(self, size, color, **kwargs):
+        super().__init__()
+        self.image = Surface(size)
+        self.image.fill(color)
+        self.rect = self.image.get_rect(**kwargs)
+
+
+class MovingThing(Thing):
+
+    def __init__(self, size, color, x_vel=0, y_vel=0, **kwargs):
+        super().__init__(size, color, **kwargs)
+        self.x_vel = x_vel
+        self.y_vel = y_vel
+
+    @staticmethod
+    def check_collision(object_rect, obstacles):
+        for obstacle in obstacles:
+            if object_rect.colliderect(obstacle):
+                return obstacle
+
+    @staticmethod
+    def handle_collision(object_rect, obstacle_rect, x_vel, y_vel):
+        if x_vel > 0:   object_rect.right = obstacle_rect.left
+        elif x_vel < 0: object_rect.left = obstacle_rect.right
+        if y_vel > 0:   object_rect.bottom = obstacle_rect.top
+        elif y_vel < 0: object_rect.top = obstacle_rect.bottom
+
+
+class Hunter(MovingThing):
 
     def __init__(self, x, y):
-        super().__init__()
-        self.start_x = x
-        self.start_y = y
-        self.x_vel = 0
-        self.y_vel = 0
+        super().__init__(HUNTER_SIZE, HUNTER_COLOR, topleft=(x, y))
         self.dir = Direction()
-        self.image = Surface(HUNTER_SIZE)
-        self.image.fill(HUNTER_COLOR)
-        self.rect = Rect((x, y), HUNTER_SIZE)
-        self.alive = True
+        self.is_alive = True
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -55,58 +78,53 @@ class Hunter(Sprite):
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
         self.rect.x += self.x_vel
-        self.check_collision(walls, self.x_vel, 0)
+        self.collide(walls, self.x_vel, 0)
         self.rect.y += self.y_vel
-        self.check_collision(walls, 0, self.y_vel)
+        self.collide(walls, 0, self.y_vel)
 
-    def check_collision(self, walls, x_vel, y_vel):
-        for wall in walls:
-            if collide_rect(self, wall):
-                if x_vel > 0:   self.rect.right = wall.rect.left
-                elif x_vel < 0: self.rect.left = wall.rect.right
-                if y_vel > 0:   self.rect.bottom = wall.rect.top
-                elif y_vel < 0: self.rect.top = wall.rect.bottom
+    def collide(self, walls, x_vel, y_vel):
+        wall = self.check_collision(self.rect, walls)
+        if wall is not None:
+            self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
 
     def lay_bomb(self, bombs):
         bomb = Bomb(self.rect.center)
         bombs.add(bomb)
 
 
-class Enemy(Sprite):
+class Enemy(MovingThing):
 
     def __init__(self, x, y):
-        super().__init__()
-        self.start_x = x
-        self.start_y = y
-        self.x_vel = 0
-        self.y_vel = -ENEMY_SPEED
-        self.dir = Direction()
-        self.image = Surface(ENEMY_SIZE)
-        self.image.fill(ENEMY_COLOR)
-        self.rect = Rect((x, y), ENEMY_SIZE)
+        super().__init__(ENEMY_SIZE, ENEMY_COLOR, topleft=(x, y))
         self.frame_rect = Rect((0, 0), ENEMY_FRAME_SIZE)
         self.frame_rect.center = self.rect.center
+        self.veer_counter = 0
+        self.veer_time = 120
         self.shoot_counter = 0
-        self.move_counter = 0
-        self.move_time = 120
 
-    def update(self, walls, plasmas):
-        self.frame_rect.x += self.x_vel
-        self.check_collision(walls, self.x_vel, 0)
-        self.frame_rect.y += self.y_vel
-        self.check_collision(walls, 0, self.y_vel)
-        self.rect.center = self.frame_rect.center
-
+    def handle_shooting(self, plasmas):
         if self.shoot_counter >= ENEMY_SHOOT_TIME:
             self.shoot(plasmas)
             self.shoot_counter = 0
-        else: self.shoot_counter += 1
+        else:
+            self.shoot_counter += 1
 
-        if self.move_counter >= self.move_time:
-            self.move_counter = 0
-            self.move_time = randint(60, 180)
+    def handle_veering(self):
+        if self.veer_counter >= self.veer_time:
             self.change_direction(self.x_vel, self.y_vel)
-        else: self.move_counter += 1
+            self.veer_counter = 0
+            self.veer_time = randint(60, 180)
+        else:
+            self.veer_counter += 1
+
+    def update(self, walls, plasmas):
+        self.frame_rect.x += self.x_vel
+        self.collide(walls, self.x_vel, 0)
+        self.frame_rect.y += self.y_vel
+        self.collide(walls, 0, self.y_vel)
+        self.rect.center = self.frame_rect.center
+        self.handle_shooting(plasmas)
+        self.handle_veering()
 
     def change_direction(self, x_vel, y_vel):
         '''
@@ -117,17 +135,14 @@ class Enemy(Sprite):
             self.y_vel = 0
             self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))'''
         self.x_vel = randint(-ENEMY_SPEED, ENEMY_SPEED)
-        #self.y_vel = int(sqrt(ENEMY_SPEED ** 2 - self.x_vel ** 2)) * choice((-1, 1))
-        self.y_vel = randint(-ENEMY_SPEED, ENEMY_SPEED)
+        self.y_vel = int(sqrt(ENEMY_SPEED ** 2 - self.x_vel ** 2)) * choice((-1, 1))
+        #self.y_vel = randint(-ENEMY_SPEED, ENEMY_SPEED)
 
-    def check_collision(self, walls, x_vel, y_vel):
-        for wall in walls:
-            if self.frame_rect.colliderect(wall):
-                if x_vel > 0:   self.frame_rect.right = wall.rect.left
-                elif x_vel < 0: self.frame_rect.left = wall.rect.right
-                if y_vel > 0:   self.frame_rect.bottom = wall.rect.top
-                elif y_vel < 0: self.frame_rect.top = wall.rect.bottom
-                self.change_direction(x_vel, y_vel)
+    def collide(self, walls, x_vel, y_vel):
+        wall = self.check_collision(self.frame_rect, walls)
+        if wall is not None:
+            self.handle_collision(self.frame_rect, wall.rect, x_vel, y_vel)
+            self.change_direction(x_vel, y_vel)
 
     def shoot(self, plasmas):
         x_vel = randint(-PLASMA_SPEED, PLASMA_SPEED)
@@ -136,43 +151,30 @@ class Enemy(Sprite):
         plasmas.add(plasma)
 
 
-class Wall(Sprite):
+class Wall(Thing):
 
     def __init__(self, x, y):
-        super().__init__()
-        self.image = Surface(WALL_SIZE)
-        self.image.fill(WALL_COLOR)
-        self.rect = Rect((x, y), WALL_SIZE)
+        super().__init__(WALL_SIZE, WALL_COLOR, topleft=(x, y))
 
 
-class Plasma(Sprite):
+class Plasma(MovingThing):
 
     def __init__(self, x_vel, y_vel, center):
-        super().__init__()
-        self.image = Surface(PLASMA_SIZE)
-        self.image.fill(PLASMA_COLOR)
-        self.rect = self.image.get_rect(center=center)
-        self.x_vel = x_vel
-        self.y_vel = y_vel
+        super().__init__(PLASMA_SIZE, PLASMA_COLOR, x_vel, y_vel, center=center)
 
     def update(self, walls, plasmas):
-        self.rect.x += self.x_vel
-        self.rect.y += self.y_vel
-        self.check_collision(walls, plasmas)
+        self.rect.move_ip(self.x_vel, self.y_vel)
+        self.collide(walls, plasmas)
 
-    def check_collision(self, walls, plasmas):
-        for wall in walls:
-            if collide_rect(self, wall):
-                plasmas.remove(self)
+    def collide(self, walls, plasmas):
+        if self.check_collision(self.rect, walls):
+            plasmas.remove(self)
 
 
-class Bomb(Sprite):
+class Bomb(Thing):
 
     def __init__(self, center):
-        super().__init__()
-        self.image = Surface(BOMB_SIZE)
-        self.image.fill(BOMB_COLOR)
-        self.rect = self.image.get_rect(center=center)
+        super().__init__(BOMB_SIZE, BOMB_COLOR, center=center)
         self.timeout = 0
 
     def update(self, enemies, bombs, hunter):
@@ -183,7 +185,7 @@ class Bomb(Sprite):
                 enemies.remove(enemy)
                 bombs.remove(self)
         if collide_rect(self, hunter) and self.timeout >= BOMB_TIMEOUT:
-            hunter.alive = False
+            hunter.is_alive = False
             bombs.remove(self)
 
 

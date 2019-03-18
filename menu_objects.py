@@ -7,20 +7,20 @@ from config import *
 
 class Button(Sprite):
 
-    def __init__(self, text, id, position, size=BTN_SIZE, active=True):
+    def __init__(self, text, id, rectsize=BTN_SIZE, fontsize=BTN_FONT_SIZE, active=True, **kwargs):
         super().__init__()
         self.text = text
         self.__id = id
         self.active = active
-        self.font = Font('resources/freesansbold.ttf', BTN_FONT_SIZE)
+        self.font = Font('resources/freesansbold.ttf', fontsize)
         self.txt_color = BTN_TXT_USUAL_COLOR
         self.txt_image = self.font.render(text, True, self.txt_color, BTN_BG_COLOR)
         self.txt_rect = self.txt_image.get_rect()
-        self.txt_rect.center = (BTN_WIDTH // 2, BTN_HEIGHT // 2)
+        self.txt_rect.center = rectsize[0] // 2, rectsize[1] // 2
 
-        self.tile_image = Surface(BTN_SIZE)
+        self.tile_image = Surface(rectsize)
         self.tile_image.fill(BTN_BG_COLOR)
-        self.tile_rect = Rect(position, size)
+        self.tile_rect = self.tile_image.get_rect(**kwargs)
 
     def check_pressed(self, position):
         return self.active and self.tile_rect.collidepoint(*position)

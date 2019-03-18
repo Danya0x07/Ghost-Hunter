@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pygame import init, display, quit as quit_game
 
-from scenes import MainScene, Menu
+from scenes import MainScene, Menu, GameOverScene
 from config import *
 
 
@@ -16,6 +16,7 @@ if __name__ == '__main__':
     screen = init_game()
     menu = Menu(screen)
     game = MainScene(screen)
+    gameover = GameOverScene(screen)
     while True:
         event_code = menu.mainloop()
         if event_code == 'exit':
@@ -28,4 +29,5 @@ if __name__ == '__main__':
             elif event_code == 'continue':
                 event_code = game.mainloop()
             if event_code == 'gameover':
+                gameover.mainloop()
                 menu = Menu(screen)

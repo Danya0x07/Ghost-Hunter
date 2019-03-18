@@ -49,9 +49,9 @@ class Menu(Scene):
         self.create_widgets()
 
     def create_widgets(self):
-        self.btn_play = Button("New Game", 'newgame', Button.get_btn_pos(self.frame_btn, 0))
-        self.btn_continue = Button("Continue", 'continue', Button.get_btn_pos(self.frame_btn, 1), active=False)
-        self.btn_quit = Button("Quit", 'exit', Button.get_btn_pos(self.frame_btn, 2))
+        self.btn_play = Button("New Game", 'newgame', topleft=Button.get_btn_pos(self.frame_btn, 0))
+        self.btn_continue = Button("Continue", 'continue', topleft=Button.get_btn_pos(self.frame_btn, 1), active=False)
+        self.btn_quit = Button("Quit", 'exit', topleft=Button.get_btn_pos(self.frame_btn, 2))
         self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
 
         self.lbl_v = Label('v0.1', bottomright=self.screen.get_rect().bottomright)
@@ -123,7 +123,7 @@ class MainScene(Scene):
     def update_objects(self):
         self.hunter.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
-        self.plasmas.update(self.walls, self.plasmas)
+        self.plasmas.update(self.walls, self.plasmas, self.hunter)
         self.bombs.update(self.enemies, self.bombs, self.hunter)
         self.camera.update(self.hunter)
         if not self.hunter.is_alive:
@@ -140,3 +140,27 @@ class MainScene(Scene):
         self.draw_group(self.plasmas)
         self.draw_group(self.enemies)
         self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
+
+
+class GameOverScene(Scene):
+
+    def __init__(self, screen):
+        super().__init__(screen, MENU_BG_COLOR)
+        self.btn_back = Button("to menu", 'tomenu', rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
+        self.lbl_gameover = Label("Game Over!", 50, center=self.screen.get_rect().center)
+
+    def check_events(self):
+        for e in event.get():
+            if e.type == QUIT:
+                raise SystemExit
+            elif e.type == MOUSEBUTTONDOWN:
+                if self.btn_back.check_pressed(mouse.get_pos()):
+                    self.return_code = self.btn_back.id
+
+    def update_objects(self):
+        self.btn_back.update(mouse.get_pos())
+
+    def draw_objects(self):
+        self.screen.blit(self.space, (0, 0))
+        self.screen.blit(self.lbl_gameover.image, self.lbl_gameover.rect)
+        self.btn_back.draw(self.screen)

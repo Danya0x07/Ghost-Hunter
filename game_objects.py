@@ -95,7 +95,7 @@ class Hunter(MovingThing):
 class Enemy(MovingThing):
 
     def __init__(self, x, y):
-        super().__init__(ENEMY_SIZE, ENEMY_COLOR, topleft=(x, y))
+        super().__init__(ENEMY_SIZE, ENEMY_COLOR, y_vel=1, topleft=(x, y))
         self.frame_rect = Rect((0, 0), ENEMY_FRAME_SIZE)
         self.frame_rect.center = self.rect.center
         self.veer_counter = 0
@@ -162,12 +162,12 @@ class Plasma(MovingThing):
     def __init__(self, x_vel, y_vel, center):
         super().__init__(PLASMA_SIZE, PLASMA_COLOR, x_vel, y_vel, center=center)
 
-    def update(self, walls, plasmas):
+    def update(self, walls, plasmas, hunter):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        self.collide(walls, plasmas)
+        self.collide(walls, plasmas, hunter)
 
-    def collide(self, walls, plasmas):
-        if self.check_collision(self.rect, walls):
+    def collide(self, walls, plasmas, hunter):
+        if self.check_collision(self.rect, walls) or collide_rect(self, hunter):
             plasmas.remove(self)
 
 

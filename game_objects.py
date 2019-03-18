@@ -5,6 +5,7 @@ from pygame.locals import *
 from random import choice, randint
 from math import sqrt
 
+from menu_objects import Label
 from config import *
 
 
@@ -62,7 +63,14 @@ class Hunter(MovingThing):
         super().__init__(HUNTER_SIZE, HUNTER_COLOR, topleft=(x, y))
         self.dir = Direction()
         self.hp = 100
+        self.lbl_hp = Label(self.hp, 12, center=self.image.get_rect().center)
         self.is_alive = True
+        self.refresh_status()
+
+    def refresh_status(self):
+        self.lbl_hp.set_text(self.hp, center=self.image.get_rect().center)
+        self.image.fill(HUNTER_COLOR)
+        self.image.blit(self.lbl_hp.image, self.lbl_hp.rect)
 
     def shift_hp(self, offset):
         self.hp += offset
@@ -70,7 +78,9 @@ class Hunter(MovingThing):
             self.hp = 100
         elif self.hp < 0:
             self.hp = 0
+        if self.hp == 0:
             self.is_alive = False
+        self.refresh_status()
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -105,8 +115,7 @@ class Enemy(MovingThing):
 
     def __init__(self, x, y):
         super().__init__(ENEMY_SIZE, ENEMY_COLOR, y_vel=1, topleft=(x, y))
-        self.frame_rect = Rect((0, 0), ENEMY_FRAME_SIZE)
-        self.frame_rect.center = self.rect.center
+        self.frame_rect = self.image.get_rect(size=ENEMY_FRAME_SIZE, center=self.rect.center)
         self.veer_counter = 0
         self.veer_time = 120
         self.shoot_counter = 0
@@ -180,6 +189,7 @@ class Plasma(MovingThing):
             plasmas.remove(self)
         if collide_rect(self, hunter):
             hunter.shift_hp(-PLASMA_DAMAGE)
+            plasmas.remove(self)
 
 
 class Bomb(Thing):

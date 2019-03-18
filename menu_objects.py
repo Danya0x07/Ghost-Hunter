@@ -16,7 +16,7 @@ class Button(Sprite):
         self.txt_color = BTN_TXT_USUAL_COLOR
         self.txt_image = self.font.render(text, True, self.txt_color, BTN_BG_COLOR)
         self.txt_rect = self.txt_image.get_rect()
-        self.txt_rect.center = rectsize[0] // 2, rectsize[1] // 2
+        self.txt_rect.center = (rectsize[0] // 2, rectsize[1] // 2)
 
         self.tile_image = Surface(rectsize)
         self.tile_image.fill(BTN_BG_COLOR)
@@ -57,9 +57,9 @@ class Label(Sprite):
     def __init__(self, text, fontsize=LBL_FONT_SIZE, color=LBL_TXT_COLOR, **kwargs):
         super().__init__()
         self.font = Font('resources/freesansbold.ttf', fontsize)
-        self.image = self.font.render(text, True, color)
+        self.image = self.font.render(str(text), True, color)
         self.rect = self.image.get_rect(**kwargs)
 
     def set_text(self, text, color=LBL_TXT_COLOR, **kwargs):
-        self.image = self.font.render(text, True, color)
+        self.image = self.font.render(str(text), True, color)
         self.rect = self.image.get_rect(**kwargs)

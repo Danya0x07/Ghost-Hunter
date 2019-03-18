@@ -191,8 +191,9 @@ class Bomb(Thing):
 
 class Camera:
 
-    def __init__(self, level_width, level_height):
-        self.state = Rect(0, 0, level_width, level_height)
+    def __init__(self, level_size):
+        width, height = level_size
+        self.state = Rect(0, 0, width, height)
 
     def apply(self, target):
         return target.rect.move(self.state.topleft)

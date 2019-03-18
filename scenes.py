@@ -10,18 +10,43 @@ from game_objects import Wall, Camera, Hunter, Enemy
 from config import *
 
 
-class Menu:
+class Scene:
+
+    def __init__(self, screen, bg):
+        self.screen = screen
+        self.space = Surface(SCREEN_SIZE)
+        self.space.fill(bg)
+        self.clock = Clock()
+        self.return_code = None
+
+    def check_events(self):
+        pass
+
+    def update_objects(self):
+        pass
+
+    def draw_objects(self):
+        pass
+
+    def mainloop(self):
+        self.return_code = None
+        while self.return_code is None:
+            self.check_events()
+            self.update_objects()
+            self.draw_objects()
+            self.clock.tick(FPS)
+            display.update()
+        return self.return_code
+
+
+class Menu(Scene):
     NUM_OF_BTNS = 3
 
     def __init__(self, screen):
-        self.screen = screen
-        self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.space.fill(MENU_BG_COLOR)
+        super().__init__(screen, MENU_BG_COLOR)
         self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
         self.frame_btn.center = self.screen.get_rect().center
         self.create_widgets()
-        self.clock = Clock()
-        self.return_code = None
 
     def create_widgets(self):
         self.btn_play = Button("New Game", 'newgame', Button.get_btn_pos(self.frame_btn, 0))
@@ -55,31 +80,17 @@ class Menu:
         for btn in self.buttons:
             btn.draw(self.screen)
 
-    def mainloop(self):
-        self.return_code = None
-        while self.return_code is None:
-            self.check_events()
-            self.update_objects()
-            self.draw_objects()
-            self.clock.tick(60)
-            display.update()
-        return self.return_code
 
-
-class MainScene:
+class MainScene(Scene):
 
     def __init__(self, screen):
-        self.screen = screen
-        self.space = Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.space.fill(GAME_BG_COLOR)
+        super().__init__(screen, GAME_BG_COLOR)
         self.walls = Group()
         self.enemies = Group()
         self.plasmas = Group()
         self.bombs = Group()
+        self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
-        self.camera = Camera(*get_total_level_size(maps.hotel_map))
-        self.clock = Clock()
-        self.return_code = None
 
     def create_map(self, level_map):
         x = y = 0
@@ -129,13 +140,3 @@ class MainScene:
         self.draw_group(self.plasmas)
         self.draw_group(self.enemies)
         self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
-
-    def mainloop(self):
-        self.return_code = None
-        while self.return_code is None:
-            self.check_events()
-            self.update_objects()
-            self.draw_objects()
-            self.clock.tick(60)
-            display.update()
-        return self.return_code

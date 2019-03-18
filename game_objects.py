@@ -61,7 +61,16 @@ class Hunter(MovingThing):
     def __init__(self, x, y):
         super().__init__(HUNTER_SIZE, HUNTER_COLOR, topleft=(x, y))
         self.dir = Direction()
+        self.hp = 100
         self.is_alive = True
+
+    def shift_hp(self, offset):
+        self.hp += offset
+        if self.hp > 100:
+            self.hp = 100
+        elif self.hp < 0:
+            self.hp = 0
+            self.is_alive = False
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -167,8 +176,10 @@ class Plasma(MovingThing):
         self.collide(walls, plasmas, hunter)
 
     def collide(self, walls, plasmas, hunter):
-        if self.check_collision(self.rect, walls) or collide_rect(self, hunter):
+        if self.check_collision(self.rect, walls):
             plasmas.remove(self)
+        if collide_rect(self, hunter):
+            hunter.shift_hp(-PLASMA_DAMAGE)
 
 
 class Bomb(Thing):

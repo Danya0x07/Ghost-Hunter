@@ -70,10 +70,13 @@ class DataDisplayer:
     def __init__(self, player, frame):
         self.player = player
         self.frame = frame
-        self.lbl_hp = Label("----", fontsize=30)
+        self.lbl_hp = Label("", fontsize=30)
+        self.lbl_score = Label("", fontsize=30)
 
     def update(self):
         self.lbl_hp.set_text("Status: {}%".format(self.player.hp), topleft=self.frame.topleft)
+        self.lbl_score.set_text("Score: {}".format(self.player.score), topleft=self.lbl_hp.rect.bottomleft)
 
     def draw(self, surface):
         surface.blit(self.lbl_hp.image, self.lbl_hp.rect)
+        surface.blit(self.lbl_score.image, self.lbl_score.rect)

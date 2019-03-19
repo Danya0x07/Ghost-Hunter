@@ -5,7 +5,7 @@ from pygame.locals import *
 
 import maps
 from maps import get_total_level_size
-from menu_objects import Button, Label, DataDisplayer
+from interface_objects import Button, Label, DataDisplayer
 from game_objects import Wall, Camera, Player, Enemy
 from config import *
 

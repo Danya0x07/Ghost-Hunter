@@ -62,6 +62,7 @@ class Player(MovingThing):
         super().__init__(PLAYER_SIZE, PLAYER_COLOR, topleft=(x, y))
         self.dir = Direction()
         self.hp = 100
+        self.score = 0
         self.is_alive = True
 
     def shift_hp(self, offset):
@@ -170,6 +171,7 @@ class Plasma(MovingThing):
 
     def __init__(self, x_vel, y_vel, center):
         super().__init__(PLASMA_SIZE, PLASMA_COLOR, x_vel, y_vel, center=center)
+        self.damage = randint(*PLASMA_DAMAGE)
 
     def update(self, walls, plasmas, player):
         self.rect.move_ip(self.x_vel, self.y_vel)
@@ -179,7 +181,7 @@ class Plasma(MovingThing):
         if self.check_collision(self.rect, walls):
             plasmas.remove(self)
         if collide_rect(self, player):
-            player.shift_hp(-PLASMA_DAMAGE)
+            player.shift_hp(-self.damage)
             plasmas.remove(self)
 
 
@@ -194,6 +196,7 @@ class Bomb(Thing):
             self.timeout += 1
         for enemy in enemies:
             if collide_rect(self, enemy):
+                player.score += 1
                 enemies.remove(enemy)
                 bombs.remove(self)
         if collide_rect(self, player) and self.timeout >= BOMB_TIMEOUT:

@@ -5,7 +5,6 @@ from pygame.locals import *
 from random import choice, randint
 from math import sqrt
 
-from menu_objects import Label
 from config import *
 
 
@@ -57,20 +56,13 @@ class MovingThing(Thing):
         elif y_vel < 0: object_rect.top = obstacle_rect.bottom
 
 
-class Hunter(MovingThing):
+class Player(MovingThing):
 
     def __init__(self, x, y):
-        super().__init__(HUNTER_SIZE, HUNTER_COLOR, topleft=(x, y))
+        super().__init__(PLAYER_SIZE, PLAYER_COLOR, topleft=(x, y))
         self.dir = Direction()
         self.hp = 100
-        self.lbl_hp = Label(self.hp, 12, center=self.image.get_rect().center)
         self.is_alive = True
-        self.refresh_status()
-
-    def refresh_status(self):
-        self.lbl_hp.set_text(self.hp, center=self.image.get_rect().center)
-        self.image.fill(HUNTER_COLOR)
-        self.image.blit(self.lbl_hp.image, self.lbl_hp.rect)
 
     def shift_hp(self, offset):
         self.hp += offset
@@ -80,7 +72,6 @@ class Hunter(MovingThing):
             self.hp = 0
         if self.hp == 0:
             self.is_alive = False
-        self.refresh_status()
 
     def set_direction(self, key, state):
         if key == K_w:   self.dir.front = state
@@ -90,10 +81,10 @@ class Hunter(MovingThing):
 
     def update(self, walls):
         front, back, left, right = self.dir.get_dir_state()
-        if front: self.y_vel = -HUNTER_SPEED
-        if back:  self.y_vel = HUNTER_SPEED
-        if left:  self.x_vel = -HUNTER_SPEED
-        if right: self.x_vel = HUNTER_SPEED
+        if front: self.y_vel = -PLAYER_SPEED
+        if back:  self.y_vel = PLAYER_SPEED
+        if left:  self.x_vel = -PLAYER_SPEED
+        if right: self.x_vel = PLAYER_SPEED
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
         self.rect.x += self.x_vel
@@ -180,15 +171,15 @@ class Plasma(MovingThing):
     def __init__(self, x_vel, y_vel, center):
         super().__init__(PLASMA_SIZE, PLASMA_COLOR, x_vel, y_vel, center=center)
 
-    def update(self, walls, plasmas, hunter):
+    def update(self, walls, plasmas, player):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        self.collide(walls, plasmas, hunter)
+        self.collide(walls, plasmas, player)
 
-    def collide(self, walls, plasmas, hunter):
+    def collide(self, walls, plasmas, player):
         if self.check_collision(self.rect, walls):
             plasmas.remove(self)
-        if collide_rect(self, hunter):
-            hunter.shift_hp(-PLASMA_DAMAGE)
+        if collide_rect(self, player):
+            player.shift_hp(-PLASMA_DAMAGE)
             plasmas.remove(self)
 
 
@@ -198,15 +189,15 @@ class Bomb(Thing):
         super().__init__(BOMB_SIZE, BOMB_COLOR, center=center)
         self.timeout = 0
 
-    def update(self, enemies, bombs, hunter):
+    def update(self, enemies, bombs, player):
         if self.timeout < BOMB_TIMEOUT:
             self.timeout += 1
         for enemy in enemies:
             if collide_rect(self, enemy):
                 enemies.remove(enemy)
                 bombs.remove(self)
-        if collide_rect(self, hunter) and self.timeout >= BOMB_TIMEOUT:
-            hunter.is_alive = False
+        if collide_rect(self, player) and self.timeout >= BOMB_TIMEOUT:
+            player.shift_hp(-100)
             bombs.remove(self)
 
 

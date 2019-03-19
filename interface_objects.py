@@ -63,3 +63,17 @@ class Label(Sprite):
     def set_text(self, text, color=LBL_TXT_COLOR, **kwargs):
         self.image = self.font.render(str(text), True, color)
         self.rect = self.image.get_rect(**kwargs)
+
+
+class DataDisplayer:
+
+    def __init__(self, player, frame):
+        self.player = player
+        self.frame = frame
+        self.lbl_hp = Label("----", fontsize=30)
+
+    def update(self):
+        self.lbl_hp.set_text("Status: {}%".format(self.player.hp), topleft=self.frame.topleft)
+
+    def draw(self, surface):
+        surface.blit(self.lbl_hp.image, self.lbl_hp.rect)

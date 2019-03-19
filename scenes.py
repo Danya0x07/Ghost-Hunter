@@ -5,8 +5,8 @@ from pygame.locals import *
 
 import maps
 from maps import get_total_level_size
-from menu_objects import Button, Label
-from game_objects import Wall, Camera, Hunter, Enemy
+from menu_objects import Button, Label, DataDisplayer
+from game_objects import Wall, Camera, Player, Enemy
 from config import *
 
 
@@ -91,6 +91,7 @@ class MainScene(Scene):
         self.bombs = Group()
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
+        self.stats = DataDisplayer(self.player, self.screen.get_rect())
 
     def create_map(self, level_map):
         x = y = 0
@@ -99,7 +100,7 @@ class MainScene(Scene):
                 if col == '#':
                     self.walls.add(Wall(x, y))
                 elif col == 'h':
-                    self.hunter = Hunter(x, y)
+                    self.player = Player(x, y)
                 elif col == 'e':
                     self.enemies.add(Enemy(x, y))
                 x += WALL_WIDTH
@@ -114,19 +115,20 @@ class MainScene(Scene):
                 if e.key == K_ESCAPE:
                     self.return_code = 'tomenu'
                 elif e.key == K_SPACE:
-                    self.hunter.lay_bomb(self.bombs)
+                    self.player.lay_bomb(self.bombs)
                 else:
-                    self.hunter.set_direction(e.key, True)
+                    self.player.set_direction(e.key, True)
             elif e.type == KEYUP:
-                self.hunter.set_direction(e.key, False)
+                self.player.set_direction(e.key, False)
 
     def update_objects(self):
-        self.hunter.update(self.walls)
+        self.player.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
-        self.plasmas.update(self.walls, self.plasmas, self.hunter)
-        self.bombs.update(self.enemies, self.bombs, self.hunter)
-        self.camera.update(self.hunter)
-        if not self.hunter.is_alive:
+        self.plasmas.update(self.walls, self.plasmas, self.player)
+        self.bombs.update(self.enemies, self.bombs, self.player)
+        self.camera.update(self.player)
+        self.stats.update()
+        if not self.player.is_alive:
             self.return_code = 'gameover'
 
     def draw_group(self, group):
@@ -139,13 +141,15 @@ class MainScene(Scene):
         self.draw_group(self.bombs)
         self.draw_group(self.plasmas)
         self.draw_group(self.enemies)
-        self.screen.blit(self.hunter.image, self.camera.apply(self.hunter))
+        self.screen.blit(self.player.image, self.camera.apply(self.player))
+        self.stats.draw(self.screen)
 
 
 class GameOverScene(Scene):
 
-    def __init__(self, screen):
+    def __init__(self, screen, stats):
         super().__init__(screen, MENU_BG_COLOR)
+        self.stats = stats
         self.btn_back = Button("to menu", 'tomenu', rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
         self.lbl_gameover = Label("Game Over!", 50, midbottom=self.screen.get_rect().center)
 
@@ -164,3 +168,4 @@ class GameOverScene(Scene):
         self.screen.blit(self.space, (0, 0))
         self.screen.blit(self.lbl_gameover.image, self.lbl_gameover.rect)
         self.btn_back.draw(self.screen)
+        self.stats.draw(self.screen)

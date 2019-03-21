@@ -7,7 +7,7 @@ from config import *
 
 def init_game():
     init()
-    screen = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = display.set_mode(SCREEN_SIZE)
     display.set_caption("Ghost&Hunter")
     return screen
 

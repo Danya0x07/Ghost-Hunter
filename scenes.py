@@ -14,6 +14,7 @@ class Scene:
 
     def __init__(self, screen, bg):
         self.screen = screen
+        self.screen_rect = screen.get_rect()
         self.space = Surface(SCREEN_SIZE)
         self.space.fill(bg)
         self.clock = Clock()
@@ -44,18 +45,29 @@ class Menu(Scene):
 
     def __init__(self, screen):
         super().__init__(screen, MENU_BG_COLOR)
-        self.frame_btn = Rect(0, 0, BTN_WIDTH, BTN_HEIGHT * Menu.NUM_OF_BTNS)
-        self.frame_btn.center = self.screen.get_rect().center
+        self.frame_btn = Rect(0, 0, MENU_BTN_WIDTH, MENU_BTN_HEIGHT * Menu.NUM_OF_BTNS)
+        self.frame_btn.centerx = self.screen_rect.centerx
+        self.frame_btn.centery = self.screen_rect.centery + 50
         self.create_widgets()
 
     def create_widgets(self):
-        self.btn_play = Button("New Game", 'newgame', topleft=Button.get_btn_pos(self.frame_btn, 0))
-        self.btn_continue = Button("Continue", 'continue', topleft=Button.get_btn_pos(self.frame_btn, 1), active=False)
-        self.btn_quit = Button("Quit", 'exit', topleft=Button.get_btn_pos(self.frame_btn, 2))
+        self.btn_play     = Button("New Game", 'newgame',
+                                   rectsize=MENU_BTN_SIZE, fontsize=MENU_BTN_FONT_SIZE,
+                                   topleft=Button.get_btn_pos(self.frame_btn, 0, MENU_BTN_HEIGHT))
+        self.btn_continue = Button("Continue", 'continue',
+                                   rectsize=MENU_BTN_SIZE, fontsize=MENU_BTN_FONT_SIZE,
+                                   topleft=Button.get_btn_pos(self.frame_btn, 1, MENU_BTN_HEIGHT), active=False)
+        self.btn_quit     = Button("Quit", 'exit',
+                                   rectsize=MENU_BTN_SIZE, fontsize=MENU_BTN_FONT_SIZE,
+                                   topleft=Button.get_btn_pos(self.frame_btn, 2, MENU_BTN_HEIGHT))
         self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
 
-        self.lbl_v = Label('v0.1', bottomright=self.screen.get_rect().bottomright)
-        self.labels = Group(self.lbl_v)
+        self.lbl_title = Label('Ghost&Hunter', fontsize=70,
+                               centerx=self.screen_rect.centerx,
+                               centery=130)
+        self.lbl_v = Label('v0.1', fontsize=20,
+                           bottomright=self.screen_rect.bottomright)
+        self.labels = Group(self.lbl_title, self.lbl_v)
 
     def handle_buttons(self, position):
         for btn in self.buttons:
@@ -91,7 +103,7 @@ class MainScene(Scene):
         self.bombs = Group()
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
-        self.stats = DataDisplayer(self.player, self.screen.get_rect())
+        self.stats = DataDisplayer(self.player, self.screen_rect)
 
     def create_map(self, level_map):
         x = y = 0
@@ -140,8 +152,8 @@ class MainScene(Scene):
         self.draw_group(self.walls)
         self.draw_group(self.bombs)
         self.draw_group(self.plasmas)
-        self.draw_group(self.enemies)
         self.screen.blit(self.player.image, self.camera.apply(self.player))
+        self.draw_group(self.enemies)
         self.stats.draw(self.screen)
 
 
@@ -150,8 +162,9 @@ class GameOverScene(Scene):
     def __init__(self, screen, stats):
         super().__init__(screen, MENU_BG_COLOR)
         self.stats = stats
-        self.btn_back = Button("to menu", 'tomenu', rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
-        self.lbl_gameover = Label("Game Over!", 50, midbottom=self.screen.get_rect().center)
+        self.btn_back = Button("to menu", 'tomenu',
+                               rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
+        self.lbl_gameover = Label("Game Over!", 50, midbottom=self.screen_rect.center)
 
     def check_events(self):
         for e in event.get():

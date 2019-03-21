@@ -61,14 +61,14 @@ class Player(MovingThing):
     def __init__(self, x, y):
         super().__init__(PLAYER_SIZE, PLAYER_COLOR, topleft=(x, y))
         self.dir = Direction()
-        self.hp = 100
+        self.hp = PLAYER_HP_MAX
         self.score = 0
         self.is_alive = True
 
     def shift_hp(self, offset):
         self.hp += offset
-        if self.hp > 100:
-            self.hp = 100
+        if self.hp > PLAYER_HP_MAX:
+            self.hp = PLAYER_HP_MAX
         elif self.hp < 0:
             self.hp = 0
         if self.hp == 0:
@@ -113,7 +113,7 @@ class Enemy(MovingThing):
         self.shoot_counter = 0
 
     def handle_shooting(self, plasmas):
-        if self.shoot_counter >= ENEMY_SHOOT_TIME:
+        if self.shoot_counter >= ENEMY_SHOOT_TIMEOUT:
             self.shoot(plasmas)
             self.shoot_counter = 0
         else:
@@ -123,7 +123,7 @@ class Enemy(MovingThing):
         if self.veer_counter >= self.veer_time:
             self.change_direction(self.x_vel, self.y_vel)
             self.veer_counter = 0
-            self.veer_time = randint(60, 180)
+            self.veer_time = randint(*ENEMY_VEER_TIMEOUT)
         else:
             self.veer_counter += 1
 
@@ -200,7 +200,7 @@ class Bomb(Thing):
                 enemies.remove(enemy)
                 bombs.remove(self)
         if collide_rect(self, player) and self.timeout >= BOMB_TIMEOUT:
-            player.shift_hp(-100)
+            player.shift_hp(-PLAYER_HP_MAX)
             bombs.remove(self)
 
 

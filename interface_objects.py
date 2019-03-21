@@ -7,7 +7,7 @@ from config import *
 
 class Button(Sprite):
 
-    def __init__(self, text, id, rectsize=BTN_SIZE, fontsize=BTN_FONT_SIZE, active=True, **kwargs):
+    def __init__(self, text, id, rectsize, fontsize, active=True, **kwargs):
         super().__init__()
         self.text = text
         self.__id = id
@@ -48,19 +48,19 @@ class Button(Sprite):
         return self.__id
 
     @staticmethod
-    def get_btn_pos(frame, position):
-        return frame.left, frame.top + position * BTN_HEIGHT
+    def get_btn_pos(frame, position, height):
+        return frame.left, frame.top + position * height
 
 
 class Label(Sprite):
 
-    def __init__(self, text, fontsize=LBL_FONT_SIZE, color=LBL_TXT_COLOR, **kwargs):
+    def __init__(self, text, fontsize, color=LBL_TXT_DEFAULT_COLOR, **kwargs):
         super().__init__()
         self.font = Font('resources/freesansbold.ttf', fontsize)
         self.image = self.font.render(str(text), True, color)
         self.rect = self.image.get_rect(**kwargs)
 
-    def set_text(self, text, color=LBL_TXT_COLOR, **kwargs):
+    def set_text(self, text, color=LBL_TXT_DEFAULT_COLOR, **kwargs):
         self.image = self.font.render(str(text), True, color)
         self.rect = self.image.get_rect(**kwargs)
 
@@ -74,7 +74,7 @@ class DataDisplayer:
         self.lbl_score = Label("", fontsize=30)
 
     def update(self):
-        self.lbl_hp.set_text("Status: {}%".format(self.player.hp), topleft=self.frame.topleft)
+        self.lbl_hp.set_text("Mood: {}%".format(self.player.hp), topleft=self.frame.topleft)
         self.lbl_score.set_text("Score: {}".format(self.player.score), topleft=self.lbl_hp.rect.bottomleft)
 
     def draw(self, surface):

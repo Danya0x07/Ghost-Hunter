@@ -137,16 +137,12 @@ class Enemy(MovingThing):
         self.handle_veering()
 
     def change_direction(self, x_vel, y_vel):
-        '''
         if x_vel != 0:
             self.x_vel = 0
             self.y_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
         elif y_vel != 0:
             self.y_vel = 0
-            self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))'''
-        self.x_vel = randint(-ENEMY_SPEED, ENEMY_SPEED)
-        self.y_vel = int(sqrt(ENEMY_SPEED ** 2 - self.x_vel ** 2)) * choice((-1, 1))
-        #self.y_vel = randint(-ENEMY_SPEED, ENEMY_SPEED)
+            self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
 
     def collide(self, walls, x_vel, y_vel):
         wall = self.check_collision(self.frame_rect, walls)

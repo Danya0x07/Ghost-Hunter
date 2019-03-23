@@ -6,7 +6,7 @@ from pygame.locals import *
 import maps
 from maps import get_total_level_size
 from interface_objects import Button, Label, DataDisplayer
-from game_objects import Wall, Camera, Player, Enemy, Healer
+from game_objects import Wall, Camera, Player, Enemy, Healer, Teleport
 from config import *
 
 
@@ -102,6 +102,7 @@ class MainScene(Scene):
         self.healers = Group()
         self.plasmas = Group()
         self.bombs = Group()
+        self.teleports = Group()
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
         self.stats = DataDisplayer(self.player, self.screen_rect)
@@ -118,6 +119,10 @@ class MainScene(Scene):
                     self.enemies.add(Enemy(x, y))
                 elif col == 'h':
                     self.healers.add(Healer(x, y))
+                elif col == '1':
+                    self.teleports.add(Teleport(x, y, '1', '2'))
+                elif col == '2':
+                    self.teleports.add(Teleport(x, y, '2', '1'))
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
@@ -142,6 +147,7 @@ class MainScene(Scene):
         self.healers.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas, self.player)
         self.bombs.update(self.enemies, self.healers, self.bombs, self.player)
+        self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
         self.camera.update(self.player)
         self.stats.update()
         if not self.player.is_alive:
@@ -154,6 +160,7 @@ class MainScene(Scene):
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
         self.draw_group(self.walls)
+        self.draw_group(self.teleports)
         self.draw_group(self.bombs)
         self.draw_group(self.plasmas)
         self.draw_group(self.healers)

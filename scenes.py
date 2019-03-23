@@ -6,7 +6,7 @@ from pygame.locals import *
 import maps
 from maps import get_total_level_size
 from interface_objects import Button, Label, DataDisplayer
-from game_objects import Wall, Camera, Player, Enemy
+from game_objects import Wall, Camera, Player, Enemy, Healer
 from config import *
 
 
@@ -99,6 +99,7 @@ class MainScene(Scene):
         super().__init__(screen, GAME_BG_COLOR)
         self.walls = Group()
         self.enemies = Group()
+        self.healers = Group()
         self.plasmas = Group()
         self.bombs = Group()
         self.camera = Camera(get_total_level_size(maps.hotel_map))
@@ -111,10 +112,12 @@ class MainScene(Scene):
             for col in row:
                 if col == '#':
                     self.walls.add(Wall(x, y))
-                elif col == 'h':
+                elif col == 'p':
                     self.player = Player(x, y)
                 elif col == 'e':
                     self.enemies.add(Enemy(x, y))
+                elif col == 'h':
+                    self.healers.add(Healer(x, y))
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
@@ -136,8 +139,9 @@ class MainScene(Scene):
     def update_objects(self):
         self.player.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
+        self.healers.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas, self.player)
-        self.bombs.update(self.enemies, self.bombs, self.player)
+        self.bombs.update(self.enemies, self.healers, self.bombs, self.player)
         self.camera.update(self.player)
         self.stats.update()
         if not self.player.is_alive:
@@ -152,6 +156,7 @@ class MainScene(Scene):
         self.draw_group(self.walls)
         self.draw_group(self.bombs)
         self.draw_group(self.plasmas)
+        self.draw_group(self.healers)
         self.screen.blit(self.player.image, self.camera.apply(self.player))
         self.draw_group(self.enemies)
         self.stats.draw(self.screen)

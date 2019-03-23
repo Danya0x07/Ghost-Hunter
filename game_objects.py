@@ -56,6 +56,47 @@ class MovingThing(Thing):
         elif y_vel < 0: object_rect.top = obstacle_rect.bottom
 
 
+class Wall(Thing):
+
+    def __init__(self, x, y):
+        super().__init__(WALL_SIZE, WALL_COLOR, topleft=(x, y))
+
+
+class Plasma(MovingThing):
+    SIZE = (16, 16)
+    COLOR = (255, 255, 255)
+    SPEED = 20
+    OFFSET = (0, 0)
+
+    def __init__(self, x_vel, y_vel, center):
+        super().__init__(self.SIZE, self.COLOR, x_vel, y_vel, center=center)
+
+    def update(self, walls, plasmas, player):
+        self.rect.move_ip(self.x_vel, self.y_vel)
+        self.collide(walls, plasmas, player)
+
+    def collide(self, walls, plasmas, player):
+        if self.check_collision(self.rect, walls):
+            plasmas.remove(self)
+        if collide_rect(self, player):
+            player.shift_hp(randint(*self.OFFSET))
+            plasmas.remove(self)
+
+
+class DamagePLasma(Plasma):
+    SIZE = DAMAGE_PLASMA_SIZE
+    COLOR = DAMAGE_PLASMA_COLOR
+    SPEED = DAMAGE_PLASMA_SPEED
+    OFFSET = DAMAGE_PLASMA_OFFSET
+
+
+class HealPlasma(Plasma):
+    SIZE = HEAL_PLASMA_SIZE
+    COLOR = HEAL_PLASMA_COLOR
+    SPEED = HEAL_PLASMA_SPEED
+    OFFSET = HEAL_PLASMA_OFFSET
+
+
 class Player(MovingThing):
 
     def __init__(self, x, y):
@@ -103,27 +144,34 @@ class Player(MovingThing):
         bombs.add(bomb)
 
 
-class Enemy(MovingThing):
+class Mob(MovingThing):
+    SIZE = (50, 50)
+    COLOR = (0, 0, 0)
+    FRAME_SIZE = (70, 70)
+    VEER_TIMEOUT = (120, 180)
+    SHOOT_TIMEOUT = 30
+    SPEED = 5
+    BULLET_TYPE = Plasma
 
     def __init__(self, x, y):
-        super().__init__(ENEMY_SIZE, ENEMY_COLOR, y_vel=1, topleft=(x, y))
-        self.frame_rect = self.image.get_rect(size=ENEMY_FRAME_SIZE, center=self.rect.center)
+        super().__init__(self.SIZE, self.COLOR, y_vel=1, topleft=(x, y))
+        self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)
         self.veer_counter = 0
-        self.veer_time = 120
+        self.veer_timeout = 120
         self.shoot_counter = 0
 
     def handle_shooting(self, plasmas):
-        if self.shoot_counter >= ENEMY_SHOOT_TIMEOUT:
+        if self.shoot_counter >= self.SHOOT_TIMEOUT:
             self.shoot(plasmas)
             self.shoot_counter = 0
         else:
             self.shoot_counter += 1
 
     def handle_veering(self):
-        if self.veer_counter >= self.veer_time:
+        if self.veer_counter >= self.veer_timeout:
             self.change_direction(self.x_vel, self.y_vel)
             self.veer_counter = 0
-            self.veer_time = randint(*ENEMY_VEER_TIMEOUT)
+            self.veer_timeout = randint(*self.VEER_TIMEOUT)
         else:
             self.veer_counter += 1
 
@@ -139,10 +187,10 @@ class Enemy(MovingThing):
     def change_direction(self, x_vel, y_vel):
         if x_vel != 0:
             self.x_vel = 0
-            self.y_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
+            self.y_vel = choice((-self.SPEED, self.SPEED))
         elif y_vel != 0:
             self.y_vel = 0
-            self.x_vel = choice((-ENEMY_SPEED, ENEMY_SPEED))
+            self.x_vel = choice((-self.SPEED, self.SPEED))
 
     def collide(self, walls, x_vel, y_vel):
         wall = self.check_collision(self.frame_rect, walls)
@@ -151,34 +199,30 @@ class Enemy(MovingThing):
             self.change_direction(x_vel, y_vel)
 
     def shoot(self, plasmas):
-        x_vel = randint(-PLASMA_SPEED, PLASMA_SPEED)
-        y_vel = int(sqrt(PLASMA_SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
-        plasma = Plasma(x_vel, y_vel, self.rect.center)
+        x_vel = randint(-self.BULLET_TYPE.SPEED, self.BULLET_TYPE.SPEED)
+        y_vel = int(sqrt(self.BULLET_TYPE.SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
+        plasma = self.BULLET_TYPE(x_vel, y_vel, self.rect.center)
         plasmas.add(plasma)
 
 
-class Wall(Thing):
+class Enemy(Mob):
+    SIZE = ENEMY_SIZE
+    COLOR = ENEMY_COLOR
+    FRAME_SIZE = ENEMY_FRAME_SIZE
+    VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
+    SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
+    SPEED = ENEMY_SPEED
+    BULLET_TYPE = DamagePLasma
 
-    def __init__(self, x, y):
-        super().__init__(WALL_SIZE, WALL_COLOR, topleft=(x, y))
 
-
-class Plasma(MovingThing):
-
-    def __init__(self, x_vel, y_vel, center):
-        super().__init__(PLASMA_SIZE, PLASMA_COLOR, x_vel, y_vel, center=center)
-        self.damage = randint(*PLASMA_DAMAGE)
-
-    def update(self, walls, plasmas, player):
-        self.rect.move_ip(self.x_vel, self.y_vel)
-        self.collide(walls, plasmas, player)
-
-    def collide(self, walls, plasmas, player):
-        if self.check_collision(self.rect, walls):
-            plasmas.remove(self)
-        if collide_rect(self, player):
-            player.shift_hp(-self.damage)
-            plasmas.remove(self)
+class Healer(Mob):
+    SIZE = HEALER_SIZE
+    COLOR = HEALER_COLOR
+    FRAME_SIZE = HEALER_FRAME_SIZE
+    VEER_TIMEOUT = HEALER_VEER_TIMEOUT
+    SHOOT_TIMEOUT = HEALER_SHOOT_TIMEOUT
+    SPEED = HEALER_SPEED
+    BULLET_TYPE = HealPlasma
 
 
 class Bomb(Thing):
@@ -187,13 +231,17 @@ class Bomb(Thing):
         super().__init__(BOMB_SIZE, BOMB_COLOR, center=center)
         self.timeout = 0
 
-    def update(self, enemies, bombs, player):
+    def update(self, enemies, healers, bombs, player):
         if self.timeout < BOMB_TIMEOUT:
             self.timeout += 1
         for enemy in enemies:
             if collide_rect(self, enemy):
                 player.score += 1
                 enemies.remove(enemy)
+                bombs.remove(self)
+        for healer in healers:
+            if collide_rect(self, healer):
+                healers.remove(healer)
                 bombs.remove(self)
         if collide_rect(self, player) and self.timeout >= BOMB_TIMEOUT:
             player.shift_hp(-PLAYER_HP_MAX)

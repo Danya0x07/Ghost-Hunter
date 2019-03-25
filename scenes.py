@@ -6,7 +6,11 @@ from pygame.locals import *
 import maps
 from maps import get_total_level_size
 from interface_objects import Button, Label, DataDisplayer
-from game_objects import Wall, Camera, Player, Enemy, Healer, Teleport
+from decor import Wall
+from camera import Camera
+from player import Player
+from mob import Enemy, Healer
+from teleport import Teleport
 from config import *
 
 

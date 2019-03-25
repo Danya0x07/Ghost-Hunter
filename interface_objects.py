@@ -1,5 +1,5 @@
-from pygame import Surface, Rect
-from pygame.sprite import Sprite
+from pygame import Surface
+from pygame.sprite import Sprite, Group
 from pygame.font import Font
 
 from config import *
@@ -70,13 +70,22 @@ class DataDisplayer:
     def __init__(self, player, frame):
         self.player = player
         self.frame = frame
-        self.lbl_hp = Label("", fontsize=30)
-        self.lbl_score = Label("", fontsize=30)
+        self.lbl_hp = Label("", 30)
+        self.lbl_score = Label("", 30)
+        self.lbl_wave = Label("", 35)
+        self.lbl_enemies = Label("", 30)
+        self.labels = Group(
+            self.lbl_hp,
+            self.lbl_score,
+            self.lbl_wave,
+            self.lbl_enemies,
+        )
 
-    def update(self):
+    def update(self, wave, enemies):
         self.lbl_hp.set_text("Mood: {}%".format(self.player.hp), topleft=self.frame.topleft)
         self.lbl_score.set_text("Score: {}".format(self.player.score), topleft=self.lbl_hp.rect.bottomleft)
+        self.lbl_wave.set_text("Wave: {}".format(wave), centerx=self.frame.centerx)
+        self.lbl_enemies.set_text("Ghosts: {}/{}".format(wave - enemies, wave), topright=self.frame.topright)
 
     def draw(self, surface):
-        surface.blit(self.lbl_hp.image, self.lbl_hp.rect)
-        surface.blit(self.lbl_score.image, self.lbl_score.rect)
+        self.labels.draw(surface)

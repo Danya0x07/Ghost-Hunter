@@ -107,9 +107,11 @@ class MainScene(Scene):
         self.plasmas = Group()
         self.bombs = Group()
         self.teleports = Group()
+        self.spawn_positions = []
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
         self.stats = DataDisplayer(self.player, self.screen_rect)
+        self.current_wave = 0
 
     def create_map(self, level_map):
         x = y = 0
@@ -119,8 +121,8 @@ class MainScene(Scene):
                     self.walls.add(Wall(x, y))
                 elif col == 'p':
                     self.player = Player(x, y)
-                elif col == 'e':
-                    self.enemies.add(Enemy(x, y))
+                elif col == 's':
+                    self.spawn_positions.append((x, y))
                 elif col == 'h':
                     self.healers.add(Healer(x, y))
                 elif col == '1':
@@ -153,9 +155,12 @@ class MainScene(Scene):
         self.bombs.update(self.enemies, self.healers, self.bombs, self.player)
         self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
         self.camera.update(self.player)
-        self.stats.update()
+        self.stats.update(self.current_wave, len(self.enemies))
         if not self.player.is_alive:
             self.return_code = 'gameover'
+        if len(self.enemies) == 0:
+            self.current_wave += 1
+            Enemy.random_spawn(self.spawn_positions, self.enemies, self.current_wave)
 
     def draw_group(self, group):
         for obj in group:

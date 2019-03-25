@@ -66,6 +66,12 @@ class Mob(MovingThing):
         plasma = self.BULLET_TYPE(x_vel, y_vel, self.rect.center)
         plasmas.add(plasma)
 
+    @classmethod
+    def random_spawn(cls, positions, group, number=1):
+        for i in range(number):
+            pos = choice(positions)
+            group.add(cls(*pos))
+
 
 class Enemy(Mob):
     SIZE = ENEMY_SIZE

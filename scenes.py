@@ -40,7 +40,7 @@ class Scene:
             self.update_objects()
             self.draw_objects()
             self.clock.tick(FPS)
-            display.update()
+            display.flip()
         return self.return_code
 
 
@@ -105,7 +105,7 @@ class MainScene(Scene):
         self.enemies = Group()
         self.healers = Group()
         self.plasmas = Group()
-        self.bombs = Group()
+        self.traps = Group()
         self.teleports = Group()
         self.spawn_positions = []
         self.camera = Camera(get_total_level_size(maps.hotel_map))
@@ -141,26 +141,28 @@ class MainScene(Scene):
                 if e.key == K_ESCAPE:
                     self.return_code = 'tomenu'
                 elif e.key == K_SPACE:
-                    self.player.lay_bomb(self.bombs)
+                    self.player.handle_trap(self.traps, self.current_wave + 1)
                 else:
                     self.player.set_direction(e.key, True)
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
+
+        if not self.player.is_alive:
+            self.return_code = 'gameover'
+        if len(self.enemies) == 0:
+            self.current_wave += 1
+            self.traps.empty()
+            Enemy.random_spawn(self.spawn_positions, self.enemies, self.current_wave)
 
     def update_objects(self):
         self.player.update(self.walls)
         self.enemies.update(self.walls, self.plasmas)
         self.healers.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas, self.player)
-        self.bombs.update(self.enemies, self.healers, self.bombs, self.player)
+        self.traps.update(self.enemies, self.healers, self.traps, self.player)
         self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
         self.camera.update(self.player)
-        self.stats.update(self.current_wave, len(self.enemies))
-        if not self.player.is_alive:
-            self.return_code = 'gameover'
-        if len(self.enemies) == 0:
-            self.current_wave += 1
-            Enemy.random_spawn(self.spawn_positions, self.enemies, self.current_wave)
+        self.stats.update(self.current_wave, len(self.enemies), len(self.traps))
 
     def draw_group(self, group):
         for obj in group:
@@ -170,7 +172,7 @@ class MainScene(Scene):
         self.screen.blit(self.space, (0, 0))
         self.draw_group(self.walls)
         self.draw_group(self.teleports)
-        self.draw_group(self.bombs)
+        self.draw_group(self.traps)
         self.draw_group(self.plasmas)
         self.draw_group(self.healers)
         self.screen.blit(self.player.image, self.camera.apply(self.player))

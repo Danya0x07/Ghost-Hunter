@@ -1,7 +1,8 @@
+from pygame.sprite import collide_rect
 from pygame.locals import *
 
 from things import MovingThing
-from bomb import Bomb
+from trap import Trap
 from config import *
 
 
@@ -13,6 +14,7 @@ class Player(MovingThing):
         self.hp = PLAYER_HP_MAX
         self.score = 0
         self.is_alive = True
+        self.available_traps = 1
 
     def shift_hp(self, offset):
         self.hp += offset
@@ -47,9 +49,14 @@ class Player(MovingThing):
         if wall is not None:
             self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
 
-    def lay_bomb(self, bombs):
-        bomb = Bomb(self.rect.center)
-        bombs.add(bomb)
+    def handle_trap(self, traps, limit):
+        for trap in traps:
+            if collide_rect(self, trap):
+                traps.remove(trap)
+                return
+        if len(traps) < limit:
+            trap = Trap(self.rect.center)
+            traps.add(trap)
 
     class Direction:
 

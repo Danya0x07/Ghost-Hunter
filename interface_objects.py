@@ -74,18 +74,22 @@ class DataDisplayer:
         self.lbl_score = Label("", 30)
         self.lbl_wave = Label("", 35)
         self.lbl_enemies = Label("", 30)
+        self.lbl_traps = Label("", 30)
         self.labels = Group(
             self.lbl_hp,
             self.lbl_score,
             self.lbl_wave,
             self.lbl_enemies,
+            self.lbl_traps,
         )
 
-    def update(self, wave, enemies):
+    def update(self, wave, enemies, traps):
         self.lbl_hp.set_text("Mood: {}%".format(self.player.hp), topleft=self.frame.topleft)
         self.lbl_score.set_text("Score: {}".format(self.player.score), topleft=self.lbl_hp.rect.bottomleft)
         self.lbl_wave.set_text("Wave: {}".format(wave), centerx=self.frame.centerx)
         self.lbl_enemies.set_text("Ghosts: {}/{}".format(wave - enemies, wave), topright=self.frame.topright)
+        self.lbl_traps.set_text("Traps: {}/{}".format(wave + 1 - traps, wave + 1),
+                                topright=self.lbl_enemies.rect.bottomright)
 
     def draw(self, surface):
         self.labels.draw(surface)

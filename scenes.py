@@ -159,7 +159,7 @@ class MainScene(Scene):
         self.enemies.update(self.walls, self.plasmas)
         self.healers.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas, self.player)
-        self.traps.update(self.enemies, self.healers, self.traps, self.player)
+        self.traps.update(self.enemies, self.healers, self.player)
         self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
         self.camera.update(self.player)
         self.stats.update(self.current_wave, len(self.enemies), len(self.traps))

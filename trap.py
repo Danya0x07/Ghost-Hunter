@@ -10,7 +10,7 @@ class Trap(Thing):
         super().__init__(BOMB_SIZE, BOMB_COLOR, center=center)
         self.timeout = 0
 
-    def update(self, enemies, healers, bombs, player):
+    def update(self, enemies, healers, player):
         if self.timeout < BOMB_TIMEOUT:
             self.timeout += 1
             return

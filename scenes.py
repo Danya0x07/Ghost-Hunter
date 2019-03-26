@@ -69,7 +69,7 @@ class Menu(Scene):
         self.lbl_title = Label('Ghost&Hunter', fontsize=70,
                                centerx=self.screen_rect.centerx,
                                centery=130)
-        self.lbl_v = Label('v0.1', fontsize=20,
+        self.lbl_v = Label('v0.2', fontsize=20,
                            bottomright=self.screen_rect.bottomright)
         self.labels = Group(self.lbl_title, self.lbl_v)
 
@@ -105,6 +105,7 @@ class MainScene(Scene):
         self.enemies = Group()
         self.healers = Group()
         self.plasmas = Group()
+        self.protons = Group()
         self.traps = Group()
         self.teleports = Group()
         self.spawn_positions = []
@@ -146,6 +147,8 @@ class MainScene(Scene):
                     self.player.set_direction(e.key, True)
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
+            elif e.type == MOUSEBUTTONDOWN:
+                self.player.shoot(mouse.get_pos(), self.camera.apply(self.player), self.protons)
 
         if not self.player.is_alive:
             self.return_code = 'gameover'
@@ -159,6 +162,7 @@ class MainScene(Scene):
         self.enemies.update(self.walls, self.plasmas)
         self.healers.update(self.walls, self.plasmas)
         self.plasmas.update(self.walls, self.plasmas, self.player)
+        self.protons.update(self.walls, self.enemies, self.healers, self.protons, self.player)
         self.traps.update(self.enemies, self.healers, self.player)
         self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
         self.camera.update(self.player)
@@ -173,6 +177,7 @@ class MainScene(Scene):
         self.draw_group(self.walls)
         self.draw_group(self.teleports)
         self.draw_group(self.traps)
+        self.draw_group(self.protons)
         self.draw_group(self.plasmas)
         self.draw_group(self.healers)
         self.screen.blit(self.player.image, self.camera.apply(self.player))

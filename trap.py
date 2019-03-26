@@ -1,5 +1,3 @@
-from pygame.sprite import collide_rect
-
 from things import Thing
 from config import *
 
@@ -14,10 +12,10 @@ class Trap(Thing):
         if self.timeout < BOMB_TIMEOUT:
             self.timeout += 1
             return
-        for enemy in enemies:
-            if collide_rect(self, enemy):
-                player.score += 1
-                enemies.remove(enemy)
-        for healer in healers:
-            if collide_rect(self, healer):
-                healers.remove(healer)
+        enemy = self.check_collision(self.rect, enemies)
+        if enemy:
+            player.score += 1
+            enemies.remove(enemy)
+        healer = self.check_collision(self.rect, healers)
+        if healer:
+            healers.remove(healer)

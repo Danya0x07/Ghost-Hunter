@@ -1,8 +1,11 @@
 from pygame.sprite import collide_rect
 from pygame.locals import *
 
+from math import atan, sin, cos
+
 from things import MovingThing
 from trap import Trap
+from plasma import Proton
 from config import *
 
 
@@ -57,6 +60,21 @@ class Player(MovingThing):
         if len(traps) < limit:
             trap = Trap(self.rect.center)
             traps.add(trap)
+
+    def shoot(self, m_pos, pl_rect, plasmas):
+        dx = m_pos[0] - pl_rect.centerx
+        dy = m_pos[1] - pl_rect.centery
+        if dx == 0:
+            x_vel = 0
+            y_vel = PLAYER_PLASMA_SPEED if dy > 0 else -PLAYER_PLASMA_SPEED
+        else:
+            angle = atan(dy / dx)
+            x_vel = int(cos(angle) * PLAYER_PLASMA_SPEED)
+            y_vel = int(sin(angle) * PLAYER_PLASMA_SPEED)
+            if m_pos[0] < pl_rect.centerx:
+                x_vel = -x_vel
+                y_vel = -y_vel
+        plasmas.add(Proton(x_vel, y_vel, self.rect.center))
 
     class Direction:
 

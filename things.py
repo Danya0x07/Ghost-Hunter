@@ -10,6 +10,12 @@ class Thing(Sprite):
         self.image.fill(color)
         self.rect = self.image.get_rect(**kwargs)
 
+    @staticmethod
+    def check_collision(object_rect, obstacles):
+        for obstacle in obstacles:
+            if object_rect.colliderect(obstacle):
+                return obstacle
+
 
 class MovingThing(Thing):
 
@@ -17,12 +23,6 @@ class MovingThing(Thing):
         super().__init__(size, color, **kwargs)
         self.x_vel = x_vel
         self.y_vel = y_vel
-
-    @staticmethod
-    def check_collision(object_rect, obstacles):
-        for obstacle in obstacles:
-            if object_rect.colliderect(obstacle):
-                return obstacle
 
     @staticmethod
     def handle_collision(object_rect, obstacle_rect, x_vel, y_vel):

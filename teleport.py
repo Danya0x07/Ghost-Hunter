@@ -12,13 +12,8 @@ class Teleport(Thing):
         self.tgt_id = tgt_id
         self.active = True
 
-    def check_mobs_overlaying(self, mobs):
-        for mob in mobs:
-            if self.rect.colliderect(mob.frame_rect):
-                return mob
-
     def handle_teleporting(self, teleport, mobs):
-        mob = self.check_mobs_overlaying(mobs)
+        mob = self.check_collision(self.rect, mobs)
         if mob:
             mob.frame_rect.center = teleport.rect.center
             teleport.active = False
@@ -35,9 +30,9 @@ class Teleport(Thing):
             is_overlayed = False
             if collide_rect(self, player):
                 is_overlayed = True
-            if self.check_mobs_overlaying(enemies):
+            if self.check_collision(self.rect, enemies):
                 is_overlayed = True
-            if self.check_mobs_overlaying(healers):
+            if self.check_collision(self.rect, healers):
                 is_overlayed = True
             self.active = not is_overlayed
 

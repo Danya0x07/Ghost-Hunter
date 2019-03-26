@@ -2,7 +2,7 @@ from random import randint, choice
 from math import sqrt
 
 from things import MovingThing
-from plasma import Plasma, DamagePLasma, HealPlasma
+from plasma import Plasma, EnemyPlasma, HealerPlasma
 from config import *
 
 
@@ -80,7 +80,7 @@ class Enemy(Mob):
     VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
     SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
     SPEED = ENEMY_SPEED
-    BULLET_TYPE = DamagePLasma
+    BULLET_TYPE = EnemyPlasma
 
 
 class Healer(Mob):
@@ -90,4 +90,4 @@ class Healer(Mob):
     VEER_TIMEOUT = HEALER_VEER_TIMEOUT
     SHOOT_TIMEOUT = HEALER_SHOOT_TIMEOUT
     SPEED = HEALER_SPEED
-    BULLET_TYPE = HealPlasma
+    BULLET_TYPE = HealerPlasma

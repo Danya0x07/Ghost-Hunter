@@ -34,7 +34,7 @@ class Player(MovingThing):
         elif key == K_a: self.dir.left = state
         elif key == K_d: self.dir.right = state
 
-    def update(self, walls):
+    def update(self, scene):
         front, back, left, right = self.dir.get_dir_state()
         if front: self.y_vel = -PLAYER_SPEED
         if back:  self.y_vel = PLAYER_SPEED
@@ -43,9 +43,9 @@ class Player(MovingThing):
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
         self.rect.x += self.x_vel
-        self.collide(walls, self.x_vel, 0)
+        self.collide(scene.walls, self.x_vel, 0)
         self.rect.y += self.y_vel
-        self.collide(walls, 0, self.y_vel)
+        self.collide(scene.walls, 0, self.y_vel)
 
     def collide(self, walls, x_vel, y_vel):
         wall = self.check_collision(self.rect, walls)

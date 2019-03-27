@@ -37,13 +37,13 @@ class Mob(MovingThing):
         else:
             self.veer_counter += 1
 
-    def update(self, walls, plasmas):
+    def update(self, scene):
         self.frame_rect.x += self.x_vel
-        self.collide(walls, self.x_vel, 0)
+        self.collide(scene.walls, self.x_vel, 0)
         self.frame_rect.y += self.y_vel
-        self.collide(walls, 0, self.y_vel)
+        self.collide(scene.walls, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
-        self.handle_shooting(plasmas)
+        self.handle_shooting(scene.plasmas)
         self.handle_veering()
 
     def change_direction(self, x_vel, y_vel):

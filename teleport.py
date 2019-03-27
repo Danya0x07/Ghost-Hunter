@@ -18,21 +18,21 @@ class Teleport(Thing):
             mob.frame_rect.center = teleport.rect.center
             teleport.active = False
 
-    def update(self, player, enemies, healers, teleports):
+    def update(self, scene):
         if self.active and self.tgt_id:
-            tgt_teleport = self.get_tp_by_id(teleports, self.tgt_id)
-            if collide_rect(self, player):
-                player.rect.center = tgt_teleport.rect.center
+            tgt_teleport = self.get_tp_by_id(scene.teleports, self.tgt_id)
+            if collide_rect(self, scene.player):
+                scene.player.rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
-            self.handle_teleporting(tgt_teleport, enemies)
-            self.handle_teleporting(tgt_teleport, healers)
+            self.handle_teleporting(tgt_teleport, scene.enemies)
+            self.handle_teleporting(tgt_teleport, scene.healers)
         else:
             is_overlayed = False
-            if collide_rect(self, player):
+            if collide_rect(self, scene.player):
                 is_overlayed = True
-            if self.check_collision(self.rect, enemies):
+            if self.check_collision(self.rect, scene.enemies):
                 is_overlayed = True
-            if self.check_collision(self.rect, healers):
+            if self.check_collision(self.rect, scene.healers):
                 is_overlayed = True
             self.active = not is_overlayed
 

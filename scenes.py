@@ -111,7 +111,7 @@ class MainScene(Scene):
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
         self.stats = DataDisplayer(self.player, self.screen_rect)
-        self.current_wave = 0
+        self.wave = 0
 
     def create_map(self, level_map):
         x = y = 0
@@ -141,7 +141,7 @@ class MainScene(Scene):
                 if e.key == K_ESCAPE:
                     self.return_code = 'tomenu'
                 elif e.key == K_SPACE:
-                    self.player.handle_trap(self.traps, self.current_wave + 1)
+                    self.player.handle_trap(self.traps, self.wave + 1)
                 else:
                     self.player.set_direction(e.key, True)
             elif e.type == KEYUP:
@@ -152,19 +152,19 @@ class MainScene(Scene):
         if not self.player.is_alive:
             self.return_code = 'gameover'
         if len(self.enemies) == 0:
-            self.current_wave += 1
+            self.wave += 1
             self.traps.empty()
-            Enemy.random_spawn(self.spawn_positions, self.enemies, self.current_wave)
+            Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave)
 
     def update_objects(self):
-        self.player.update(self.walls)
-        self.enemies.update(self.walls, self.plasmas)
-        self.healers.update(self.walls, self.plasmas)
+        self.player.update(self)
+        self.enemies.update(self)
+        self.healers.update(self)
         self.plasmas.update(self)
-        self.traps.update(self.enemies, self.healers, self.player)
-        self.teleports.update(self.player, self.enemies, self.healers, self.teleports)
+        self.traps.update(self)
+        self.teleports.update(self)
         self.camera.update(self.player)
-        self.stats.update(self.current_wave, len(self.enemies), len(self.traps))
+        self.stats.update(self.wave, len(self.enemies), len(self.traps))
 
     def draw_group(self, group):
         for obj in group:

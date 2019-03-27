@@ -8,14 +8,14 @@ class Trap(Thing):
         super().__init__(BOMB_SIZE, BOMB_COLOR, center=center)
         self.timeout = 0
 
-    def update(self, enemies, healers, player):
+    def update(self, scene):
         if self.timeout < BOMB_TIMEOUT:
             self.timeout += 1
             return
-        enemy = self.check_collision(self.rect, enemies)
+        enemy = self.check_collision(self.rect, scene.enemies)
         if enemy:
-            player.score += 1
-            enemies.remove(enemy)
-        healer = self.check_collision(self.rect, healers)
+            scene.player.score += 1
+            scene.enemies.remove(enemy)
+        healer = self.check_collision(self.rect, scene.healers)
         if healer:
-            healers.remove(healer)
+            scene.healers.remove(healer)

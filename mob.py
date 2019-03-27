@@ -18,24 +18,9 @@ class Mob(MovingThing):
     def __init__(self, x, y):
         super().__init__(self.SIZE, self.COLOR, y_vel=1, topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)
-        self.veer_counter = 0
+        self.veer_timer = Mob.EventTimer(self.veer)
         self.veer_timeout = 120
-        self.shoot_counter = 0
-
-    def handle_shooting(self, plasmas):
-        if self.shoot_counter >= self.SHOOT_TIMEOUT:
-            self.shoot(plasmas)
-            self.shoot_counter = 0
-        else:
-            self.shoot_counter += 1
-
-    def handle_veering(self):
-        if self.veer_counter >= self.veer_timeout:
-            self.change_direction(self.x_vel, self.y_vel)
-            self.veer_counter = 0
-            self.veer_timeout = randint(*self.VEER_TIMEOUT)
-        else:
-            self.veer_counter += 1
+        self.shoot_timer = Mob.EventTimer(self.shoot)
 
     def update(self, scene):
         self.frame_rect.x += self.x_vel
@@ -43,8 +28,8 @@ class Mob(MovingThing):
         self.frame_rect.y += self.y_vel
         self.collide(scene.walls, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
-        self.handle_shooting(scene.plasmas)
-        self.handle_veering()
+        self.veer_timer.update(self.veer_timeout)
+        self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.plasmas,))
 
     def change_direction(self, x_vel, y_vel):
         if x_vel != 0:
@@ -60,6 +45,10 @@ class Mob(MovingThing):
             self.handle_collision(self.frame_rect, wall.rect, x_vel, y_vel)
             self.change_direction(x_vel, y_vel)
 
+    def veer(self):
+        self.change_direction(self.x_vel, self.y_vel)
+        self.veer_timeout = randint(*self.VEER_TIMEOUT)
+
     def shoot(self, plasmas):
         x_vel = randint(-self.BULLET_TYPE.SPEED, self.BULLET_TYPE.SPEED)
         y_vel = int(sqrt(self.BULLET_TYPE.SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
@@ -71,6 +60,18 @@ class Mob(MovingThing):
         for i in range(number):
             pos = choice(positions)
             group.add(cls(*pos))
+
+    class EventTimer:
+
+        def __init__(self, handler):
+            self.handler = handler
+            self.counter = 0
+
+        def update(self, timeout, args=()):
+            if self.counter >= timeout:
+                self.counter = 0
+                self.handler(*args)
+            else: self.counter += 1
 
 
 class Enemy(Mob):

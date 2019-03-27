@@ -67,14 +67,25 @@ class Label(Sprite):
 
 class DataDisplayer:
 
-    def __init__(self, player, frame):
-        self.player = player
-        self.frame = frame
-        self.lbl_hp = Label("", 30)
-        self.lbl_score = Label("", 30)
-        self.lbl_wave = Label("", 35)
-        self.lbl_enemies = Label("", 30)
-        self.lbl_traps = Label("", 30)
+    class SmartLabel(Label):
+
+        def __init__(self, text, fontsize, param=None):
+            super().__init__(text, fontsize)
+            self.text = text
+            self.param = param
+
+        def update(self, *param, **kwargs):
+            if self.param != param:
+                self.param = param
+                self.set_text(self.text.format(*param), **kwargs)
+
+
+    def __init__(self):
+        self.lbl_hp = DataDisplayer.SmartLabel("Mood: {}%", 30)
+        self.lbl_score = DataDisplayer.SmartLabel("Score: {}", 30)
+        self.lbl_wave = DataDisplayer.SmartLabel("Wave: {}", 35)
+        self.lbl_enemies = DataDisplayer.SmartLabel("Ghosts: {}/{}", 30)
+        self.lbl_traps = DataDisplayer.SmartLabel("Traps: {}/{}", 30)
         self.labels = Group(
             self.lbl_hp,
             self.lbl_score,
@@ -83,12 +94,13 @@ class DataDisplayer:
             self.lbl_traps,
         )
 
-    def update(self, wave, enemies, traps):
-        self.lbl_hp.set_text("Mood: {}%".format(self.player.hp), topleft=self.frame.topleft)
-        self.lbl_score.set_text("Score: {}".format(self.player.score), topleft=self.lbl_hp.rect.bottomleft)
-        self.lbl_wave.set_text("Wave: {}".format(wave), centerx=self.frame.centerx)
-        self.lbl_enemies.set_text("Ghosts: {}/{}".format(wave - enemies, wave), topright=self.frame.topright)
-        self.lbl_traps.set_text("Traps: {}/{}".format(wave + 1 - traps, wave + 1),
+    def update(self, scene):
+        self.lbl_hp.update(scene.player.hp, topleft=scene.screen_rect.topleft)
+        self.lbl_score.update(scene.player.score, topleft=self.lbl_hp.rect.bottomleft)
+        self.lbl_wave.update(scene.wave, centerx=scene.screen_rect.centerx)
+        self.lbl_enemies.update(scene.wave - len(scene.enemies), scene.wave,
+                                topright=scene.screen_rect.topright)
+        self.lbl_traps.update(scene.wave + 1 - len(scene.traps), scene.wave + 1,
                                 topright=self.lbl_enemies.rect.bottomright)
 
     def draw(self, surface):

@@ -110,7 +110,7 @@ class MainScene(Scene):
         self.spawn_positions = []
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
-        self.stats = DataDisplayer(self.player, self.screen_rect)
+        self.stats = DataDisplayer()
         self.wave = 0
 
     def create_map(self, level_map):
@@ -164,7 +164,7 @@ class MainScene(Scene):
         self.traps.update(self)
         self.teleports.update(self)
         self.camera.update(self.player)
-        self.stats.update(self.wave, len(self.enemies), len(self.traps))
+        self.stats.update(self)
 
     def draw_group(self, group):
         for obj in group:

@@ -15,13 +15,13 @@ class Plasma(MovingThing):
     def __init__(self, x_vel, y_vel, center):
         super().__init__(self.SIZE, self.COLOR, x_vel, y_vel, center=center)
 
-    def update(self, walls, plasmas, player):
+    def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if self.check_collision(self.rect, walls):
-            plasmas.remove(self)
-        if collide_rect(self, player):
-            player.shift_hp(randint(*self.OFFSET))
-            plasmas.remove(self)
+        if self.check_collision(self.rect, scene.walls):
+            scene.plasmas.remove(self)
+        if collide_rect(self, scene.player):
+            scene.player.shift_hp(randint(*self.OFFSET))
+            scene.plasmas.remove(self)
 
 
 class EnemyPlasma(Plasma):
@@ -38,7 +38,7 @@ class HealerPlasma(Plasma):
     OFFSET = HEAL_PLASMA_OFFSET
 
 
-class Proton(MovingThing):
+class PlayerPlasma(MovingThing):
     SIZE = PLAYER_PLASMA_SIZE
     COLOR = PLAYER_PLASMA_COLOR
     SPEED = PLAYER_PLASMA_SPEED
@@ -47,15 +47,14 @@ class Proton(MovingThing):
     def __init__(self, x_vel, y_vel, center):
         super().__init__(self.SIZE, self.COLOR, x_vel, y_vel, center=center)
 
-    def update(self, walls, enemies, healers, plasmas, player):
+    def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if self.check_collision(self.rect, walls):
-            plasmas.remove(self)
-        enemy = self.check_collision(self.rect, enemies)
+        if self.check_collision(self.rect, scene.walls):
+            scene.plasmas.remove(self)
+        enemy = self.check_collision(self.rect, scene.enemies)
         if enemy:
-            enemies.remove(enemy)
-            player.score += 1
-        healer = self.check_collision(self.rect, healers)
+            scene.enemies.remove(enemy)
+            scene.player.score += 1
+        healer = self.check_collision(self.rect, scene.healers)
         if healer:
-            healers.remove(healer)
-
+            scene.healers.remove(healer)

@@ -5,7 +5,7 @@ from math import atan, sin, cos
 
 from things import MovingThing
 from trap import Trap
-from plasma import Proton
+from plasma import PlayerPlasma
 from config import *
 
 
@@ -74,7 +74,7 @@ class Player(MovingThing):
             if m_pos[0] < pl_rect.centerx:
                 x_vel = -x_vel
                 y_vel = -y_vel
-        plasmas.add(Proton(x_vel, y_vel, self.rect.center))
+        plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
 
     class Direction:
 

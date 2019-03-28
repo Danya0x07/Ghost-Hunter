@@ -144,7 +144,7 @@ class MainScene(Scene):
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
             elif e.type == MOUSEBUTTONDOWN:
-                self.player.shoot(mouse.get_pos(), self.camera.apply(self.player), self.plasmas)
+                self.player.shoot(self.camera.apply(self.player), mouse.get_pos(), self.plasmas)
 
         if not self.player.is_alive:
             self.return_code = 'gameover'

@@ -1,5 +1,4 @@
 from random import randint, choice
-from math import sqrt
 
 from things import MovingThing
 from plasma import EnemyPlasma
@@ -28,7 +27,7 @@ class Enemy(MovingThing):
         self.collide(scene.walls, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
         self.veer_timer.update(self.veer_timeout)
-        self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.plasmas,))
+        self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
 
     def change_direction(self, x_vel, y_vel):
         if x_vel != 0:
@@ -48,11 +47,10 @@ class Enemy(MovingThing):
         self.change_direction(self.x_vel, self.y_vel)
         self.veer_timeout = randint(*self.VEER_TIMEOUT)
 
-    def shoot(self, plasmas):
-        x_vel = randint(-ENEMY_PLASMA_SPEED, ENEMY_PLASMA_SPEED)
-        y_vel = int(sqrt(ENEMY_PLASMA_SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
-        plasma = EnemyPlasma(x_vel, y_vel, self.rect.center)
-        plasmas.add(plasma)
+    def shoot(self, tgt_rect, plasmas):
+        if self.get_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
+            x_vel, y_vel = self._shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
+            plasmas.add(EnemyPlasma(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):

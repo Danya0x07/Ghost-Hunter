@@ -16,6 +16,18 @@ class Thing(Sprite):
             if object_rect.colliderect(obstacle):
                 return obstacle
 
+    class EventTimer:
+
+        def __init__(self, handler):
+            self.handler = handler
+            self.counter = 0
+
+        def update(self, timeout, args=()):
+            if self.counter >= timeout:
+                self.counter = 0
+                self.handler(*args)
+            else: self.counter += 1
+
 
 class MovingThing(Thing):
 

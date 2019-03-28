@@ -2,25 +2,24 @@ from random import randint, choice
 from math import sqrt
 
 from things import MovingThing
-from plasma import Plasma, EnemyPlasma, HealerPlasma
+from plasma import EnemyPlasma
 from config import *
 
 
-class Mob(MovingThing):
-    SIZE = (50, 50)
-    COLOR = (0, 0, 0)
-    FRAME_SIZE = (70, 70)
-    VEER_TIMEOUT = (120, 180)
-    SHOOT_TIMEOUT = 30
-    SPEED = 5
-    BULLET_TYPE = Plasma
+class Enemy(MovingThing):
+    SIZE = ENEMY_SIZE
+    COLOR = ENEMY_COLOR
+    FRAME_SIZE = ENEMY_FRAME_SIZE
+    VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
+    SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
+    SPEED = ENEMY_SPEED
 
     def __init__(self, x, y):
         super().__init__(self.SIZE, self.COLOR, y_vel=1, topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)
-        self.veer_timer = Mob.EventTimer(self.veer)
+        self.veer_timer = Enemy.EventTimer(self.veer)
         self.veer_timeout = 120
-        self.shoot_timer = Mob.EventTimer(self.shoot)
+        self.shoot_timer = Enemy.EventTimer(self.shoot)
 
     def update(self, scene):
         self.frame_rect.x += self.x_vel
@@ -50,9 +49,9 @@ class Mob(MovingThing):
         self.veer_timeout = randint(*self.VEER_TIMEOUT)
 
     def shoot(self, plasmas):
-        x_vel = randint(-self.BULLET_TYPE.SPEED, self.BULLET_TYPE.SPEED)
-        y_vel = int(sqrt(self.BULLET_TYPE.SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
-        plasma = self.BULLET_TYPE(x_vel, y_vel, self.rect.center)
+        x_vel = randint(-ENEMY_PLASMA_SPEED, ENEMY_PLASMA_SPEED)
+        y_vel = int(sqrt(ENEMY_PLASMA_SPEED ** 2 - x_vel ** 2)) * choice((-1, 1))
+        plasma = EnemyPlasma(x_vel, y_vel, self.rect.center)
         plasmas.add(plasma)
 
     @classmethod
@@ -60,35 +59,3 @@ class Mob(MovingThing):
         for i in range(number):
             pos = choice(positions)
             group.add(cls(*pos))
-
-    class EventTimer:
-
-        def __init__(self, handler):
-            self.handler = handler
-            self.counter = 0
-
-        def update(self, timeout, args=()):
-            if self.counter >= timeout:
-                self.counter = 0
-                self.handler(*args)
-            else: self.counter += 1
-
-
-class Enemy(Mob):
-    SIZE = ENEMY_SIZE
-    COLOR = ENEMY_COLOR
-    FRAME_SIZE = ENEMY_FRAME_SIZE
-    VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
-    SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
-    SPEED = ENEMY_SPEED
-    BULLET_TYPE = EnemyPlasma
-
-
-class Healer(Mob):
-    SIZE = HEALER_SIZE
-    COLOR = HEALER_COLOR
-    FRAME_SIZE = HEALER_FRAME_SIZE
-    VEER_TIMEOUT = HEALER_VEER_TIMEOUT
-    SHOOT_TIMEOUT = HEALER_SHOOT_TIMEOUT
-    SPEED = HEALER_SPEED
-    BULLET_TYPE = HealerPlasma

@@ -5,11 +5,11 @@ from pygame.locals import *
 
 import maps
 from maps import get_total_level_size
-from interface_objects import Button, Label, DataDisplayer
+from interface import Button, Label, DataDisplayer
 from decor import Wall
 from camera import Camera
 from player import Player
-from mob import Enemy, Healer
+from enemy import Enemy
 from teleport import Teleport
 from config import *
 
@@ -103,7 +103,6 @@ class MainScene(Scene):
         super().__init__(screen, GAME_BG_COLOR)
         self.walls = Group()
         self.enemies = Group()
-        self.healers = Group()
         self.plasmas = Group()
         self.traps = Group()
         self.teleports = Group()
@@ -123,8 +122,6 @@ class MainScene(Scene):
                     self.player = Player(x, y)
                 elif col == 's':
                     self.spawn_positions.append((x, y))
-                elif col == 'h':
-                    self.healers.add(Healer(x, y))
                 elif col == '1':
                     self.teleports.add(Teleport(x, y, '1', '2'))
                 elif col == '2':
@@ -141,7 +138,7 @@ class MainScene(Scene):
                 if e.key == K_ESCAPE:
                     self.return_code = 'tomenu'
                 elif e.key == K_SPACE:
-                    self.player.handle_trap(self.traps, self.wave + 1)
+                    self.player.handle_trap(self.traps, self.wave)
                 else:
                     self.player.set_direction(e.key, True)
             elif e.type == KEYUP:
@@ -159,7 +156,6 @@ class MainScene(Scene):
     def update_objects(self):
         self.player.update(self)
         self.enemies.update(self)
-        self.healers.update(self)
         self.plasmas.update(self)
         self.traps.update(self)
         self.teleports.update(self)
@@ -176,7 +172,6 @@ class MainScene(Scene):
         self.draw_group(self.teleports)
         self.draw_group(self.traps)
         self.draw_group(self.plasmas)
-        self.draw_group(self.healers)
         self.screen.blit(self.player.image, self.camera.apply(self.player))
         self.draw_group(self.enemies)
         self.stats.draw(self.screen)

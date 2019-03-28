@@ -52,12 +52,12 @@ class Player(MovingThing):
         if wall is not None:
             self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
 
-    def handle_trap(self, traps, limit):
+    def handle_trap(self, traps, wave):
         for trap in traps:
             if collide_rect(self, trap):
                 traps.remove(trap)
                 return
-        if len(traps) < limit:
+        if len(traps) <= wave:
             trap = Trap(self.rect.center)
             traps.add(trap)
 

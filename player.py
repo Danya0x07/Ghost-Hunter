@@ -16,7 +16,8 @@ class Player(MovingThing):
         self.hp = PLAYER_HP_MAX
         self.score = 0
         self.is_alive = True
-        self.available_traps = 1
+        self.pk_level = 0
+        self.pkl_timer = self.EventTimer(self.refresh_pkl)
 
     def shift_hp(self, offset):
         self.hp += offset
@@ -45,6 +46,7 @@ class Player(MovingThing):
         self.collide(scene.walls, self.x_vel, 0)
         self.rect.y += self.y_vel
         self.collide(scene.walls, 0, self.y_vel)
+        self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
 
     def collide(self, walls, x_vel, y_vel):
         wall = self.check_collision(self.rect, walls)
@@ -59,6 +61,15 @@ class Player(MovingThing):
         if len(traps) <= wave:
             trap = Trap(self.rect.center)
             traps.add(trap)
+
+    def refresh_pkl(self, enemies):
+        min_distance = SCREEN_WIDTH * SCREEN_HEIGHT
+        for enemy in enemies:
+            distance = self.get_distance(self.rect, enemy.rect)
+            if distance < min_distance:
+                min_distance = distance
+        self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
+
 
     def shoot(self, rel_rect, m_pos, plasmas):
         x_vel, y_vel = MovingThing._shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)

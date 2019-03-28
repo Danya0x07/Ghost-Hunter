@@ -86,12 +86,14 @@ class DataDisplayer:
         self.lbl_wave = DataDisplayer.SmartLabel("Wave: {}", 35)
         self.lbl_enemies = DataDisplayer.SmartLabel("Ghosts: {}/{}", 30)
         self.lbl_traps = DataDisplayer.SmartLabel("Traps: {}/{}", 30)
+        self.lbl_pkl = DataDisplayer.SmartLabel("PK level: {}%", 25)
         self.labels = Group(
             self.lbl_hp,
             self.lbl_score,
             self.lbl_wave,
             self.lbl_enemies,
             self.lbl_traps,
+            self.lbl_pkl
         )
 
     def update(self, scene):
@@ -102,6 +104,7 @@ class DataDisplayer:
                                 topright=scene.screen_rect.topright)
         self.lbl_traps.update(scene.wave + 1 - len(scene.traps), scene.wave + 1,
                                 topright=self.lbl_enemies.rect.bottomright)
+        self.lbl_pkl.update(scene.player.pk_level, bottomleft=scene.screen_rect.bottomleft)
 
     def draw(self, surface):
         self.labels.draw(surface)

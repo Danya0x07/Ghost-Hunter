@@ -18,9 +18,9 @@ class Teleport(Thing):
             if collide_rect(self, scene.player):
                 scene.player.rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
-            mob = self.check_collision(self.rect, scene.enemies)
-            if mob:
-                mob.frame_rect.center = tgt_teleport.rect.center
+            enemy = self.check_collision(self.rect, scene.enemies)
+            if enemy:
+                enemy.frame_rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
         else:
             is_overlayed = False

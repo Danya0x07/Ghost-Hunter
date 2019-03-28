@@ -38,7 +38,7 @@ class Thing(Sprite):
     def get_distance(rect_1, rect_2):
         dx = rect_1.centerx - rect_2.centerx
         dy = rect_1.centery - rect_2.centery
-        distance = sqrt(dx ** 2 + dy ** 2)
+        distance = int(sqrt(dx ** 2 + dy ** 2))
         return distance
 
     class EventTimer:

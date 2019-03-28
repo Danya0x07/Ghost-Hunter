@@ -1,4 +1,4 @@
-from pygame.sprite import collide_rect
+from pygame.sprite import collide_rect, spritecollideany
 
 from things import Thing
 from config import *
@@ -18,7 +18,7 @@ class Teleport(Thing):
             if collide_rect(self, scene.player):
                 scene.player.rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
-            enemy = self.check_collision(self.rect, scene.enemies)
+            enemy = spritecollideany(self, scene.enemies)
             if enemy:
                 enemy.frame_rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
@@ -26,7 +26,7 @@ class Teleport(Thing):
             is_overlayed = False
             if collide_rect(self, scene.player):
                 is_overlayed = True
-            if self.check_collision(self.rect, scene.enemies):
+            if spritecollideany(self, scene.enemies, lambda s1, s2: s1.rect.colliderect(s2.frame_rect)):
                 is_overlayed = True
             self.active = not is_overlayed
 

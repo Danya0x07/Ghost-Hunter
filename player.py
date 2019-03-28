@@ -1,6 +1,5 @@
-from pygame.sprite import collide_rect
+from pygame.sprite import spritecollideany
 from pygame.locals import *
-
 
 from things import MovingThing
 from trap import Trap
@@ -49,15 +48,15 @@ class Player(MovingThing):
         self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
 
     def collide(self, walls, x_vel, y_vel):
-        wall = self.check_collision(self.rect, walls)
+        wall = spritecollideany(self, walls)
         if wall is not None:
             self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
 
     def handle_trap(self, traps, wave):
-        for trap in traps:
-            if collide_rect(self, trap):
-                traps.remove(trap)
-                return
+        trap = spritecollideany(self, traps)
+        if trap is not None:
+            traps.remove(trap)
+            return
         if len(traps) <= wave:
             trap = Trap(self.rect.center)
             traps.add(trap)
@@ -65,7 +64,7 @@ class Player(MovingThing):
     def refresh_pkl(self, enemies):
         min_distance = SCREEN_WIDTH * SCREEN_HEIGHT
         for enemy in enemies:
-            distance = self.get_distance(self.rect, enemy.rect)
+            distance = self.calc_distance(self.rect, enemy.rect)
             if distance < min_distance:
                 min_distance = distance
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)

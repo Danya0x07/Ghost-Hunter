@@ -1,5 +1,5 @@
 from pygame import Surface
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, collide_rect
 
 from math import atan, sin, cos, sqrt
 
@@ -11,12 +11,6 @@ class Thing(Sprite):
         self.image = Surface(size)
         self.image.fill(color)
         self.rect = self.image.get_rect(**kwargs)
-
-    @staticmethod
-    def check_collision(object_rect, obstacles):
-        for obstacle in obstacles:
-            if object_rect.colliderect(obstacle):
-                return obstacle
 
     @staticmethod
     def _shoot(rel_rect, tgt_pos, plasm_spd):
@@ -35,7 +29,7 @@ class Thing(Sprite):
         return x_vel, y_vel
 
     @staticmethod
-    def get_distance(rect_1, rect_2):
+    def calc_distance(rect_1, rect_2):
         dx = rect_1.centerx - rect_2.centerx
         dy = rect_1.centery - rect_2.centery
         distance = int(sqrt(dx ** 2 + dy ** 2))

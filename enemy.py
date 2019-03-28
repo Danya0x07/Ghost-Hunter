@@ -1,3 +1,5 @@
+from pygame.sprite import spritecollideany
+
 from random import randint, choice
 
 from things import MovingThing
@@ -38,7 +40,7 @@ class Enemy(MovingThing):
             self.x_vel = choice((-self.SPEED, self.SPEED))
 
     def collide(self, walls, x_vel, y_vel):
-        wall = self.check_collision(self.frame_rect, walls)
+        wall = spritecollideany(self, walls, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
         if wall is not None:
             self.handle_collision(self.frame_rect, wall.rect, x_vel, y_vel)
             self.change_direction(x_vel, y_vel)
@@ -48,7 +50,7 @@ class Enemy(MovingThing):
         self.veer_timeout = randint(*self.VEER_TIMEOUT)
 
     def shoot(self, tgt_rect, plasmas):
-        if self.get_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
+        if self.calc_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
             x_vel, y_vel = self._shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
             plasmas.add(EnemyPlasma(x_vel, y_vel, self.rect.center))
 

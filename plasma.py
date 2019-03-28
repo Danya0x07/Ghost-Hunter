@@ -1,4 +1,4 @@
-from pygame.sprite import collide_rect
+from pygame.sprite import collide_rect, spritecollideany
 
 from random import randint
 
@@ -16,7 +16,7 @@ class EnemyPlasma(MovingThing):
 
     def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if self.check_collision(self.rect, scene.walls):
+        if spritecollideany(self, scene.walls):
             scene.plasmas.remove(self)
         if collide_rect(self, scene.player):
             scene.player.shift_hp(randint(*self.OFFSET))
@@ -33,9 +33,9 @@ class PlayerPlasma(MovingThing):
 
     def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if self.check_collision(self.rect, scene.walls):
+        if spritecollideany(self, scene.walls):
             scene.plasmas.remove(self)
-        enemy = self.check_collision(self.rect, scene.enemies)
+        enemy = spritecollideany(self, scene.enemies)
         if enemy:
             scene.enemies.remove(enemy)
             scene.player.score += 1

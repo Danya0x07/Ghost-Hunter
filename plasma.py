@@ -23,6 +23,12 @@ class EnemyPlasma(MovingThing):
             scene.plasmas.remove(self)
 
 
+class BossEnemyPlasma(EnemyPlasma):
+    SIZE = BOSS_ENEMY_PLASMA_SIZE
+    COLOR = BOSS_ENEMY_PLASMA_COLOR
+    OFFSET = BOSS_ENEMY_PLASMA_OFFSET
+
+
 class PlayerPlasma(MovingThing):
     SIZE = PLAYER_PLASMA_SIZE
     COLOR = PLAYER_PLASMA_COLOR

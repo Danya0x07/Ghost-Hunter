@@ -3,7 +3,7 @@ from pygame.sprite import spritecollideany
 from random import randint, choice
 
 from things import MovingThing
-from plasma import EnemyPlasma
+from plasma import EnemyPlasma, BossEnemyPlasma
 from interface import Label
 from config import *
 
@@ -15,6 +15,8 @@ class Enemy(MovingThing):
     VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
     SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
     SPEED = ENEMY_SPEED
+    HP = ENEMY_HP_MAX
+    PLASMA_TYPE = EnemyPlasma
 
     def __init__(self, x, y):
         super().__init__(self.SIZE, self.COLOR, y_vel=1, topleft=(x, y))
@@ -22,15 +24,15 @@ class Enemy(MovingThing):
         self.veer_timer = Enemy.EventTimer(self.veer)
         self.veer_timeout = 120
         self.shoot_timer = Enemy.EventTimer(self.shoot)
-        self.hp = ENEMY_HP_MAX
+        self.hp = self.HP
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
         self.lbl_hp_showing_timer = self.TimeoutTimer(self.draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
         self.is_alive = True
 
     def shift_hp(self, offset):
         self.hp += offset
-        if self.hp > ENEMY_HP_MAX:
-            self.hp = ENEMY_HP_MAX
+        if self.hp > self.HP:
+            self.hp = self.HP
         elif self.hp < 0:
             self.hp = 0
         if self.hp == 0:
@@ -74,10 +76,21 @@ class Enemy(MovingThing):
     def shoot(self, tgt_rect, plasmas):
         if self.calc_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
             x_vel, y_vel = self._shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
-            plasmas.add(EnemyPlasma(x_vel, y_vel, self.rect.center))
+            plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
         for i in range(number):
             pos = choice(positions)
             group.add(cls(*pos))
+
+
+class BossEnemy(Enemy):
+    SIZE = BOSS_ENEMY_SIZE
+    COLOR = BOSS_ENEMY_COLOR
+    FRAME_SIZE = BOSS_ENEMY_FRAME_SIZE
+    VEER_TIMEOUT = BOSS_ENEMY_VEER_TIMEOUT
+    SHOOT_TIMEOUT = BOSS_ENEMY_SHOOT_TIMEOUT
+    SPEED = BOSS_ENEMY_SPEED
+    HP = BOSS_ENEMY_HP_MAX
+    PLASMA_TYPE = BossEnemyPlasma

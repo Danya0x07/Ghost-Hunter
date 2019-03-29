@@ -104,7 +104,7 @@ class DataDisplayer:
                                 topright=scene.screen_rect.topright)
         self.lbl_traps.update(scene.wave + 1 - len(scene.traps), scene.wave + 1,
                                 topright=self.lbl_enemies.rect.bottomright)
-        self.lbl_pkl.update(scene.player.pk_level, bottomleft=scene.screen_rect.bottomleft)
+        self.lbl_pkl.update(scene.player.pk_level, bottomright=scene.screen_rect.bottomright)
 
     def draw(self, surface):
         self.labels.draw(surface)

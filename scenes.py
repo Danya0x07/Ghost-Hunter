@@ -9,7 +9,7 @@ from interface import Button, Label, DataDisplayer
 from decor import Wall
 from camera import Camera
 from player import Player
-from enemy import Enemy
+from enemy import Enemy, BossEnemy
 from teleport import Teleport
 from health import HealthPoint
 from config import *
@@ -157,7 +157,11 @@ class MainScene(Scene):
         if len(self.enemies) == 0:
             self.wave += 1
             self.traps.empty()
-            Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave)
+            if self.wave % 1 == 0:
+                BossEnemy.random_spawn(self.spawn_positions, self.enemies, 1)
+                Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave - 1)
+            else:
+                Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave)
 
     def update_objects(self):
         self.player.update(self)

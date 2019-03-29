@@ -6,7 +6,7 @@ from pygame.locals import *
 import maps
 from maps import get_total_level_size
 from interface import Button, Label, DataDisplayer
-from decor import Wall
+from decor import Wall, Furniture
 from camera import Camera
 from player import Player
 from enemy import Enemy, BossEnemy
@@ -103,6 +103,7 @@ class MainScene(Scene):
     def __init__(self, screen):
         super().__init__(screen, GAME_BG_COLOR)
         self.walls = Group()
+        self.furniture = Group()
         self.enemies = Group()
         self.plasmas = Group()
         self.traps = Group()
@@ -121,6 +122,8 @@ class MainScene(Scene):
             for col in row:
                 if col == '#':
                     self.walls.add(Wall(x, y))
+                elif col == 'f':
+                    self.furniture.add(Furniture(x, y))
                 elif col == 'p':
                     self.player = Player(x, y)
                 elif col == 's':
@@ -164,6 +167,7 @@ class MainScene(Scene):
                 Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave)
 
     def update_objects(self):
+        self.furniture.update(self)
         self.player.update(self)
         self.enemies.update(self)
         self.plasmas.update(self)
@@ -180,6 +184,7 @@ class MainScene(Scene):
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
         self.draw_group(self.walls)
+        self.draw_group(self.furniture)
         self.draw_group(self.teleports)
         self.draw_group(self.healthpoints)
         self.draw_group(self.traps)

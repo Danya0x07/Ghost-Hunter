@@ -31,11 +31,7 @@ class Enemy(MovingThing):
 
     def shift_hp(self, offset):
         self.hp += offset
-        if self.hp > self.HP:
-            self.hp = self.HP
-        elif self.hp < 0:
-            self.hp = 0
-        if self.hp == 0:
+        if self.hp <= 0:
             self.is_alive = False
         self.lbl_hp_showing_timer.restart(ENEMY_HP_SHOWING_TIMEOUT)
 

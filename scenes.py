@@ -182,6 +182,8 @@ class MainScene(Scene):
         self.draw_group(self.plasmas)
         self.screen.blit(self.player.image, self.camera.apply(self.player))
         self.draw_group(self.enemies)
+        for e in self.enemies:
+            e.lbl_hp_showing_timer.update(self)
         self.stats.draw(self.screen)
 
 

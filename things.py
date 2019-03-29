@@ -47,6 +47,20 @@ class Thing(Sprite):
                 self.handler(*args)
             else: self.counter += 1
 
+    class TimeoutTimer:
+
+        def __init__(self, handler, counter):
+            self.handler = handler
+            self.counter = counter
+
+        def update(self, *args):
+            if self.counter > 0:
+                self.handler(*args)
+                self.counter -= 1
+
+        def restart(self, counter):
+            self.counter = counter
+
 
 class MovingThing(Thing):
 

@@ -37,5 +37,5 @@ class PlayerPlasma(MovingThing):
             scene.plasmas.remove(self)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
-            scene.enemies.remove(enemy)
-            scene.player.score += 1
+            enemy.shift_hp(-PLAYER_PLASMA_OFFSET)
+            scene.plasmas.remove(self)

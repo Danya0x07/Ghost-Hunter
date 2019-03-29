@@ -4,6 +4,7 @@ from random import randint, choice
 
 from things import MovingThing
 from plasma import EnemyPlasma
+from interface import Label
 from config import *
 
 
@@ -21,6 +22,24 @@ class Enemy(MovingThing):
         self.veer_timer = Enemy.EventTimer(self.veer)
         self.veer_timeout = 120
         self.shoot_timer = Enemy.EventTimer(self.shoot)
+        self.hp = ENEMY_HP_MAX
+        self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
+        self.lbl_hp_showing_timer = self.TimeoutTimer(self.draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
+        self.is_alive = True
+
+    def shift_hp(self, offset):
+        self.hp += offset
+        if self.hp > ENEMY_HP_MAX:
+            self.hp = ENEMY_HP_MAX
+        elif self.hp < 0:
+            self.hp = 0
+        if self.hp == 0:
+            self.is_alive = False
+        self.lbl_hp_showing_timer.restart(ENEMY_HP_SHOWING_TIMEOUT)
+
+    def draw_hp(self, scene):
+        self.lbl_hp.set_text("{}%".format(self.hp), topleft=self.rect.bottomleft)
+        scene.screen.blit(self.lbl_hp.image, scene.camera.apply(self.lbl_hp))
 
     def update(self, scene):
         self.frame_rect.x += self.x_vel
@@ -30,6 +49,9 @@ class Enemy(MovingThing):
         self.rect.center = self.frame_rect.center
         self.veer_timer.update(self.veer_timeout)
         self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
+        if not self.is_alive:
+            scene.player.score += 1
+            scene.enemies.remove(self)
 
     def change_direction(self, x_vel, y_vel):
         if x_vel != 0:

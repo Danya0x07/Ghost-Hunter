@@ -12,5 +12,6 @@ class Trap(Thing):
     def update(self, scene):
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
+            enemy.shift_hp(TRAP_OFFSET)
             enemy.handle_collision(enemy.frame_rect, self.rect, enemy.x_vel, enemy.y_vel)
             enemy.change_direction(enemy.x_vel, enemy.y_vel)

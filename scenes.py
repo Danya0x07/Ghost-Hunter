@@ -160,7 +160,7 @@ class MainScene(Scene):
         if len(self.enemies) == 0:
             self.wave += 1
             self.traps.empty()
-            if self.wave % 1 == 0:
+            if self.wave % BOSS_ENEMY_SPAWN_DELAY == 0:
                 BossEnemy.random_spawn(self.spawn_positions, self.enemies, 1)
                 Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave - 1)
             else:

@@ -11,6 +11,7 @@ from camera import Camera
 from player import Player
 from enemy import Enemy
 from teleport import Teleport
+from health import HealthPoint
 from config import *
 
 
@@ -106,7 +107,9 @@ class MainScene(Scene):
         self.plasmas = Group()
         self.traps = Group()
         self.teleports = Group()
+        self.healthpoints = Group()
         self.spawn_positions = []
+        self.hp_positions = []
         self.camera = Camera(get_total_level_size(maps.hotel_map))
         self.create_map(maps.hotel_map)
         self.stats = DataDisplayer()
@@ -122,6 +125,8 @@ class MainScene(Scene):
                     self.player = Player(x, y)
                 elif col == 's':
                     self.spawn_positions.append((x, y))
+                elif col == 'h':
+                    self.hp_positions.append((x, y))
                 elif col == '1':
                     self.teleports.add(Teleport(x, y, '1', '2'))
                 elif col == '2':
@@ -129,6 +134,7 @@ class MainScene(Scene):
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
+        HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 
     def check_events(self):
         for e in event.get():
@@ -159,6 +165,7 @@ class MainScene(Scene):
         self.plasmas.update(self)
         self.traps.update(self)
         self.teleports.update(self)
+        self.healthpoints.update(self)
         self.camera.update(self.player)
         self.stats.update(self)
 
@@ -170,6 +177,7 @@ class MainScene(Scene):
         self.screen.blit(self.space, (0, 0))
         self.draw_group(self.walls)
         self.draw_group(self.teleports)
+        self.draw_group(self.healthpoints)
         self.draw_group(self.traps)
         self.draw_group(self.plasmas)
         self.screen.blit(self.player.image, self.camera.apply(self.player))

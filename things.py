@@ -1,5 +1,5 @@
 from pygame import Surface
-from pygame.sprite import Sprite, collide_rect
+from pygame.sprite import Sprite
 
 from math import atan, sin, cos, sqrt
 

@@ -1,7 +1,8 @@
-from pygame import display, event, mouse, Surface
+from pygame import display, event, mouse, Surface, Rect
 from pygame.sprite import Group
 from pygame.time import Clock
 from pygame.locals import *
+from tiledtmxloader import tmxreader, helperspygame
 
 import maps
 from maps import get_total_level_size
@@ -102,7 +103,7 @@ class MainScene(Scene):
 
     def __init__(self, screen):
         super().__init__(screen, GAME_BG_COLOR)
-        self.walls = Group()
+        self.walls = []
         self.furniture = Group()
         self.enemies = Group()
         self.plasmas = Group()
@@ -111,8 +112,8 @@ class MainScene(Scene):
         self.healthpoints = Group()
         self.spawn_positions = []
         self.hp_positions = []
-        self.camera = Camera(get_total_level_size(maps.hotel_map))
-        self.create_map(maps.hotel_map)
+        self.camera = Camera(TOTAL_LEVEL_SIZE)
+        self.create_map2('library_map_2.tmx')
         self.stats = DataDisplayer()
         self.wave = 0
 
@@ -137,6 +138,34 @@ class MainScene(Scene):
                 x += WALL_WIDTH
             y += WALL_HEIGHT
             x = 0
+        HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
+
+    def create_map2(self, mapname):
+        world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(mapname))
+        resources = helperspygame.ResourceLoaderPygame()
+        resources.load(world_map)
+        layers = helperspygame.get_layers_from_map(resources)
+        self.bg_layer = layers[0]
+        obj_layer = layers[1]
+        for obj in obj_layer.objects:
+            obj_type = obj.properties['type']
+            if obj_type == 'player':
+                self.player = Player(obj.x, obj.y - WALL_HEIGHT)
+            elif obj_type == 'wall':
+                self.walls.append(Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj_type == 'teleport':
+                s_id = obj.properties['id']
+                tgt_id = obj.properties['tgt_id']
+                self.teleports.add(Teleport(obj.x, obj.y - WALL_HEIGHT, s_id, tgt_id))
+            elif obj_type == 'gspawn':
+                self.spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
+            elif obj_type == 'hspawn':
+                self.hp_positions.append((obj.x, obj.y - WALL_HEIGHT))
+            elif obj_type == 'sofa':
+                self.furniture.add(Furniture(obj.x, obj.y - WALL_HEIGHT))
+            elif obj_type == 'flower':
+                self.furniture.add(Furniture(obj.x, obj.y - WALL_HEIGHT))
+        self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 
     def check_events(self):
@@ -175,6 +204,9 @@ class MainScene(Scene):
         self.teleports.update(self)
         self.healthpoints.update(self)
         self.camera.update(self.player)
+        ctr_offset = self.camera.reverse(CENTER_OF_SCREEN)
+        self.renderer.set_camera_position_and_size(ctr_offset[0], ctr_offset[1],
+                                                   *SCREEN_SIZE, "center")
         self.stats.update(self)
 
     def draw_group(self, group):
@@ -183,7 +215,7 @@ class MainScene(Scene):
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))
-        self.draw_group(self.walls)
+        self.renderer.render_layer(self.screen, self.bg_layer)
         self.draw_group(self.furniture)
         self.draw_group(self.teleports)
         self.draw_group(self.healthpoints)

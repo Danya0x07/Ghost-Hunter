@@ -48,9 +48,9 @@ class Player(MovingThing):
         self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
 
     def collide(self, scene, x_vel, y_vel):
-        wall = spritecollideany(self, scene.walls)
-        if wall is not None:
-            self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
+        for wall in scene.walls:
+            if self.rect.colliderect(wall):
+                self.handle_collision(self.rect, wall, x_vel, y_vel)
         furn = spritecollideany(self, scene.furniture)
         if furn is not None:
             self.handle_collision(self.rect, furn.rect, x_vel, y_vel)

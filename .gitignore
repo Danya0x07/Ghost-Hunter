@@ -2,5 +2,8 @@
 __pycache__
 resources/*
 !resources/*.ttf
+!resources/*.png
+!resources/*.tsx
+!resources/*.tmx
 venv
 *.geany

@@ -60,10 +60,10 @@ class Enemy(MovingThing):
             self.x_vel = choice((-self.SPEED, self.SPEED))
 
     def collide(self, scene, x_vel, y_vel):
-        wall = spritecollideany(self, scene.walls, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
-        if wall is not None:
-            self.handle_collision(self.frame_rect, wall.rect, x_vel, y_vel)
-            self.change_direction(x_vel, y_vel)
+        for wall in scene.walls:
+            if self.frame_rect.colliderect(wall):
+                self.handle_collision(self.frame_rect, wall, x_vel, y_vel)
+                self.change_direction(x_vel, y_vel)
         furn = spritecollideany(self, scene.furniture, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
         if furn is not None:
             self.handle_collision(self.frame_rect, furn.rect, x_vel, y_vel)

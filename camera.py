@@ -21,3 +21,6 @@ class Camera:
         tg_top = max(SCREEN_HEIGHT - self.state.height, tg_top)
         tg_top = min(0, tg_top)
         self.state = Rect(tg_left, tg_top, cam_width, cam_height)
+
+    def reverse(self, pos):
+        return pos[0] - self.state.left, pos[1] - self.state.top

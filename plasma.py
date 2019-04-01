@@ -16,8 +16,9 @@ class EnemyPlasma(MovingThing):
 
     def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if spritecollideany(self, scene.walls):
-            scene.plasmas.remove(self)
+        for wall in scene.walls:
+            if self.rect.colliderect(wall):
+                scene.plasmas.remove(self)
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(randint(*self.OFFSET))
@@ -43,8 +44,9 @@ class PlayerPlasma(MovingThing):
 
     def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
-        if spritecollideany(self, scene.walls):
-            scene.plasmas.remove(self)
+        for wall in scene.walls:
+            if self.rect.colliderect(wall):
+                scene.plasmas.remove(self)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(-self.OFFSET)

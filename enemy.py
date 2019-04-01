@@ -33,6 +33,10 @@ class Enemy(Sprite):
         sheet.blit(self.img_left, 1, (0, 0))
         sheet.blit(self.img_back, 2, (0, 0))
         sheet.blit(self.img_right, 3, (0, 0))
+        self.img_front.set_colorkey((0, 0, 0))
+        self.img_back.set_colorkey((0, 0, 0))
+        self.img_left.set_colorkey((0, 0, 0))
+        self.img_right.set_colorkey((0, 0, 0))
         self.image = self.img_front
         self.rect = self.image.get_rect(topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)

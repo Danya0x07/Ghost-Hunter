@@ -22,6 +22,7 @@ class Teleport(Sprite):
 
     def change_anim(self):
         self.sheet.blit(self.image, self.current_anim_id, (0, 0))
+        self.image.set_colorkey((0, 0, 0))
         self.current_anim_id += 1
         if self.current_anim_id > 3:
             self.current_anim_id = 0

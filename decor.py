@@ -28,6 +28,9 @@ class Sofa(Sprite):
         sheet.blit(self.img_normal, 0, (0, 0))
         sheet.blit(self.img_worse, 1, (0, 0))
         sheet.blit(self.img_worst, 2, (0, 0))
+        self.img_normal.set_colorkey((0, 0, 0))
+        self.img_worse.set_colorkey((0, 0, 0))
+        self.img_worst.set_colorkey((0, 0, 0))
         self.image = self.img_normal
         self.rect = self.image.get_rect(topleft=(x, y))
         self.hp = FURNITURE_HP

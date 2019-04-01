@@ -8,9 +8,10 @@ from config import *
 
 
 class Player(MovingThing):
+    TEXTURE_FILE = 'hunter.png'
 
     def __init__(self, x, y):
-        super().__init__(PLAYER_SIZE, PLAYER_COLOR, topleft=(x, y))
+        super().__init__(self.TEXTURE_FILE, topleft=(x, y))
         self.dir = Player.Direction()
         self.hp = PLAYER_HP_MAX
         self.score = 0

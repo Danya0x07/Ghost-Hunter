@@ -1,4 +1,4 @@
-from pygame import Surface
+from pygame import image, Surface
 from pygame.sprite import Sprite
 
 from math import atan, sin, cos, sqrt
@@ -6,10 +6,9 @@ from math import atan, sin, cos, sqrt
 
 class Thing(Sprite):
 
-    def __init__(self, size, color, **kwargs):
+    def __init__(self, filename, **kwargs):
         super().__init__()
-        self.image = Surface(size)
-        self.image.fill(color)
+        self.image = image.load('resources/{}'.format(filename))
         self.rect = self.image.get_rect(**kwargs)
 
     @staticmethod
@@ -64,8 +63,8 @@ class Thing(Sprite):
 
 class MovingThing(Thing):
 
-    def __init__(self, size, color, x_vel=0, y_vel=0, **kwargs):
-        super().__init__(size, color, **kwargs)
+    def __init__(self, filename, x_vel=0, y_vel=0, **kwargs):
+        super().__init__(filename, **kwargs)
         self.x_vel = x_vel
         self.y_vel = y_vel
 

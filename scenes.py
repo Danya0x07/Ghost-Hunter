@@ -7,7 +7,7 @@ from tiledtmxloader import tmxreader, helperspygame
 import maps
 from maps import get_total_level_size
 from interface import Button, Label, DataDisplayer
-from decor import Wall, Furniture
+from decor import Wall, Sofa, Flower
 from camera import Camera
 from player import Player
 from enemy import Enemy, BossEnemy
@@ -113,34 +113,11 @@ class MainScene(Scene):
         self.spawn_positions = []
         self.hp_positions = []
         self.camera = Camera(TOTAL_LEVEL_SIZE)
-        self.create_map2('library_map_2.tmx')
+        self.create_map('library_map_2.tmx')
         self.stats = DataDisplayer()
         self.wave = 0
 
-    def create_map(self, level_map):
-        x = y = 0
-        for row in level_map:
-            for col in row:
-                if col == '#':
-                    self.walls.add(Wall(x, y))
-                elif col == 'f':
-                    self.furniture.add(Furniture(x, y))
-                elif col == 'p':
-                    self.player = Player(x, y)
-                elif col == 's':
-                    self.spawn_positions.append((x, y))
-                elif col == 'h':
-                    self.hp_positions.append((x, y))
-                elif col == '1':
-                    self.teleports.add(Teleport(x, y, '1', '2'))
-                elif col == '2':
-                    self.teleports.add(Teleport(x, y, '2', '1'))
-                x += WALL_WIDTH
-            y += WALL_HEIGHT
-            x = 0
-        HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
-
-    def create_map2(self, mapname):
+    def create_map(self, mapname):
         world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(mapname))
         resources = helperspygame.ResourceLoaderPygame()
         resources.load(world_map)
@@ -162,9 +139,9 @@ class MainScene(Scene):
             elif obj_type == 'hspawn':
                 self.hp_positions.append((obj.x, obj.y - WALL_HEIGHT))
             elif obj_type == 'sofa':
-                self.furniture.add(Furniture(obj.x, obj.y - WALL_HEIGHT))
+                self.furniture.add(Sofa(obj.x, obj.y))
             elif obj_type == 'flower':
-                self.furniture.add(Furniture(obj.x, obj.y - WALL_HEIGHT))
+                self.furniture.add(Flower(obj.x, obj.y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 

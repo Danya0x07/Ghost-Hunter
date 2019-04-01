@@ -7,9 +7,10 @@ from config import *
 
 
 class HealthPoint(Thing):
+    TEXTURE_FILE = 'heal.png'
 
     def __init__(self, position):
-        super().__init__(HEALTHPOINT_SIZE, HEALTHPOINT_COLOR, topleft=position)
+        super().__init__(self.TEXTURE_FILE, topleft=position)
 
     def update(self, scene):
         if collide_rect(self, scene.player):

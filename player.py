@@ -42,15 +42,18 @@ class Player(MovingThing):
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
         self.rect.x += self.x_vel
-        self.collide(scene.walls, self.x_vel, 0)
+        self.collide(scene, self.x_vel, 0)
         self.rect.y += self.y_vel
-        self.collide(scene.walls, 0, self.y_vel)
+        self.collide(scene, 0, self.y_vel)
         self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
 
-    def collide(self, walls, x_vel, y_vel):
-        wall = spritecollideany(self, walls)
+    def collide(self, scene, x_vel, y_vel):
+        wall = spritecollideany(self, scene.walls)
         if wall is not None:
             self.handle_collision(self.rect, wall.rect, x_vel, y_vel)
+        furn = spritecollideany(self, scene.furniture)
+        if furn is not None:
+            self.handle_collision(self.rect, furn.rect, x_vel, y_vel)
 
     def handle_trap(self, traps, wave):
         trap = spritecollideany(self, traps)

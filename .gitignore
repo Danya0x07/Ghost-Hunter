@@ -3,3 +3,4 @@ __pycache__
 resources/*
 !resources/*.ttf
 venv
+*.geany

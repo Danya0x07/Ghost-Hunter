@@ -41,9 +41,9 @@ class Enemy(MovingThing):
 
     def update(self, scene):
         self.frame_rect.x += self.x_vel
-        self.collide(scene.walls, self.x_vel, 0)
+        self.collide(scene, self.x_vel, 0)
         self.frame_rect.y += self.y_vel
-        self.collide(scene.walls, 0, self.y_vel)
+        self.collide(scene, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
         self.veer_timer.update(self.veer_timeout)
         self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
@@ -59,10 +59,14 @@ class Enemy(MovingThing):
             self.y_vel = 0
             self.x_vel = choice((-self.SPEED, self.SPEED))
 
-    def collide(self, walls, x_vel, y_vel):
-        wall = spritecollideany(self, walls, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
+    def collide(self, scene, x_vel, y_vel):
+        wall = spritecollideany(self, scene.walls, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
         if wall is not None:
             self.handle_collision(self.frame_rect, wall.rect, x_vel, y_vel)
+            self.change_direction(x_vel, y_vel)
+        furn = spritecollideany(self, scene.furniture, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
+        if furn is not None:
+            self.handle_collision(self.frame_rect, furn.rect, x_vel, y_vel)
             self.change_direction(x_vel, y_vel)
 
     def veer(self):

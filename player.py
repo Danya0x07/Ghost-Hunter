@@ -1,5 +1,6 @@
 from pygame.sprite import Sprite, spritecollideany
 from pygame import image
+from pygame.transform import rotate
 from pygame.locals import *
 
 from util import EventTimer, handle_collision, calc_distance, shoot
@@ -12,7 +13,9 @@ class Player(Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = image.load('resources/hunter.png')
+        img = image.load('resources/hunter.png')
+        self.images = (img, rotate(img, 90), rotate(img, 180), rotate(img, 270))
+        self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.dir = Player.Direction()
         self.x_vel = 0
@@ -33,10 +36,21 @@ class Player(Sprite):
             self.is_alive = False
 
     def set_direction(self, key, state):
-        if key == K_w:   self.dir.front = state
-        elif key == K_s: self.dir.back = state
-        elif key == K_a: self.dir.left = state
-        elif key == K_d: self.dir.right = state
+        img_num = None
+        if key == K_w:
+            self.dir.front = state
+            img_num = 0
+        elif key == K_s:
+            self.dir.back = state
+            img_num = 2
+        elif key == K_a:
+            self.dir.left = state
+            img_num = 1
+        elif key == K_d:
+            self.dir.right = state
+            img_num = 3
+        if state and img_num is not None:
+            self.image = self.images[img_num]
 
     def update(self, scene):
         front, back, left, right = self.dir.get_dir_state()

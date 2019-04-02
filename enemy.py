@@ -51,21 +51,13 @@ class Enemy(Sprite):
 
     def refresh_img(self):
         if self.x_vel > 0 and self.image is not self.images[3]:
-            #self.image = self.images[3]
-            self.image.fill((0, 0, 0))
-            self.image.blit(self.images[3], (0, 0))
+            self.image = self.images[3]
         elif self.x_vel < 0 and self.image is not self.images[1]:
-            #self.image = self.images[1]
-            self.image.fill((0, 0, 0))
-            self.image.blit(self.images[1], (0, 0))
+            self.image = self.images[1]
         if self.y_vel > 0 and self.image is not self.images[2]:
-            #self.image = self.images[2]
-            self.image.fill((0, 0, 0))
-            self.image.blit(self.images[2], (0, 0))
+            self.image = self.images[2]
         elif self.y_vel < 0 and self.image is not self.images[0]:
-            #self.image = self.images[0]
-            self.image.fill((0, 0, 0))
-            self.image.blit(self.images[0], (0, 0))
+            self.image = self.images[0]
 
     def update(self, scene):
         self.frame_rect.x += self.x_vel

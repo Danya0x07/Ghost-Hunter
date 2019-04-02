@@ -1,13 +1,11 @@
-from pygame import display, event, mouse, Surface, Rect
+from pygame import display, event, mouse, Surface
 from pygame.sprite import Group
 from pygame.time import Clock
 from pygame.locals import *
 from tiledtmxloader import tmxreader, helperspygame
 
-import maps
-from maps import get_total_level_size
 from interface import Button, Label, DataDisplayer
-from decor import Wall, Sofa, Flower
+from decor import Sofa, Flower
 from camera import Camera
 from player import Player
 from enemy import Enemy, BossEnemy
@@ -191,7 +189,6 @@ class MainScene(Scene):
             self.screen.blit(obj.image, self.camera.apply(obj))
 
     def draw_objects(self):
-        self.screen.blit(self.space, (0, 0))
         self.renderer.render_layer(self.screen, self.bg_layer)
         self.draw_group(self.furniture)
         self.draw_group(self.teleports)

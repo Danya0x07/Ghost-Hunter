@@ -2507,7 +2507,7 @@
   </data>
  </layer>
  <objectgroup id="2" name="furniture">
-  <object id="1" gid="18" x="2346" y="2426" width="64" height="64">
+  <object id="1" gid="18" x="2344" y="2403" width="64" height="64">
    <properties>
     <property name="id" value="2"/>
     <property name="tgt_id" value="1"/>

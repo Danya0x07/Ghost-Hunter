@@ -1,23 +1,27 @@
-from pygame.sprite import spritecollideany
+from pygame.sprite import Sprite, spritecollideany
+from pygame import image
 from pygame.locals import *
 
-from things import MovingThing
+from util import EventTimer, handle_collision, calc_distance, shoot
 from trap import Trap
 from plasma import PlayerPlasma
 from config import *
 
 
-class Player(MovingThing):
-    TEXTURE_FILE = 'hunter.png'
+class Player(Sprite):
 
     def __init__(self, x, y):
-        super().__init__(self.TEXTURE_FILE, topleft=(x, y))
+        super().__init__()
+        self.image = image.load('resources/hunter.png')
+        self.rect = self.image.get_rect(topleft=(x, y))
         self.dir = Player.Direction()
+        self.x_vel = 0
+        self.y_vel = 0
         self.hp = PLAYER_HP_MAX
         self.score = 0
         self.is_alive = True
         self.pk_level = 0
-        self.pkl_timer = self.EventTimer(self.refresh_pkl)
+        self.pkl_timer = EventTimer(self.refresh_pkl)
 
     def shift_hp(self, offset):
         self.hp += offset
@@ -51,10 +55,10 @@ class Player(MovingThing):
     def collide(self, scene, x_vel, y_vel):
         for wall in scene.walls:
             if self.rect.colliderect(wall):
-                self.handle_collision(self.rect, wall, x_vel, y_vel)
+                handle_collision(self.rect, wall, x_vel, y_vel)
         furn = spritecollideany(self, scene.furniture)
         if furn is not None:
-            self.handle_collision(self.rect, furn.rect, x_vel, y_vel)
+            handle_collision(self.rect, furn.rect, x_vel, y_vel)
 
     def handle_trap(self, traps, wave):
         trap = spritecollideany(self, traps)
@@ -68,14 +72,14 @@ class Player(MovingThing):
     def refresh_pkl(self, enemies):
         min_distance = SCREEN_WIDTH * SCREEN_HEIGHT
         for enemy in enemies:
-            distance = self.calc_distance(self.rect, enemy.rect)
+            distance = calc_distance(self.rect, enemy.rect)
             if distance < min_distance:
                 min_distance = distance
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
 
 
     def shoot(self, rel_rect, m_pos, plasmas):
-        x_vel, y_vel = MovingThing._shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
+        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
 
     class Direction:

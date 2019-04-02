@@ -1,16 +1,17 @@
-from pygame.sprite import collide_rect
+from pygame.sprite import Sprite, collide_rect
+from pygame import image
 
 from random import randint, choice
 
-from things import Thing
 from config import *
 
 
-class HealthPoint(Thing):
-    TEXTURE_FILE = 'heal.png'
+class HealthPoint(Sprite):
+    image = image.load('resources/heal.png')
 
     def __init__(self, position):
-        super().__init__(self.TEXTURE_FILE, topleft=position)
+        super().__init__()
+        self.rect = self.image.get_rect(topleft=position)
 
     def update(self, scene):
         if collide_rect(self, scene.player):

@@ -1,31 +1,30 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
-from pygame import Surface
-from spritesheet import SpriteSheet
+from pyganim import getImagesFromSpriteSheet
 
-from things import Thing
+from util import EventTimer
 from config import *
 
 
 class Teleport(Sprite):
-    TEXTURE_FILE = 'resources/teleport.png'
+    images = getImagesFromSpriteSheet('resources/teleport.png', *TELEPORT_SIZE, 1, 4,
+        [(0, 0, *TELEPORT_SIZE), (TELEPORT_WIDTH, 0, *TELEPORT_SIZE),
+         (TELEPORT_WIDTH * 2, 0, *TELEPORT_SIZE), (TELEPORT_WIDTH * 3, 0, *TELEPORT_SIZE)])
 
     def __init__(self, x, y, id, tgt_id):
         super().__init__()
-        self.sheet = SpriteSheet(self.TEXTURE_FILE, 4, 1)
-        self.image = Surface(TELEPORT_SIZE)
+        self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.id = id
         self.tgt_id = tgt_id
         self.active = True
         self.current_anim_id = 0
-        self.anim_timer = Thing.EventTimer(self.change_anim)
+        self.anim_timer = EventTimer(self.change_anim)
 
     def change_anim(self):
-        self.sheet.blit(self.image, self.current_anim_id, (0, 0))
-        self.image.set_colorkey((0, 0, 0))
         self.current_anim_id += 1
         if self.current_anim_id > 3:
             self.current_anim_id = 0
+        self.image = self.images[self.current_anim_id]
 
     def update(self, scene):
         if self.active and self.tgt_id:

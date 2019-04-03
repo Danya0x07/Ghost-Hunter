@@ -1,8 +1,12 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
+from pygame.mixer import Sound
 from pyganim import getImagesFromSpriteSheet
 
 from util import EventTimer
 from config import *
+
+
+teleport_sound = Sound('resources/teleport.wav')
 
 
 class Teleport(Sprite):
@@ -30,10 +34,12 @@ class Teleport(Sprite):
         if self.active and self.tgt_id:
             tgt_teleport = self.get_tp_by_id(scene.teleports, self.tgt_id)
             if collide_rect(self, scene.player):
+                teleport_sound.play()
                 scene.player.rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
             enemy = spritecollideany(self, scene.enemies)
             if enemy:
+                teleport_sound.play()
                 enemy.frame_rect.center = tgt_teleport.rect.center
                 tgt_teleport.active = False
         else:

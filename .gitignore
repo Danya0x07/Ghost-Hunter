@@ -5,5 +5,9 @@ resources/*
 !resources/*.png
 !resources/*.tsx
 !resources/*.tmx
+!resources/*.wav
 venv
 *.geany
+*.spec
+*.exe
+*.bat

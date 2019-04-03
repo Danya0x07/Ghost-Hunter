@@ -1,4 +1,5 @@
 from pygame.sprite import Sprite, spritecollideany
+from pygame.mixer import Sound
 from pyganim import getImagesFromSpriteSheet
 
 from random import randint, choice
@@ -9,6 +10,8 @@ from interface import Label
 from anims import ENEMY_DYING
 from config import *
 
+
+enemy_shoot_sound = Sound('resources/gshoot.wav')
 
 
 class Enemy(Sprite):
@@ -25,6 +28,7 @@ class Enemy(Sprite):
                                                                   (64, 0, *SIZE),
                                                                   (128, 0, *SIZE),
                                                                   (192, 0, *SIZE)])
+    auch_sound = Sound('resources/gauch.wav')
 
     def __init__(self, x, y):
         super().__init__()
@@ -42,6 +46,8 @@ class Enemy(Sprite):
         self.is_alive = True
 
     def shift_hp(self, offset):
+        if offset < 0:
+            self.auch_sound.play()
         self.hp += offset
         if self.hp <= 0:
             self.hp = 0
@@ -100,6 +106,7 @@ class Enemy(Sprite):
 
     def shoot(self, tgt_rect, plasmas):
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
+            enemy_shoot_sound.play()
             x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
             plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
 

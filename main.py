@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from pygame import init, display, quit as quit_game
-
+init()
 from scenes import MainScene, Menu, GameOverScene
 from config import *
 
 
 def init_game():
-    init()
     screen = display.set_mode(SCREEN_SIZE)
     display.set_caption("Ghost&Hunter")
     return screen

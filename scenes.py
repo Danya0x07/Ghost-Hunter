@@ -110,6 +110,7 @@ class MainScene(Scene):
         self.healthpoints = Group()
         self.spawn_positions = []
         self.hp_positions = []
+        self.animations = []
         self.camera = Camera(TOTAL_LEVEL_SIZE)
         self.create_map('library_map_2.tmx')
         self.stats = DataDisplayer()
@@ -199,6 +200,10 @@ class MainScene(Scene):
         self.draw_group(self.enemies)
         for e in self.enemies:
             e.lbl_hp_showing_timer.update(self)
+        for a in self.animations:
+            a.update(self.screen, self.camera)
+            if a.lifetime <= 0:
+                self.animations.remove(a)
         self.stats.draw(self.screen)
 
 

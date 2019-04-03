@@ -57,3 +57,27 @@ class TimeoutTimer:
 
     def restart(self, counter):
         self.counter = counter
+
+
+class Animation:
+    MAX_INDEX = 3
+
+    def __init__(self, images, position, lifetime, timeout):
+        self.images = images
+        self.current_im_index = 0
+        self.image = images[0]
+        self.rect = self.image.get_rect(center=position)
+        self.timer = EventTimer(self.update_img)
+        self.lifetime = lifetime
+        self.timeout = timeout
+
+    def update_img(self):
+        self.image = self.images[self.current_im_index]
+        self.current_im_index += 1
+        if self.current_im_index > self.MAX_INDEX:
+            self.current_im_index = 0
+
+    def update(self, surface, camera):
+        surface.blit(self.image, camera.apply(self))
+        self.timer.update(self.timeout)
+        self.lifetime -= 1

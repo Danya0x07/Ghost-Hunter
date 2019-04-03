@@ -3,10 +3,15 @@ from pyganim import getImagesFromSpriteSheet
 
 from random import randint, choice
 
-from util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer
+from util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
 from plasma import Plasma, BossPlasma
 from interface import Label
 from config import *
+
+
+_dying = getImagesFromSpriteSheet('resources/ghostdie.png', 32, 32, 1, 3, [(0, 0, 32, 32),
+                                                                           (32, 0, 32, 32),
+                                                                           (64, 0, 32, 32)])
 
 
 class Enemy(Sprite):
@@ -42,6 +47,7 @@ class Enemy(Sprite):
     def shift_hp(self, offset):
         self.hp += offset
         if self.hp <= 0:
+            self.hp = 0
             self.is_alive = False
         self.lbl_hp_showing_timer.restart(ENEMY_HP_SHOWING_TIMEOUT)
 
@@ -69,6 +75,7 @@ class Enemy(Sprite):
         self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
         if not self.is_alive:
             scene.player.score += self.KILL_AWARD
+            scene.animations.append(Animation(_dying, self.rect.center, 30, 10))
             scene.enemies.remove(self)
 
     def change_direction(self, x_vel, y_vel):

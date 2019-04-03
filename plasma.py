@@ -1,9 +1,16 @@
 from pygame.sprite import Sprite, collide_rect, spritecollideany
 from pygame import image
+from pyganim import getImagesFromSpriteSheet
 
 from random import randint
 
+from util import Animation
 from config import *
+
+
+_anim = getImagesFromSpriteSheet('resources/explasm.png', 32, 32, 1, 3, [(0, 0, 32, 32),
+                                                                           (32, 0, 32, 32),
+                                                                           (64, 0, 32, 32)])
 
 
 class Plasma(Sprite):
@@ -25,9 +32,11 @@ class Plasma(Sprite):
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(randint(*self.OFFSET))
+            scene.animations.append(Animation(_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
         if collide_rect(self, scene.player):
             scene.player.shift_hp(randint(*self.OFFSET))
+            scene.animations.append(Animation(_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
 
 
@@ -48,8 +57,10 @@ class PlayerPlasma(Plasma):
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(randint(*self.OFFSET))
+            scene.animations.append(Animation(_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(self.OFFSET[1])
+            scene.animations.append(Animation(_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)

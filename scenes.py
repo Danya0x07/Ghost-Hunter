@@ -66,7 +66,7 @@ class Menu(Scene):
                                    topleft=Button.get_btn_pos(self.frame_btn, 2, MENU_BTN_HEIGHT))
         self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
 
-        self.lbl_title = Label('Ghost&Hunter', fontsize=70,
+        self.lbl_title = Label('Haunted Library', fontsize=70,
                                centerx=self.screen_rect.centerx,
                                centery=130)
         self.lbl_v = Label('v0.2', fontsize=20,
@@ -100,17 +100,17 @@ class Menu(Scene):
 class MainScene(Scene):
 
     def __init__(self, screen):
-        super().__init__(screen, GAME_BG_COLOR)
+        super().__init__(screen, (0, 0, 0))
         self.walls = []
+        self.enemy_spawn_positions = []
+        self.hp_spawn_positions = []
+        self.animations = []
         self.furniture = Group()
         self.enemies = Group()
         self.plasmas = Group()
         self.traps = Group()
         self.teleports = Group()
         self.healthpoints = Group()
-        self.spawn_positions = []
-        self.hp_positions = []
-        self.animations = []
         self.camera = Camera(TOTAL_LEVEL_SIZE)
         self.create_map('library_map_2.tmx')
         self.stats = DataDisplayer()
@@ -134,15 +134,15 @@ class MainScene(Scene):
                 tgt_id = obj.properties['tgt_id']
                 self.teleports.add(Teleport(obj.x, obj.y - WALL_HEIGHT, s_id, tgt_id))
             elif obj_type == 'gspawn':
-                self.spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
+                self.enemy_spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
             elif obj_type == 'hspawn':
-                self.hp_positions.append((obj.x, obj.y - WALL_HEIGHT))
+                self.hp_spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
             elif obj_type == 'sofa':
                 self.furniture.add(Sofa(obj.x, obj.y))
             elif obj_type == 'flower':
                 self.furniture.add(Flower(obj.x, obj.y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
-        HealthPoint.random_spawn(self.hp_positions, self.healthpoints, HEALTHPOINT_NUMBER)
+        HealthPoint.random_spawn(self.hp_spawn_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 
     def check_events(self):
         for e in event.get():
@@ -166,10 +166,10 @@ class MainScene(Scene):
             self.wave += 1
             self.traps.empty()
             if self.wave % BOSS_ENEMY_SPAWN_DELAY == 0:
-                BossEnemy.random_spawn(self.spawn_positions, self.enemies, 1)
-                Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave - 1)
+                BossEnemy.random_spawn(self.enemy_spawn_positions, self.enemies, 1)
+                Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave - 1)
             else:
-                Enemy.random_spawn(self.spawn_positions, self.enemies, self.wave)
+                Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave)
 
     def update_objects(self):
         self.furniture.update(self)

@@ -18,7 +18,7 @@ class HealthPoint(Sprite):
         if collide_rect(self, scene.player):
             heal_sound.play()
             scene.player.shift_hp(randint(*HEALTHPOINT_OFFSET_RANGE))
-            self.rect.topleft = choice(scene.hp_positions)
+            self.rect.topleft = choice(scene.hp_spawn_positions)
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):

@@ -4,10 +4,8 @@ from pygame.mixer import Sound
 
 from random import randint, choice
 
+from sounds import heal_sound
 from config import *
-
-
-heal_sound = Sound('resources/heal.wav')
 
 
 class HealthPoint(Sprite):

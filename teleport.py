@@ -3,10 +3,8 @@ from pygame.mixer import Sound
 from pyganim import getImagesFromSpriteSheet
 
 from util import EventTimer
+from sounds import teleport_sound
 from config import *
-
-
-teleport_sound = Sound('resources/teleport.wav')
 
 
 class Teleport(Sprite):

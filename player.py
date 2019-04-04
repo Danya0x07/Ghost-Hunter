@@ -7,11 +7,9 @@ from pygame.locals import *
 from util import EventTimer, handle_collision, calc_distance, shoot
 from trap import Trap
 from plasma import PlayerPlasma
+from sounds import (player_walk_sound, player_shoot_sound, player_auch_sound,
+                    trap_down_sound, trap_up_sound)
 from config import *
-
-
-trap_down_sound = Sound('resources/trapdown.wav')
-trap_up_sound = Sound('resources/trapup.wav')
 
 
 class Player(Sprite):
@@ -22,9 +20,6 @@ class Player(Sprite):
         self.images = (img, rotate(img, 90), rotate(img, 180), rotate(img, 270))
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.auch_sound = Sound('resources/auch.wav')
-        self.shoot_sound = Sound('resources/pshoot.wav')
-        self.walk_sound = Sound('resources/walk.wav')
         self.walk_sound_playing = False
         self.dir = Player.Direction()
         self.x_vel = 0
@@ -37,7 +32,7 @@ class Player(Sprite):
 
     def shift_hp(self, offset):
         if offset < 0:
-            self.auch_sound.play()
+            player_auch_sound.play()
         self.hp += offset
         if self.hp > PLAYER_HP_MAX:
             self.hp = PLAYER_HP_MAX
@@ -45,7 +40,7 @@ class Player(Sprite):
             self.hp = 0
         if self.hp == 0:
             self.is_alive = False
-            self.walk_sound.stop()
+            player_walk_sound.stop()
 
     def set_direction(self, key, state):
         img_num = None
@@ -64,7 +59,7 @@ class Player(Sprite):
         if state and img_num is not None:
             self.image = self.images[img_num]
             if not self.walk_sound_playing:
-                self.walk_sound.play(-1)
+                player_walk_sound.play(-1)
                 self.walk_sound_playing = True
 
     def update(self, scene):
@@ -81,7 +76,7 @@ class Player(Sprite):
         self.collide(scene, 0, self.y_vel)
         self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
         if self.x_vel == 0 and self.y_vel == 0:
-            self.walk_sound.stop()
+            player_walk_sound.stop()
             self.walk_sound_playing = False
 
     def collide(self, scene, x_vel, y_vel):
@@ -115,7 +110,7 @@ class Player(Sprite):
     def shoot(self, rel_rect, m_pos, plasmas):
         x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
-        self.shoot_sound.play()
+        player_shoot_sound.play()
 
     class Direction:
 

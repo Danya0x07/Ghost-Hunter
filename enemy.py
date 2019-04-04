@@ -8,10 +8,8 @@ from util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTime
 from plasma import Plasma, BossPlasma
 from interface import Label
 from anims import ENEMY_DYING
+from sounds import enemy_shoot_sound, enemy_auch_sound
 from config import *
-
-
-enemy_shoot_sound = Sound('resources/gshoot.wav')
 
 
 class Enemy(Sprite):
@@ -28,7 +26,6 @@ class Enemy(Sprite):
                                                                   (64, 0, *SIZE),
                                                                   (128, 0, *SIZE),
                                                                   (192, 0, *SIZE)])
-    auch_sound = Sound('resources/gauch.wav')
 
     def __init__(self, x, y):
         super().__init__()
@@ -47,7 +44,7 @@ class Enemy(Sprite):
 
     def shift_hp(self, offset):
         if offset < 0:
-            self.auch_sound.play()
+            enemy_auch_sound.play()
         self.hp += offset
         if self.hp <= 0:
             self.hp = 0

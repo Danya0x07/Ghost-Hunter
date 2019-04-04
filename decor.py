@@ -2,10 +2,8 @@ from pygame.sprite import Sprite
 from pygame.mixer import Sound
 from pyganim import getImagesFromSpriteSheet
 
+from sounds import furniture_breaking_sound
 from config import *
-
-
-furniture_breaking_sound = Sound('resources/break.wav')
 
 
 class Sofa(Sprite):

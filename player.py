@@ -1,23 +1,20 @@
 from pygame.sprite import Sprite, spritecollideany
-from pygame import image
-from pygame.transform import rotate
-from pygame.mixer import Sound
 from pygame.locals import *
 
 from util import EventTimer, handle_collision, calc_distance, shoot
 from trap import Trap
 from plasma import PlayerPlasma
+from animages import player_images
 from sounds import (player_walk_sound, player_shoot_sound, player_auch_sound,
                     trap_down_sound, trap_up_sound)
 from config import *
 
 
 class Player(Sprite):
+    images = player_images
 
     def __init__(self, x, y):
         super().__init__()
-        img = image.load('resources/hunter.png')
-        self.images = (img, rotate(img, 90), rotate(img, 180), rotate(img, 270))
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.walk_sound_playing = False

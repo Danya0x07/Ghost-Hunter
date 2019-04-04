@@ -1,16 +1,13 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
-from pygame.mixer import Sound
-from pyganim import getImagesFromSpriteSheet
 
 from util import EventTimer
+from animages import teleport_images
 from sounds import teleport_sound
 from config import *
 
 
 class Teleport(Sprite):
-    images = getImagesFromSpriteSheet('resources/teleport.png', *TELEPORT_SIZE, 1, 4,
-        [(0, 0, *TELEPORT_SIZE), (TELEPORT_WIDTH, 0, *TELEPORT_SIZE),
-         (TELEPORT_WIDTH * 2, 0, *TELEPORT_SIZE), (TELEPORT_WIDTH * 3, 0, *TELEPORT_SIZE)])
+    images = teleport_images
 
     def __init__(self, x, y, id, tgt_id):
         super().__init__()

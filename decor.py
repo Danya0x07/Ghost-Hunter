@@ -1,19 +1,12 @@
 from pygame.sprite import Sprite
-from pygame.mixer import Sound
-from pyganim import getImagesFromSpriteSheet
 
+from animages import sofa_images, flower_images
 from sounds import furniture_breaking_sound
 from config import *
 
 
 class Sofa(Sprite):
-    TEXTURE_FILE = 'resources/sofa.png'
-    SHEET_CONF = (3, 1)
-    SIZE = (100, 50)
-    POS_WORSE = (0, 50)
-    POS_WORST = (0, 100)
-    images = getImagesFromSpriteSheet(TEXTURE_FILE, *SIZE, *SHEET_CONF,
-        [(0, 0, *SIZE), (*POS_WORSE, *SIZE), (*POS_WORST, *SIZE)])
+    images = sofa_images
 
     def __init__(self, x, y):
         super().__init__()
@@ -39,10 +32,4 @@ class Sofa(Sprite):
 
 
 class Flower(Sofa):
-    TEXTURE_FILE = 'resources/flower.png'
-    SHEET_CONF = (1, 3)
-    SIZE = (50, 50)
-    POS_WORSE = (50, 0)
-    POS_WORST = (100, 0)
-    images = getImagesFromSpriteSheet(TEXTURE_FILE, *SIZE, *SHEET_CONF,
-        [(0, 0, *SIZE), (*POS_WORSE, *SIZE), (*POS_WORST, *SIZE)])
+    images = flower_images

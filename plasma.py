@@ -1,20 +1,19 @@
 from pygame.sprite import Sprite, collide_rect, spritecollideany
-from pygame import image
 
 from random import randint
 
 from util import Animation
-from anims import PLASM_ANIM
+from animages import (plasm_anim, player_plasma_image,
+                      enemy_plasma_image, boss_enemy_plasma_image)
 from config import *
 
 
 class Plasma(Sprite):
-    TEXTURE_FILE = 'resources/gplasma.png'
-    OFFSET = ENEMY_PLASMA_OFFSET
+    image = enemy_plasma_image
+    offset = ENEMY_PLASMA_OFFSET
 
     def __init__(self, x_vel, y_vel, center):
         super().__init__()
-        self.image = image.load(self.TEXTURE_FILE)
         self.rect = self.image.get_rect(center=center)
         self.x_vel = x_vel
         self.y_vel = y_vel
@@ -26,23 +25,23 @@ class Plasma(Sprite):
                 scene.plasmas.remove(self)
         furn = spritecollideany(self, scene.furniture)
         if furn:
-            furn.shift_hp(randint(*self.OFFSET))
-            scene.animations.append(Animation(PLASM_ANIM, self.rect.center, 9, 3))
+            furn.shift_hp(randint(*self.offset))
+            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
         if collide_rect(self, scene.player):
-            scene.player.shift_hp(randint(*self.OFFSET))
-            scene.animations.append(Animation(PLASM_ANIM, self.rect.center, 9, 3))
+            scene.player.shift_hp(randint(*self.offset))
+            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
 
 
 class BossPlasma(Plasma):
-    TEXTURE_FILE = 'resources/bgplasma.png'
-    OFFSET = BOSS_ENEMY_PLASMA_OFFSET
+    image = boss_enemy_plasma_image
+    offset = BOSS_ENEMY_PLASMA_OFFSET
 
 
 class PlayerPlasma(Plasma):
-    TEXTURE_FILE = 'resources/pplasma.png'
-    OFFSET = PLAYER_PLASMA_OFFSET
+    image = player_plasma_image
+    offset = PLAYER_PLASMA_OFFSET
 
     def update(self, scene):
         self.rect.move_ip(self.x_vel, self.y_vel)
@@ -51,11 +50,11 @@ class PlayerPlasma(Plasma):
                 scene.plasmas.remove(self)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
-            enemy.shift_hp(randint(*self.OFFSET))
-            scene.animations.append(Animation(PLASM_ANIM, self.rect.center, 9, 3))
+            enemy.shift_hp(randint(*self.offset))
+            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)
         furn = spritecollideany(self, scene.furniture)
         if furn:
-            furn.shift_hp(self.OFFSET[1])
-            scene.animations.append(Animation(PLASM_ANIM, self.rect.center, 9, 3))
+            furn.shift_hp(self.offset[1])
+            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(self)

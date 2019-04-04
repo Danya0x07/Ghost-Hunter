@@ -1,19 +1,16 @@
 from pygame.sprite import Sprite, spritecollideany
-from pygame.mixer import Sound
-from pyganim import getImagesFromSpriteSheet
 
 from random import randint, choice
 
 from util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
 from plasma import Plasma, BossPlasma
 from interface import Label
-from anims import ENEMY_DYING
+from animages import enemy_images, boss_enemy_images, enemy_dying_anim
 from sounds import enemy_shoot_sound, enemy_auch_sound
 from config import *
 
 
 class Enemy(Sprite):
-    TEXTURE_FILE = 'resources/ghost.png'
     SIZE = (WIDTH, HEIGHT) = ENEMY_SIZE
     FRAME_SIZE = ENEMY_FRAME_SIZE
     VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
@@ -22,10 +19,7 @@ class Enemy(Sprite):
     HP = ENEMY_HP_MAX
     PLASMA_TYPE = Plasma
     KILL_AWARD = 1
-    images = getImagesFromSpriteSheet(TEXTURE_FILE, *SIZE, 1, 4, [(0, 0, *SIZE),
-                                                                  (64, 0, *SIZE),
-                                                                  (128, 0, *SIZE),
-                                                                  (192, 0, *SIZE)])
+    images = enemy_images
 
     def __init__(self, x, y):
         super().__init__()
@@ -75,7 +69,7 @@ class Enemy(Sprite):
         self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
         if not self.is_alive:
             scene.player.score += self.KILL_AWARD
-            scene.animations.append(Animation(ENEMY_DYING, self.rect.center, 30, 10))
+            scene.animations.append(Animation(enemy_dying_anim, self.rect.center, 30, 10))
             scene.enemies.remove(self)
 
     def change_direction(self, x_vel, y_vel):
@@ -115,7 +109,6 @@ class Enemy(Sprite):
 
 
 class BossEnemy(Enemy):
-    TEXTURE_FILE = 'resources/bossghost.png'
     SIZE = BOSS_ENEMY_SIZE
     FRAME_SIZE = BOSS_ENEMY_FRAME_SIZE
     VEER_TIMEOUT = BOSS_ENEMY_VEER_TIMEOUT
@@ -124,7 +117,4 @@ class BossEnemy(Enemy):
     HP = BOSS_ENEMY_HP_MAX
     PLASMA_TYPE = BossPlasma
     KILL_AWARD = 3
-    images = getImagesFromSpriteSheet(TEXTURE_FILE, *SIZE, 1, 4, [(0, 0, *SIZE),
-                                                                  (70, 0, *SIZE),
-                                                                  (140, 0, *SIZE),
-                                                                  (210, 0, *SIZE)])
+    images = boss_enemy_images

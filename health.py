@@ -1,15 +1,14 @@
 from pygame.sprite import Sprite, collide_rect
-from pygame import image
-from pygame.mixer import Sound
 
 from random import randint, choice
 
+from animages import heal_image
 from sounds import heal_sound
 from config import *
 
 
 class HealthPoint(Sprite):
-    image = image.load('resources/heal.png')
+    image = heal_image
 
     def __init__(self, position):
         super().__init__()

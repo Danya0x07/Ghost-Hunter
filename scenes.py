@@ -69,7 +69,7 @@ class Menu(Scene):
         self.lbl_title = Label('Haunted Library', fontsize=70,
                                centerx=self.screen_rect.centerx,
                                centery=130)
-        self.lbl_v = Label('v0.2', fontsize=20,
+        self.lbl_v = Label('v1.0', fontsize=20,
                            bottomright=self.screen_rect.bottomright)
         self.labels = Group(self.lbl_title, self.lbl_v)
 

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from pygame import init, display, quit as quit_game
+from pygame.locals import FULLSCREEN
 init()
 from scenes import MainScene, Menu, GameOverScene
 from config import *
 
 
 def init_game():
-    screen = display.set_mode(SCREEN_SIZE)
+    screen = display.set_mode(SCREEN_SIZE, FULLSCREEN)
     display.set_caption("Haunted Library")
     return screen
 

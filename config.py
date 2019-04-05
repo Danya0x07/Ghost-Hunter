@@ -1,7 +1,9 @@
 from pygame import Color
+from ctypes import windll
 
 
-SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (900, 640)
+disp_info = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
+SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (disp_info)
 CENTER_OF_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 WALL_SIZE = (WALL_WIDTH, WALL_HEIGHT) = (50, 50)
 TOTAL_LEVEL_SIZE = (WALL_WIDTH * 50, WALL_HEIGHT * 50)

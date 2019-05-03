@@ -1,6 +1,6 @@
-from pygame.sprite import Sprite, collide_rect
-
 from random import randint, choice
+
+from pygame.sprite import Sprite, collide_rect
 
 from utils.assets import heal_image, heal_sound
 from utils.config import *

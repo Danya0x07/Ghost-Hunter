@@ -1,6 +1,7 @@
 from pygame import event, mouse
 from pygame.sprite import Group
 from pygame.locals import *
+
 from third_party.tiledtmxloader import helperspygame, tmxreader
 
 from scenes.scene import Scene

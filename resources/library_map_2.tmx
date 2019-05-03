@@ -1945,11 +1945,11 @@
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="7"/>
-   <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
+   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -1994,7 +1994,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2003,6 +2002,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2028,7 +2028,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
-   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2053,6 +2052,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2094,12 +2094,12 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
+   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2144,7 +2144,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2153,6 +2152,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2187,7 +2187,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
-   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2203,6 +2202,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2237,7 +2237,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
-   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2253,6 +2252,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2294,12 +2294,12 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
+   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2348,11 +2348,11 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2387,7 +2387,6 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="7"/>
-   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2403,6 +2402,7 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
+   <tile gid="1"/>
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="1"/>
@@ -2448,8 +2448,8 @@
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
-   <tile gid="1"/>
    <tile gid="7"/>
+   <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
    <tile gid="1"/>
@@ -2507,14 +2507,14 @@
   </data>
  </layer>
  <objectgroup id="2" name="furniture">
-  <object id="1" gid="18" x="2344" y="2403" width="64" height="64">
+  <object id="1" gid="18" x="2320" y="2364" width="64" height="64">
    <properties>
     <property name="id" value="2"/>
     <property name="tgt_id" value="1"/>
     <property name="type" value="teleport"/>
    </properties>
   </object>
-  <object id="2" gid="18" x="100" y="200" width="64" height="64">
+  <object id="2" gid="18" x="139" y="182" width="64" height="64">
    <properties>
     <property name="id" value="1"/>
     <property name="tgt_id" value="2"/>
@@ -2626,17 +2626,17 @@
     <property name="type" value="wall"/>
    </properties>
   </object>
-  <object id="37" x="1400" y="1900" width="700" height="50">
+  <object id="37" x="1400" y="1900" width="650" height="50">
    <properties>
     <property name="type" value="wall"/>
    </properties>
   </object>
-  <object id="38" x="2050" y="1950" width="50" height="350">
+  <object id="38" x="2000" y="1950" width="50" height="350">
    <properties>
     <property name="type" value="wall"/>
    </properties>
   </object>
-  <object id="39" x="2250" y="1900" width="50" height="550">
+  <object id="39" x="2200" y="1900" width="50" height="550">
    <properties>
     <property name="type" value="wall"/>
    </properties>
@@ -2706,7 +2706,7 @@
     <property name="type" value="flower"/>
    </properties>
   </object>
-  <object id="57" gid="2" x="2000" y="2000" width="50" height="50">
+  <object id="57" gid="2" x="1941" y="2010" width="50" height="50">
    <properties>
     <property name="type" value="flower"/>
    </properties>
@@ -2808,13 +2808,13 @@
    </properties>
    <point/>
   </object>
-  <object id="82" x="2400" y="2250">
+  <object id="82" x="2406" y="2177">
    <properties>
     <property name="type" value="hspawn"/>
    </properties>
    <point/>
   </object>
-  <object id="83" x="2014" y="2065">
+  <object id="83" x="1950" y="2100">
    <properties>
     <property name="type" value="hspawn"/>
    </properties>

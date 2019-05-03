@@ -1,6 +1,6 @@
-from pygame.sprite import Sprite, collide_rect, spritecollideany
-
 from random import randint
+
+from pygame.sprite import Sprite, collide_rect, spritecollideany
 
 from utils.util import Animation
 from utils.assets import (plasm_anim, player_plasma_image,

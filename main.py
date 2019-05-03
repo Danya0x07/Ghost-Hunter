@@ -1,13 +1,32 @@
 # -*- coding: utf-8 -*-
+"""A game about ghost hunting.
+
+Player is a ghostbuster in a haunted library.
+Game is endless, the more ghosts player hunts down, the better
+ghostbuster he is.
+"""
+
+
+import sys
+
 from pygame import init, display, quit as quit_game
 from pygame.locals import FULLSCREEN
 init()
+
 from scenes.main_scene import MainScene
 from scenes.menu_scene import MenuScene
 from scenes.gamover_scene import GameOverScene
 from utils.config import *
 
-import sys
+
+__author__ = "Daniil Efimenko"
+__copyright__ = "Copyright 2019, The Haunted_Library project"
+__credits__ = ["Daniil Efimenko", "Alexander Isaev", "Maxim Babenko"]
+__license__ = "GPL"
+__version__ = "1.1.0"
+__maintainer__ = "Daniil Efimenko"
+__email__ = "danya9104449383@gmail.com"
+__status__ = "Production"
 
 
 def init_game():

@@ -29,12 +29,14 @@ class MenuScene(Scene):
                                    topleft=Button.get_btn_pos(self.frame_btn, 2, MENU_BTN_HEIGHT))
         self.buttons = Group(self.btn_play, self.btn_continue, self.btn_quit)
 
-        self.lbl_title = Label('Haunted Library', fontsize=70,
+        self.lbl_title = Label("Haunted Library", fontsize=70,
                                centerx=self.screen_rect.centerx,
                                centery=130)
-        self.lbl_v = Label('v1.0', fontsize=20,
+        self.lbl_v = Label("v1.1", fontsize=20,
                            bottomright=self.screen_rect.bottomright)
-        self.labels = Group(self.lbl_title, self.lbl_v)
+        self.lbl_auth = Label("by Danya0x07", fontsize=20,
+                              bottomleft=self.screen_rect.bottomleft)
+        self.labels = Group(self.lbl_title, self.lbl_v, self.lbl_auth)
 
     def handle_buttons(self, position):
         for btn in self.buttons:

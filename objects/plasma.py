@@ -3,8 +3,8 @@ from pygame.sprite import Sprite, collide_rect, spritecollideany
 from random import randint
 
 from utils.util import Animation
-from utils.animages import (plasm_anim, player_plasma_image,
-                      enemy_plasma_image, boss_enemy_plasma_image)
+from utils.assets import (plasm_anim, player_plasma_image,
+                          enemy_plasma_image, boss_enemy_plasma_image)
 from utils.config import *
 
 

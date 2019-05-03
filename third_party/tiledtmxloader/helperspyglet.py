@@ -50,8 +50,6 @@ __author__ = 'DR0ID @ 2009-2011'
 
 
 import sys
-from xml.dom import minidom, Node
-import io
 import os.path
 
 import pyglet

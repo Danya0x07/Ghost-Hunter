@@ -1,4 +1,5 @@
 from pygame import Rect
+
 from utils.config import *
 
 

@@ -1,17 +1,17 @@
 from pygame import event, mouse
 from pygame.sprite import Group
 from pygame.locals import *
-from tiledtmxloader import tmxreader, helperspygame
+from third_party.tiledtmxloader import helperspygame, tmxreader
 
 from scenes.scene import Scene
-from utils.camera import Camera
-from utils.interface import DataDisplayer
-from utils.config import *
-from objects.decor import Sofa, Flower
+from objects.decor import Furniture
 from objects.player import Player
 from objects.enemy import Enemy, BossEnemy
 from objects.teleport import Teleport
 from objects.health import HealthPoint
+from utils.camera import Camera
+from utils.data_displayer import DataDisplayer
+from utils.config import *
 
 
 class MainScene(Scene):
@@ -55,9 +55,9 @@ class MainScene(Scene):
             elif obj_type == 'hspawn':
                 self.hp_spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
             elif obj_type == 'sofa':
-                self.furniture.add(Sofa(obj.x, obj.y))
+                self.furniture.add(Furniture('sofa', obj.x, obj.y))
             elif obj_type == 'flower':
-                self.furniture.add(Flower(obj.x, obj.y - WALL_HEIGHT))
+                self.furniture.add(Furniture('flower', obj.x, obj.y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_spawn_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 

@@ -5,6 +5,7 @@ from scenes.scene import Scene
 from utils.interface import Button, Label
 from utils.config import *
 
+
 class GameOverScene(Scene):
 
     def __init__(self, screen, stats):

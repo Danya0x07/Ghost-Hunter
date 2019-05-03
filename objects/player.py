@@ -4,9 +4,8 @@ from pygame.locals import *
 from objects.trap import Trap
 from objects.plasma import PlayerPlasma
 from utils.util import EventTimer, handle_collision, calc_distance, shoot
-from utils.animages import player_images
-from utils.sounds import (player_walk_sound, player_shoot_sound, player_auch_sound,
-                          trap_down_sound, trap_up_sound)
+from utils.assets import (player_images, player_walk_sound, player_shoot_sound,
+                          player_auch_sound, trap_down_sound, trap_up_sound)
 from utils.config import *
 
 

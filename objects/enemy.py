@@ -5,8 +5,8 @@ from random import randint, choice
 from objects.plasma import Plasma, BossPlasma
 from utils.util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
 from utils.interface import Label
-from utils.animages import enemy_images, boss_enemy_images, enemy_dying_anim
-from utils.sounds import enemy_shoot_sound, enemy_auch_sound
+from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
+                          enemy_shoot_sound, enemy_auch_sound)
 from utils.config import *
 
 

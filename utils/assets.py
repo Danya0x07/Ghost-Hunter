@@ -1,8 +1,10 @@
 from pygame.image import load
+from pygame.mixer import Sound
 from pygame.transform import rotate
 from pyganim import getImagesFromSpriteSheet
 
-print("Загрузка файлов изображений...")
+
+print("Загрузка ресурсов...")
 
 p_img = load('resources/hunter.png')
 player_images = (p_img, rotate(p_img, 90), rotate(p_img, 180), rotate(p_img, 270))
@@ -14,10 +16,10 @@ player_plasma_image = load('resources/pplasma.png')
 heal_image = load('resources/heal.png')
 
 enemy_images = getImagesFromSpriteSheet('resources/ghost.png',
-64, 64, 1, 4, [(0, 0, 64, 64),
-               (64, 0, 64, 64),
-               (128, 0, 64, 64),
-               (192, 0, 64, 64)]
+    64, 64, 1, 4, [(0, 0, 64, 64),
+                   (64, 0, 64, 64),
+                   (128, 0, 64, 64),
+                   (192, 0, 64, 64)]
 )
 
 boss_enemy_images = getImagesFromSpriteSheet('resources/bossghost.png',
@@ -64,4 +66,17 @@ plasm_anim = getImagesFromSpriteSheet('resources/explasm.png',
                    (64, 0, 32, 32)]
 )
 
-print("Файлы изображений загружены.")
+# звуки
+enemy_shoot_sound = Sound('resources/gshoot.wav')
+enemy_auch_sound = Sound('resources/gauch.wav')
+player_auch_sound = Sound('resources/auch.wav')
+player_shoot_sound = Sound('resources/pshoot.wav')
+player_walk_sound = Sound('resources/walk.wav')
+trap_down_sound = Sound('resources/trapdown.wav')
+trap_up_sound = Sound('resources/trapup.wav')
+furniture_breaking_sound = Sound('resources/break.wav')
+teleport_sound = Sound('resources/teleport.wav')
+heal_sound = Sound('resources/heal.wav')
+
+
+print("Готово.")

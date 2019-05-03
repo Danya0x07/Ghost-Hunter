@@ -5,6 +5,8 @@ init()
 from scenes import MainScene, Menu, GameOverScene
 from config import *
 
+import sys
+
 
 def init_game():
     screen = display.set_mode(SCREEN_SIZE, FULLSCREEN)
@@ -13,6 +15,9 @@ def init_game():
 
 
 if __name__ == '__main__':
+    if sys.platform == 'win32':
+        from ctypes import windll
+        windll.shcore.SetProcessDpiAwareness(1)
     screen = init_game()
     menu = Menu(screen)
     game = MainScene(screen)

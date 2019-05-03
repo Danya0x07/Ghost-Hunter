@@ -2,7 +2,7 @@ from pygame import Surface
 from pygame.sprite import Sprite, Group
 from pygame.font import Font
 
-from config import *
+from utils.config import *
 
 
 class Button(Sprite):

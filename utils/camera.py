@@ -1,5 +1,5 @@
 from pygame import Rect
-from config import *
+from utils.config import *
 
 
 class Camera:

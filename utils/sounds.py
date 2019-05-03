@@ -1,5 +1,6 @@
 from pygame.mixer import Sound
 
+print("Загрузка звуковых файлов...")
 
 enemy_shoot_sound = Sound('resources/gshoot.wav')
 enemy_auch_sound = Sound('resources/gauch.wav')
@@ -11,3 +12,5 @@ trap_up_sound = Sound('resources/trapup.wav')
 furniture_breaking_sound = Sound('resources/break.wav')
 teleport_sound = Sound('resources/teleport.wav')
 heal_sound = Sound('resources/heal.wav')
+
+print("Звуковые файлы загружены")

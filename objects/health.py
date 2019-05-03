@@ -2,9 +2,9 @@ from pygame.sprite import Sprite, collide_rect
 
 from random import randint, choice
 
-from animages import heal_image
-from sounds import heal_sound
-from config import *
+from utils.animages import heal_image
+from utils.sounds import heal_sound
+from utils.config import *
 
 
 class HealthPoint(Sprite):

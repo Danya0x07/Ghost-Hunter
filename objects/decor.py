@@ -1,8 +1,8 @@
 from pygame.sprite import Sprite
 
-from animages import sofa_images, flower_images
-from sounds import furniture_breaking_sound
-from config import *
+from utils.animages import sofa_images, flower_images
+from utils.sounds import furniture_breaking_sound
+from utils.config import *
 
 
 class Sofa(Sprite):

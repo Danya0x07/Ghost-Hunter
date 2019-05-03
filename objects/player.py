@@ -1,13 +1,13 @@
 from pygame.sprite import Sprite, spritecollideany
 from pygame.locals import *
 
-from util import EventTimer, handle_collision, calc_distance, shoot
-from trap import Trap
-from plasma import PlayerPlasma
-from animages import player_images
-from sounds import (player_walk_sound, player_shoot_sound, player_auch_sound,
-                    trap_down_sound, trap_up_sound)
-from config import *
+from objects.trap import Trap
+from objects.plasma import PlayerPlasma
+from utils.util import EventTimer, handle_collision, calc_distance, shoot
+from utils.animages import player_images
+from utils.sounds import (player_walk_sound, player_shoot_sound, player_auch_sound,
+                          trap_down_sound, trap_up_sound)
+from utils.config import *
 
 
 class Player(Sprite):

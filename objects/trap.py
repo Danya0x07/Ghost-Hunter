@@ -1,8 +1,8 @@
 from pygame.sprite import Sprite, spritecollideany
 
-from util import EventTimer, handle_collision, Animation
-from animages import trap_images, plasm_anim
-from config import *
+from utils.util import EventTimer, handle_collision, Animation
+from utils.animages import trap_images, plasm_anim
+from utils.config import *
 
 
 class Trap(Sprite):

@@ -2,7 +2,7 @@ from pygame.image import load
 from pygame.transform import rotate
 from pyganim import getImagesFromSpriteSheet
 
-print("Загрузка ресурсов...")
+print("Загрузка файлов изображений...")
 
 p_img = load('resources/hunter.png')
 player_images = (p_img, rotate(p_img, 90), rotate(p_img, 180), rotate(p_img, 270))
@@ -64,4 +64,4 @@ plasm_anim = getImagesFromSpriteSheet('resources/explasm.png',
                    (64, 0, 32, 32)]
 )
 
-print("Готово.")
+print("Файлы изображений загружены.")

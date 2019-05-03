@@ -2,8 +2,10 @@
 from pygame import init, display, quit as quit_game
 from pygame.locals import FULLSCREEN
 init()
-from scenes import MainScene, Menu, GameOverScene
-from config import *
+from scenes.main_scene import MainScene
+from scenes.menu_scene import MenuScene
+from scenes.gamover_scene import GameOverScene
+from utils.config import *
 
 import sys
 
@@ -19,7 +21,7 @@ if __name__ == '__main__':
         from ctypes import windll
         windll.shcore.SetProcessDpiAwareness(1)
     screen = init_game()
-    menu = Menu(screen)
+    menu = MenuScene(screen)
     game = MainScene(screen)
     while True:
         event_code = menu.mainloop()
@@ -34,4 +36,4 @@ if __name__ == '__main__':
                 event_code = game.mainloop()
             if event_code == 'gameover':
                 GameOverScene(screen, game.stats).mainloop()
-                menu = Menu(screen)
+                menu = MenuScene(screen)

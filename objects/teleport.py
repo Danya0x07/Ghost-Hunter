@@ -1,9 +1,9 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
 
-from util import EventTimer
-from animages import teleport_images
-from sounds import teleport_sound
-from config import *
+from utils.util import EventTimer
+from utils.animages import teleport_images
+from utils.sounds import teleport_sound
+from utils.config import *
 
 
 class Teleport(Sprite):

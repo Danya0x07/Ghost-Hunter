@@ -2,12 +2,12 @@ from pygame.sprite import Sprite, spritecollideany
 
 from random import randint, choice
 
-from util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
-from plasma import Plasma, BossPlasma
-from interface import Label
-from animages import enemy_images, boss_enemy_images, enemy_dying_anim
-from sounds import enemy_shoot_sound, enemy_auch_sound
-from config import *
+from objects.plasma import Plasma, BossPlasma
+from utils.util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
+from utils.interface import Label
+from utils.animages import enemy_images, boss_enemy_images, enemy_dying_anim
+from utils.sounds import enemy_shoot_sound, enemy_auch_sound
+from utils.config import *
 
 
 class Enemy(Sprite):

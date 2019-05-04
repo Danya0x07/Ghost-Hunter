@@ -6,7 +6,6 @@ Game is endless, the more ghosts player hunts down, the better
 ghostbuster he is.
 """
 
-
 import sys
 
 from pygame import init, display, quit as quit_game

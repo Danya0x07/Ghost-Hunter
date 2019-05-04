@@ -9,8 +9,8 @@ def shoot(rel_rect, tgt_pos, plasm_spd):
         y_vel = plasm_spd if dy > 0 else -plasm_spd
     else:
         angle = atan(dy / dx)
-        x_vel = int(cos(angle) * plasm_spd)
-        y_vel = int(sin(angle) * plasm_spd)
+        x_vel = cos(angle) * plasm_spd
+        y_vel = sin(angle) * plasm_spd
         if tgt_pos[0] < rel_rect.centerx:
             x_vel = -x_vel
             y_vel = -y_vel

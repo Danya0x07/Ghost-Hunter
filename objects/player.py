@@ -66,11 +66,11 @@ class Player(Sprite):
         if right: self.x_vel = PLAYER_SPEED
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
-        self.rect.x += self.x_vel
+        self.rect.x += int(self.x_vel * scene.delta_time)
         self.collide(scene, self.x_vel, 0)
-        self.rect.y += self.y_vel
+        self.rect.y += int(self.y_vel * scene.delta_time)
         self.collide(scene, 0, self.y_vel)
-        self.pkl_timer.update(PKL_UPDATE_TIMEOUT, (scene.enemies,))
+        self.pkl_timer.update(PKL_UPDATE_TIMEOUT * scene.delta_time, (scene.enemies,))
         if self.x_vel == 0 and self.y_vel == 0:
             player_walk_sound.stop()
             self.walk_sound_playing = False
@@ -103,8 +103,8 @@ class Player(Sprite):
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
 
 
-    def shoot(self, rel_rect, m_pos, plasmas):
-        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
+    def shoot(self, rel_rect, m_pos, plasmas, delta):
+        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED * delta)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
         player_shoot_sound.play()
 

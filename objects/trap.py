@@ -21,7 +21,7 @@ class Trap(Sprite):
             self.image = self.images[1]
 
     def update(self, scene):
-        self.anim_timer.update(TRAP_ANIM_TIMEOUT, ())
+        self.anim_timer.update(int(TRAP_ANIM_TIMEOUT * scene.delta_time), ())
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(TRAP_OFFSET)

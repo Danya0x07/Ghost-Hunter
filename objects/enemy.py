@@ -59,13 +59,14 @@ class Enemy(Sprite):
             self.image = self.images[0]
 
     def update(self, scene):
-        self.frame_rect.x += self.x_vel
+        self.frame_rect.x += int(self.x_vel * scene.delta_time)
         self.collide(scene, self.x_vel, 0)
-        self.frame_rect.y += self.y_vel
+        self.frame_rect.y += int(self.y_vel * scene.delta_time)
         self.collide(scene, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
-        self.veer_timer.update(self.veer_timeout)
-        self.shoot_timer.update(self.SHOOT_TIMEOUT, (scene.player.rect, scene.plasmas))
+        self.veer_timer.update(int(self.veer_timeout * scene.delta_time))
+        self.shoot_timer.update(int(self.SHOOT_TIMEOUT * scene.delta_time),
+                                (scene.player.rect, scene.plasmas, scene.delta_time))
         if not self.is_alive:
             scene.player.score += self.KILL_AWARD
             scene.animations.append(Animation(enemy_dying_anim, self.rect.center, 30, 10))
@@ -94,10 +95,10 @@ class Enemy(Sprite):
         self.change_direction(self.x_vel, self.y_vel)
         self.veer_timeout = randint(*self.VEER_TIMEOUT)
 
-    def shoot(self, tgt_rect, plasmas):
-        if calc_distance(self.rect, tgt_rect) <= ENEMY_MIN_SHOOT_DISTANCE:
+    def shoot(self, tgt_rect, plasmas, delta):
+        if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
-            x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
+            x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED * delta)
             plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
 
     @classmethod

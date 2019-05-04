@@ -18,11 +18,15 @@ class Plasma(Sprite):
         self.x_vel = x_vel
         self.y_vel = y_vel
 
-    def update(self, scene):
-        self.rect.move_ip(self.x_vel, self.y_vel)
+    def move(self, scene):
+        self.rect.x += round(self.x_vel * scene.delta_time)
+        self.rect.y += round(self.y_vel * scene.delta_time)
         for wall in scene.walls:
             if self.rect.colliderect(wall):
                 scene.plasmas.remove(self)
+
+    def update(self, scene):
+        self.move(scene)
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(randint(*self.offset))
@@ -44,10 +48,7 @@ class PlayerPlasma(Plasma):
     offset = PLAYER_PLASMA_OFFSET
 
     def update(self, scene):
-        self.rect.move_ip(self.x_vel, self.y_vel)
-        for wall in scene.walls:
-            if self.rect.colliderect(wall):
-                scene.plasmas.remove(self)
+        self.move(scene)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(randint(*self.offset))

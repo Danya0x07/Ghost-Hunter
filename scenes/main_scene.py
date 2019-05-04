@@ -32,6 +32,7 @@ class MainScene(Scene):
         self.camera = Camera(TOTAL_LEVEL_SIZE)
         self.create_map('library_map_2.tmx')
         self.stats = DataDisplayer()
+        self.delta_time = 10
         self.wave = 0
 
     def create_map(self, mapname):
@@ -76,7 +77,8 @@ class MainScene(Scene):
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
             elif e.type == MOUSEBUTTONDOWN:
-                self.player.shoot(self.camera.apply(self.player), mouse.get_pos(), self.plasmas)
+                self.player.shoot(self.camera.apply(self.player), mouse.get_pos(),
+                                  self.plasmas, self.delta_time)
 
         if not self.player.is_alive:
             self.return_code = 'gameover'
@@ -90,6 +92,7 @@ class MainScene(Scene):
                 Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave)
 
     def update_objects(self):
+        self.delta_time = self.clock.get_time()
         self.furniture.update(self)
         self.player.update(self)
         self.enemies.update(self)

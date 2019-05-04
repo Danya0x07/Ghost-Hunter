@@ -43,7 +43,7 @@ class Teleport(Sprite):
             if spritecollideany(self, scene.enemies, lambda s1, s2: s1.rect.colliderect(s2.frame_rect)):
                 is_overlayed = True
             self.active = not is_overlayed
-        self.anim_timer.update(TELEPORT_ANIM_TIMEOUT, ())
+        self.anim_timer.update(int(TELEPORT_ANIM_TIMEOUT * scene.delta_time), ())
 
     @staticmethod
     def get_tp_by_id(group, id):

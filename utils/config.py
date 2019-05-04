@@ -1,63 +1,96 @@
+"""Файл игровых констант.
+
+Здесь описаны игровые константы, изменяя
+которые, можно изменять поведение игры.
+Дробные значения относительны.
+Целые значения могут быть только целыми.
+В диапазонах должен соблюдаться порядок (меньшее, большее).
+Изменение значения на некорректное может сломать игру.
+"""
+
 from pygame import Color
 from pygame.display import Info as DisplayInfo
 
 
+# Экран
 di = DisplayInfo()
-SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (di.current_w, di.current_h)
+SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (di.current_w, di.current_h)  # Или так,
+#SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (800, 600)  # или так.
+FPS = 60  # Макс. кол-во кадров в секунду
+#-------------------------------------------------------------------------------
+
+# Служебное, тут лучше ничего не менять.
 CENTER_OF_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 WALL_SIZE = (WALL_WIDTH, WALL_HEIGHT) = (50, 50)
 TOTAL_LEVEL_SIZE = (WALL_WIDTH * 50, WALL_HEIGHT * 50)
-FPS = 60
+#-------------------------------------------------------------------------------
 
-MENU_BG_COLOR = Color('#333377')
-MENU_BTN_SIZE = (MENU_BTN_WIDTH, MENU_BTN_HEIGHT) = (500, 160)
-MENU_BTN_FONT_SIZE = 60
+# Меню
+MENU_BG_COLOR = Color('#333377')  # Цвет фона
+MENU_BTN_SIZE = (MENU_BTN_WIDTH, MENU_BTN_HEIGHT) = (500, 160)  # Размер кнопок
+MENU_BTN_FONT_SIZE = 60  # Размер шрифта кнопок
+#-------------------------------------------------------------------------------
 
-BTN_TXT_USUAL_COLOR = Color('#FFFFFF')
-BTN_TXT_SELECTED_COLOR = Color('#FF8888')
-BTN_TXT_INACTIVE_COLOR = Color('#AAAAAA')
-BTN_BG_COLOR = Color('#555577')
+# Кнопки
+BTN_TXT_USUAL_COLOR = Color('#FFFFFF')   # Цвет обычного текста для кнопок
+BTN_TXT_SELECTED_COLOR = Color('#FF8888')   # Цвет текста кнопки, когда она под курсором
+BTN_TXT_INACTIVE_COLOR = Color('#AAAAAA')   # Цвет текста кнопки, когда она не активна
+BTN_BG_COLOR = Color('#555577')   # Цвет фона кнопки
+#-------------------------------------------------------------------------------
 
-LBL_TXT_DEFAULT_COLOR = Color('#FFFFFF')
+# Текстовые метки
+LBL_TXT_DEFAULT_COLOR = Color('#FFFFFF')   # Цвет обычного текста меток
+#-------------------------------------------------------------------------------
 
-PLAYER_SPEED = 7
-PLAYER_HP_MAX = 100
+# Игрок
+PLAYER_SPEED = 0.43   # Скорость перемещения
+PLAYER_HP_MAX = 100   # Здоровье
+PLAYER_PLASMA_SPEED = 0.06   # Скорость плазмы
+PLAYER_PLASMA_OFFSET = (-20, -10)   # Диапазон урона от плазмы
+#-------------------------------------------------------------------------------
 
-PLAYER_PLASMA_SPEED = 15
-PLAYER_PLASMA_OFFSET = (-20, -10)
+# Привидение
+ENEMY_SPEED = 0.42   # Скорость перемещения
+ENEMY_FRAME_SIZE = (84, 84)   # Размер рамки для столкновений
+ENEMY_SHOOT_TIMEOUT = 1.5   # Задержка между выстрелами
+ENEMY_VEER_TIMEOUT = (100, 300)   # Диапазон задержки между автоматическими сменами курса
+ENEMY_MAX_SHOOT_DISTANCE = 600   # Макс. дальнобойность
+ENEMY_HP_MAX = 100   # Здоровье
+ENEMY_HP_SHOWING_TIMEOUT = 240   # Длительность отображения здоровья
+ENEMY_PLASMA_SPEED = 0.06   # Скорость плазмы
+ENEMY_PLASMA_OFFSET = (-15, -5)   # Диапазон урона от плазмы
+#-------------------------------------------------------------------------------
 
-ENEMY_SPEED = 5
-ENEMY_FRAME_SIZE = (84, 84)
-ENEMY_SHOOT_TIMEOUT = 35
-ENEMY_VEER_TIMEOUT = (100, 300)
-ENEMY_MIN_SHOOT_DISTANCE = 400
-ENEMY_HP_MAX = 100
-ENEMY_HP_SHOWING_TIMEOUT = 240
+# Привидение-босс
+BOSS_ENEMY_SPEED = 0.4   # Скорость перемещения
+BOSS_ENEMY_FRAME_SIZE = (90, 90)   # Размер рамки для столкновений
+BOSS_ENEMY_SHOOT_TIMEOUT = 1.5   # Задержка между выстрелами
+BOSS_ENEMY_VEER_TIMEOUT = (100, 300)   # Диапазон задержки между автоматическими сменами курса
+BOSS_ENEMY_HP_MAX = 300   # Здоровье
+BOSS_ENEMY_SPAWN_DELAY = 3   # Раз во сколько волн появляется
+BOSS_ENEMY_PLASMA_SPEED = 0.13   # Скорость плазмы
+BOSS_ENEMY_PLASMA_OFFSET = (-20, -10)   # Диапазон урона от плазмы
+#-------------------------------------------------------------------------------
 
-BOSS_ENEMY_SPEED = 4
-BOSS_ENEMY_FRAME_SIZE = (90, 90)
-BOSS_ENEMY_SHOOT_TIMEOUT = 30
-BOSS_ENEMY_VEER_TIMEOUT = (100, 300)
-BOSS_ENEMY_MIN_SHOOT_DISTANCE = 500
-BOSS_ENEMY_HP_MAX = 300
-BOSS_ENEMY_SPAWN_DELAY = 3
+# Ловушка
+TRAP_OFFSET = -25   # Урон
+TRAP_ANIM_TIMEOUT = 0.45   # Задержка анимации
+#-------------------------------------------------------------------------------
 
-ENEMY_PLASMA_SPEED = 13
-ENEMY_PLASMA_OFFSET = (-15, -5)
+# Телепорт
+TELEPORT_ANIM_TIMEOUT = 0.6   # Задержка анимации
+#-------------------------------------------------------------------------------
 
-BOSS_ENEMY_PLASMA_SPEED = 11
-BOSS_ENEMY_PLASMA_OFFSET = (-20, -10)
+# Датчик ПК-активности
+PKL_MAX_DISTANCE = 1700   # Макс. расстояние обнаружения
+PKL_UPDATE_TIMEOUT = 0.6   # Задержка между обновлениями значения
+#-------------------------------------------------------------------------------
 
-TRAP_TIMEOUT = 40
-TRAP_OFFSET = -15
-TRAP_ANIM_TIMEOUT = FPS // 2
+# Сгустки позитива
+HEALTHPOINT_OFFSET_RANGE = (17, 25)   # Диапазон
+HEALTHPOINT_NUMBER = 2   # Постоянное кол-во на карте
+#-------------------------------------------------------------------------------
 
-TELEPORT_ANIM_TIMEOUT = FPS // 4
-
-PKL_MAX_DISTANCE = 1700
-PKL_UPDATE_TIMEOUT = 60
-
-HEALTHPOINT_OFFSET_RANGE = (20, 30)
-HEALTHPOINT_NUMBER = 2
-
-FURNITURE_HP = 100
+# Мебель
+FURNITURE_HP = 100   # Здоровье
+#-------------------------------------------------------------------------------

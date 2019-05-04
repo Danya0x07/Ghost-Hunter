@@ -40,15 +40,16 @@ def handle_collision(object_rect, obstacle_rect, x_vel, y_vel):
 class EventTimer:
     """Таймер регулярного повторения."""
 
-    def __init__(self, handler):
+    def __init__(self, handler, timeout):
         self.handler = handler
+        self.timeout = timeout
         self.counter = 0
 
-    def update(self, timeout, args=()):
-        if self.counter >= timeout:
+    def update(self, delta, args=()):
+        if self.counter >= self.timeout:
             self.counter = 0
             self.handler(*args)
-        else: self.counter += 1
+        else: self.counter += delta
 
 
 class CountdownTimer:
@@ -58,10 +59,10 @@ class CountdownTimer:
         self.handler = handler
         self.counter = timeout
 
-    def update(self, *args):
+    def update(self, delta, args=()):
         if self.counter > 0:
             self.handler(*args)
-            self.counter -= 1
+            self.counter -= delta
 
     def restart(self, new_timeout):
         self.counter = new_timeout
@@ -76,9 +77,8 @@ class UltimateAnimation:
         self.current_im_index = 0
         self.image = images[0]
         self.rect = self.image.get_rect(center=position)
-        self.timer = EventTimer(self.update_img)
+        self.timer = EventTimer(self.update_img, timeout)
         self.lifetime = lifetime
-        self.timeout = timeout
 
     def update_img(self):
         self.image = self.images[self.current_im_index]
@@ -88,7 +88,7 @@ class UltimateAnimation:
 
     def draw(self, scene):
         scene.screen.blit(self.image, scene.camera.apply(self.rect))
-        self.timer.update(self.timeout * scene.delta_time)
+        self.timer.update(scene.delta_time)
         self.lifetime -= 1
         if self.lifetime <= 0:
             scene.animations.remove(self)

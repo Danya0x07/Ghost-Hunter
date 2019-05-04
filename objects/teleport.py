@@ -19,7 +19,7 @@ class Teleport(Sprite):
         self.tgt_id = tgt_id
         self.active = True
         self.current_anim_id = 0
-        self.anim_timer = EventTimer(self._change_anim)
+        self.anim_timer = EventTimer(self._change_anim, TELEPORT_ANIM_TIMEOUT)
 
     def _change_anim(self):
         """Вращение."""
@@ -44,7 +44,7 @@ class Teleport(Sprite):
             if spritecollideany(self, scene.enemies, lambda s1, s2: s1.rect.colliderect(s2.frame_rect)):
                 is_overlayed = True
             self.active = not is_overlayed
-        self.anim_timer.update(int(TELEPORT_ANIM_TIMEOUT * scene.delta_time), ())
+        self.anim_timer.update(scene.delta_time)
 
     @staticmethod
     def get_tp_by_id(group, teleport_id):

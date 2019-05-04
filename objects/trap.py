@@ -14,7 +14,7 @@ class Trap(Sprite):
         super().__init__()
         self.image = self.images[0]
         self.rect = self.image.get_rect(center=center)
-        self.anim_timer = EventTimer(self.change_img)
+        self.anim_timer = EventTimer(self.change_img, TRAP_ANIM_TIMEOUT)
 
     def change_img(self):
         """Мигание."""
@@ -24,7 +24,7 @@ class Trap(Sprite):
             self.image = self.images[1]
 
     def update(self, scene):
-        self.anim_timer.update(int(TRAP_ANIM_TIMEOUT * scene.delta_time), ())
+        self.anim_timer.update(scene.delta_time)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(TRAP_OFFSET)

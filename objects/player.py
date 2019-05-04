@@ -26,7 +26,7 @@ class Player(Sprite):
         self.score = 0
         self.is_alive = True
         self.pk_level = 0
-        self.pkl_timer = EventTimer(self._refresh_pkl)
+        self.pkl_timer = EventTimer(self._refresh_pkl, PKL_UPDATE_TIMEOUT)
 
     def shift_hp(self, offset):
         """Измененить значение здоровья на offset."""
@@ -74,7 +74,7 @@ class Player(Sprite):
         self.collide(scene, self.x_vel, 0)
         self.rect.y += int(self.y_vel * scene.delta_time)
         self.collide(scene, 0, self.y_vel)
-        self.pkl_timer.update(PKL_UPDATE_TIMEOUT * scene.delta_time, (scene.enemies,))
+        self.pkl_timer.update(scene.delta_time, (scene.enemies,))
         if self.x_vel == 0 and self.y_vel == 0:
             player_walk_sound.stop()
             self.walk_sound_playing = False

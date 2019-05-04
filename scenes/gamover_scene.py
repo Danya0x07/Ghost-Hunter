@@ -14,7 +14,7 @@ class GameOverScene(Scene):
         self.stats = stats
         self.btn_back = Button("to menu", 'tomenu',
                                rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
-        self.lbl_gameover = Label("Game Over!", 50, midbottom=self.screen_rect.center)
+        self.lbl_gameover = Label("Game Over!", 70, midbottom=self.screen_rect.center)
 
     def check_events(self):
         for e in event.get():

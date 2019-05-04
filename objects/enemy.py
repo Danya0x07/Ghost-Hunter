@@ -13,13 +13,13 @@ from utils.config import *
 class Enemy(Sprite):
     """Привидение"""
 
-    FRAME_SIZE = ENEMY_FRAME_SIZE
-    VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
-    SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
-    SPEED = ENEMY_SPEED
-    HP = ENEMY_HP_MAX
-    PLASMA_TYPE = Plasma
-    KILL_AWARD = 1
+    frame_size = ENEMY_FRAME_SIZE
+    veer_timeout = ENEMY_VEER_TIMEOUT
+    shoot_timeout = ENEMY_SHOOT_TIMEOUT
+    speed = ENEMY_SPEED
+    hp = ENEMY_HP_MAX
+    plasma_type = Plasma
+    kill_award = 1
     images = enemy_images
 
     def __init__(self, x, y):
@@ -28,11 +28,9 @@ class Enemy(Sprite):
         self.y_vel = 0
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)
-        self.veer_timer = EventTimer(self.veer)
-        self.veer_timeout = 120
-        self.shoot_timer = EventTimer(self.shoot)
-        self.hp = self.HP
+        self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
+        self.veer_timer = EventTimer(self.veer, self.veer_timeout[0])
+        self.shoot_timer = EventTimer(self.shoot, self.shoot_timeout)
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
         self.lbl_hp_showing_timer = CountdownTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
         self.is_alive = True
@@ -43,11 +41,10 @@ class Enemy(Sprite):
         self.frame_rect.y += int(self.y_vel * scene.delta_time)
         self.collide(scene, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
-        self.veer_timer.update(int(self.veer_timeout * scene.delta_time))
-        self.shoot_timer.update(int(self.SHOOT_TIMEOUT * scene.delta_time),
-                                (scene.player.rect, scene.plasmas, scene.delta_time))
+        self.veer_timer.update(scene.delta_time)
+        self.shoot_timer.update(scene.delta_time, (scene.player.rect, scene.plasmas, scene.delta_time))
         if not self.is_alive:
-            scene.player.score += self.KILL_AWARD
+            scene.player.score += self.kill_award
             scene.animations.append(UltimateAnimation(enemy_dying_anim, self.rect.center, 30, 10))
             scene.enemies.remove(self)
 
@@ -68,7 +65,7 @@ class Enemy(Sprite):
 
     def draw_hp_if_need(self, scene):
         """Обёртка для таймера отрисовки здоровья."""
-        self.lbl_hp_showing_timer.update(scene.screen, scene.camera)
+        self.lbl_hp_showing_timer.update(scene.delta_time, (scene.screen, scene.camera))
 
     def refresh_img(self):
         """Обновить текстуру при повороте."""
@@ -85,10 +82,10 @@ class Enemy(Sprite):
         """Изменить направление движения."""
         if x_vel != 0:
             self.x_vel = 0
-            self.y_vel = choice((-self.SPEED, self.SPEED))
+            self.y_vel = choice((-self.speed, self.speed))
         else:
             self.y_vel = 0
-            self.x_vel = choice((-self.SPEED, self.SPEED))
+            self.x_vel = choice((-self.speed, self.speed))
         self.refresh_img()
 
     def collide(self, scene, x_vel, y_vel):
@@ -105,14 +102,14 @@ class Enemy(Sprite):
     def veer(self):
         """Обёртка для таймера блуждания"""
         self.change_direction(self.x_vel, self.y_vel)
-        self.veer_timeout = randint(*self.VEER_TIMEOUT)
+        self.veer_timer.timeout = randint(*self.veer_timeout)
 
     def shoot(self, tgt_rect, plasmas, delta):
         """Стрельба."""
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
             x_vel, y_vel = shoot(self.rect.center, tgt_rect.center, ENEMY_PLASMA_SPEED)
-            plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
+            plasmas.add(self.plasma_type(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
@@ -125,11 +122,11 @@ class Enemy(Sprite):
 class BossEnemy(Enemy):
     """Привидение-босс"""
 
-    FRAME_SIZE = BOSS_ENEMY_FRAME_SIZE
-    VEER_TIMEOUT = BOSS_ENEMY_VEER_TIMEOUT
-    SHOOT_TIMEOUT = BOSS_ENEMY_SHOOT_TIMEOUT
-    SPEED = BOSS_ENEMY_SPEED
-    HP = BOSS_ENEMY_HP_MAX
-    PLASMA_TYPE = BossPlasma
-    KILL_AWARD = 3
+    frame_size = BOSS_ENEMY_FRAME_SIZE
+    veer_timeout = BOSS_ENEMY_VEER_TIMEOUT
+    shoot_timeout = BOSS_ENEMY_SHOOT_TIMEOUT
+    speed = BOSS_ENEMY_SPEED
+    hp = BOSS_ENEMY_HP_MAX
+    plasma_type = BossPlasma
+    kill_award = 3
     images = boss_enemy_images

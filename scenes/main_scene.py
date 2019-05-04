@@ -23,13 +23,13 @@ class MainScene(Scene):
         self.walls = []
         self.enemy_spawn_positions = []
         self.hp_spawn_positions = []
-        self.animations = []
         self.furniture = Group()
         self.enemies = Group()
         self.plasmas = Group()
         self.traps = Group()
         self.teleports = Group()
         self.healthpoints = Group()
+        self.animations = Group()
         self.camera = Camera(TOTAL_LEVEL_SIZE)
         self.create_map('library_map_2.tmx')
         self.stats = DataDisplayer()
@@ -101,15 +101,12 @@ class MainScene(Scene):
         self.traps.update(self)
         self.teleports.update(self)
         self.healthpoints.update(self)
+        self.animations.update(self)
         self.camera.update(self.player)
         ctr_offset = self.camera.reverse(CENTER_OF_SCREEN)
         self.renderer.set_camera_position_and_size(ctr_offset[0], ctr_offset[1],
                                                    *SCREEN_SIZE, "center")
         self.stats.update(self)
-
-    def draw_group(self, group):
-        for obj in group:
-            self.screen.blit(obj.image, self.camera.apply(obj.rect))
 
     def draw_objects(self):
         self.renderer.render_layer(self.screen, self.bg_layer)
@@ -120,9 +117,11 @@ class MainScene(Scene):
         self.draw_group(self.plasmas)
         self.screen.blit(self.player.image, self.camera.apply(self.player.rect))
         self.draw_group(self.enemies)
+        self.draw_group(self.animations)
         for e in self.enemies:
             e.draw_hp_if_need(self)
-        for a in self.animations:
-            a.draw(self)
         self.stats.draw(self.screen)
 
+    def draw_group(self, group):
+        for obj in group:
+            self.screen.blit(obj.image, self.camera.apply(obj.rect))

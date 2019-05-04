@@ -1,6 +1,8 @@
 from pygame.sprite import Sprite, spritecollideany
 
-from utils.util import EventTimer, handle_collision, UltimateAnimation
+from utils.util import handle_collision
+from utils.ultimate_animation import UltimateAnimation
+from utils.timers import EventTimer
 from utils.assets import trap_images, plasm_anim
 from utils.config import *
 
@@ -28,10 +30,10 @@ class Trap(Sprite):
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(TRAP_OFFSET)
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             handle_collision(enemy.frame_rect, self.rect, enemy.x_vel, enemy.y_vel)
             enemy.change_direction(enemy.x_vel, enemy.y_vel)
         plasm = spritecollideany(self, scene.plasmas)
         if plasm:
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(plasm)

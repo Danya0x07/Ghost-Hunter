@@ -2,7 +2,7 @@ from random import randint
 
 from pygame.sprite import Sprite, collide_rect, spritecollideany
 
-from utils.util import UltimateAnimation
+from utils.ultimate_animation import UltimateAnimation
 from utils.assets import (plasm_anim, player_plasma_image,
                           enemy_plasma_image, boss_enemy_plasma_image)
 from utils.config import *
@@ -32,11 +32,11 @@ class Plasma(Sprite):
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(randint(*self.offset))
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(self)
         if collide_rect(self, scene.player):
             scene.player.shift_hp(randint(*self.offset))
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(self)
 
 
@@ -58,10 +58,10 @@ class PlayerPlasma(Plasma):
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(randint(*self.offset))
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(self)
         furn = spritecollideany(self, scene.furniture)
         if furn:
             furn.shift_hp(self.offset[1])
-            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
+            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(self)

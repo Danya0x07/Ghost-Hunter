@@ -3,7 +3,9 @@ from random import randint, choice
 from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
-from utils.util import calc_distance, handle_collision, shoot, EventTimer, CountdownTimer, UltimateAnimation
+from utils.util import calc_distance, handle_collision, shoot
+from utils.timers import EventTimer, CountdownTimer
+from utils.ultimate_animation import UltimateAnimation
 from utils.interface import Label
 from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
                           enemy_shoot_sound, enemy_auch_sound)
@@ -45,7 +47,7 @@ class Enemy(Sprite):
         self.shoot_timer.update(scene.delta_time, (scene.player.rect, scene.plasmas, scene.delta_time))
         if not self.is_alive:
             scene.player.score += self.kill_award
-            scene.animations.append(UltimateAnimation(enemy_dying_anim, self.rect.center, 30, 10))
+            UltimateAnimation(scene.animations, enemy_dying_anim, self.rect.center, 30, 10)
             scene.enemies.remove(self)
 
     def shift_hp(self, offset):

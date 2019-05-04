@@ -1,7 +1,7 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
 from pygame.transform import rotate
 
-from utils.util import EventTimer
+from utils.timers import EventTimer
 from utils.assets import teleport_images, teleport_sound
 from utils.config import *
 

@@ -6,6 +6,7 @@ from utils.config import *
 
 
 class Button(Sprite):
+    """Прямоугольная кнопка."""
 
     def __init__(self, text, id, rectsize, fontsize, active=True, **kwargs):
         super().__init__()
@@ -25,19 +26,20 @@ class Button(Sprite):
     def check_pressed(self, position):
         return self.active and self.tile_rect.collidepoint(*position)
 
-    def refresh_txt_img(self, txt_color):
+    def _refresh_txt_img(self, txt_color):
+        """Изменить цвет текста кнопки."""
         if self.txt_color != txt_color:
             self.txt_color = txt_color
             self.txt_image = self.font.render(self.text, True, txt_color, BTN_BG_COLOR)
 
     def update(self, position):
         if not self.active:
-            self.refresh_txt_img(BTN_TXT_INACTIVE_COLOR)
+            self._refresh_txt_img(BTN_TXT_INACTIVE_COLOR)
             return
         if self.tile_rect.collidepoint(*position):
-            self.refresh_txt_img(BTN_TXT_SELECTED_COLOR)
+            self._refresh_txt_img(BTN_TXT_SELECTED_COLOR)
         else:
-            self.refresh_txt_img(BTN_TXT_USUAL_COLOR)
+            self._refresh_txt_img(BTN_TXT_USUAL_COLOR)
 
     def draw(self, surface):
         self.tile_image.blit(self.txt_image, self.txt_rect)
@@ -49,10 +51,12 @@ class Button(Sprite):
 
     @staticmethod
     def get_btn_pos(frame, position, height):
+        """Получить абсолютные координаты кнопки по данным рамки."""
         return frame.left, frame.top + position * height
 
 
 class Label(Sprite):
+    """Текстовая метка."""
 
     def __init__(self, text, fontsize, color=LBL_TXT_DEFAULT_COLOR, **kwargs):
         super().__init__()

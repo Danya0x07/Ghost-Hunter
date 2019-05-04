@@ -8,6 +8,8 @@ from utils.config import *
 
 
 class MenuScene(Scene):
+    """Меню игры."""
+
     NUM_OF_BTNS = 3
 
     def __init__(self, screen):

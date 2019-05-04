@@ -11,6 +11,7 @@ furniture_images = {
 
 
 class Furniture(Sprite):
+    """Мебель."""
 
     def __init__(self, kind, x, y):
         super().__init__()
@@ -21,6 +22,7 @@ class Furniture(Sprite):
         self.next_sounding_hp = 66
 
     def shift_hp(self, offset):
+        """Измененить значение здоровья на offset."""
         self.hp += offset
         if self.hp <= 33:
             self.image = furniture_images[self.kind][2]

@@ -7,6 +7,7 @@ from utils.config import *
 
 
 class HealthPoint(Sprite):
+    """Заряд позитива."""
     image = heal_image
 
     def __init__(self, position):
@@ -21,6 +22,7 @@ class HealthPoint(Sprite):
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
+        """Создать множество объектов в случайных местах"""
         for i in range(number):
             pos = choice(positions)
             group.add(cls(pos))

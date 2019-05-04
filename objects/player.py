@@ -10,6 +10,8 @@ from utils.config import *
 
 
 class Player(Sprite):
+    """Охотник"""
+
     images = player_images
 
     def __init__(self, x, y):
@@ -24,9 +26,10 @@ class Player(Sprite):
         self.score = 0
         self.is_alive = True
         self.pk_level = 0
-        self.pkl_timer = EventTimer(self.refresh_pkl)
+        self.pkl_timer = EventTimer(self._refresh_pkl)
 
     def shift_hp(self, offset):
+        """Измененить значение здоровья на offset."""
         if offset < 0:
             player_auch_sound.play()
         self.hp += offset
@@ -39,6 +42,7 @@ class Player(Sprite):
             player_walk_sound.stop()
 
     def set_direction(self, key, state):
+        """Установить направление движения через клавиатуру."""
         img_num = None
         if key == K_w:
             self.dir.front = state
@@ -76,6 +80,7 @@ class Player(Sprite):
             self.walk_sound_playing = False
 
     def collide(self, scene, x_vel, y_vel):
+        """Проверка на столкновение с объектами."""
         for wall in scene.walls:
             if self.rect.colliderect(wall):
                 handle_collision(self.rect, wall, x_vel, y_vel)
@@ -84,6 +89,7 @@ class Player(Sprite):
             handle_collision(self.rect, furn.rect, x_vel, y_vel)
 
     def handle_trap(self, traps, wave):
+        """Положить/взять капкан."""
         trap = spritecollideany(self, traps)
         if trap is not None:
             trap_up_sound.play()
@@ -94,21 +100,20 @@ class Player(Sprite):
             trap = Trap(self.rect.center)
             traps.add(trap)
 
-    def refresh_pkl(self, enemies):
-        min_distance = SCREEN_WIDTH * SCREEN_HEIGHT
-        for enemy in enemies:
-            distance = calc_distance(self.rect, enemy.rect)
-            if distance < min_distance:
-                min_distance = distance
+    def _refresh_pkl(self, enemies):
+        """Обновить показание датчика ПК-активности."""
+        min_distance = min([calc_distance(self.rect, enemy.rect) for enemy in enemies])
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
 
 
-    def shoot(self, rel_rect, m_pos, plasmas, delta):
-        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
+    def shoot(self, rel_pos, m_pos, plasmas, delta):
+        """Стрельба."""
+        x_vel, y_vel = shoot(rel_pos, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
         player_shoot_sound.play()
 
     class Direction:
+        """Направление перемещения игрока."""
 
         def __init__(self):
             self.front = False

@@ -1,11 +1,13 @@
 from pygame.sprite import Sprite, spritecollideany
 
-from utils.util import EventTimer, handle_collision, Animation
+from utils.util import EventTimer, handle_collision, UltimateAnimation
 from utils.assets import trap_images, plasm_anim
 from utils.config import *
 
 
 class Trap(Sprite):
+    "Капкан для привидений."
+
     images = trap_images
 
     def __init__(self, center):
@@ -15,6 +17,7 @@ class Trap(Sprite):
         self.anim_timer = EventTimer(self.change_img)
 
     def change_img(self):
+        """Мигание."""
         if self.image == self.images[1]:
             self.image = self.images[0]
         else:
@@ -25,10 +28,10 @@ class Trap(Sprite):
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(TRAP_OFFSET)
-            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
+            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
             handle_collision(enemy.frame_rect, self.rect, enemy.x_vel, enemy.y_vel)
             enemy.change_direction(enemy.x_vel, enemy.y_vel)
         plasm = spritecollideany(self, scene.plasmas)
         if plasm:
-            scene.animations.append(Animation(plasm_anim, self.rect.center, 9, 3))
+            scene.animations.append(UltimateAnimation(plasm_anim, self.rect.center, 9, 3))
             scene.plasmas.remove(plasm)

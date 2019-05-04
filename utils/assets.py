@@ -6,15 +6,15 @@ from pyganim import getImagesFromSpriteSheet
 
 print("Загрузка ресурсов...")
 
+# Текстуры
 p_img = load('resources/hunter.png')
 player_images = (p_img, rotate(p_img, 90), rotate(p_img, 180), rotate(p_img, 270))
-
 enemy_plasma_image = load('resources/gplasma.png')
 boss_enemy_plasma_image = load('resources/bgplasma.png')
 player_plasma_image = load('resources/pplasma.png')
-
 heal_image = load('resources/heal.png')
 
+# Атласы текстур
 enemy_images = getImagesFromSpriteSheet('resources/ghost.png',
     64, 64, 1, 4, [(0, 0, 64, 64),
                    (64, 0, 64, 64),
@@ -66,7 +66,7 @@ plasm_anim = getImagesFromSpriteSheet('resources/explasm.png',
                    (64, 0, 32, 32)]
 )
 
-# звуки
+# Звуки
 enemy_shoot_sound = Sound('resources/gshoot.wav')
 enemy_auch_sound = Sound('resources/gauch.wav')
 player_auch_sound = Sound('resources/auch.wav')

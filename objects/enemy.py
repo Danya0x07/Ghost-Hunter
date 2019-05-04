@@ -3,7 +3,7 @@ from random import randint, choice
 from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
-from utils.util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, Animation
+from utils.util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, UltimateAnimation
 from utils.interface import Label
 from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
                           enemy_shoot_sound, enemy_auch_sound)
@@ -11,6 +11,8 @@ from utils.config import *
 
 
 class Enemy(Sprite):
+    """Привидение"""
+
     FRAME_SIZE = ENEMY_FRAME_SIZE
     VEER_TIMEOUT = ENEMY_VEER_TIMEOUT
     SHOOT_TIMEOUT = ENEMY_SHOOT_TIMEOUT
@@ -32,31 +34,8 @@ class Enemy(Sprite):
         self.shoot_timer = EventTimer(self.shoot)
         self.hp = self.HP
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
-        self.lbl_hp_showing_timer = TimeoutTimer(self.draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
+        self.lbl_hp_showing_timer = TimeoutTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
         self.is_alive = True
-
-    def shift_hp(self, offset):
-        if offset < 0:
-            enemy_auch_sound.play()
-        self.hp += offset
-        if self.hp <= 0:
-            self.hp = 0
-            self.is_alive = False
-        self.lbl_hp_showing_timer.restart(ENEMY_HP_SHOWING_TIMEOUT)
-
-    def draw_hp(self, scene):
-        self.lbl_hp.set_text("{}%".format(self.hp), topleft=self.rect.bottomleft)
-        scene.screen.blit(self.lbl_hp.image, scene.camera.apply(self.lbl_hp))
-
-    def refresh_img(self):
-        if self.x_vel > 0:
-            self.image = self.images[3]
-        elif self.x_vel < 0:
-            self.image = self.images[1]
-        if self.y_vel > 0:
-            self.image = self.images[2]
-        elif self.y_vel < 0:
-            self.image = self.images[0]
 
     def update(self, scene):
         self.frame_rect.x += int(self.x_vel * scene.delta_time)
@@ -69,10 +48,41 @@ class Enemy(Sprite):
                                 (scene.player.rect, scene.plasmas, scene.delta_time))
         if not self.is_alive:
             scene.player.score += self.KILL_AWARD
-            scene.animations.append(Animation(enemy_dying_anim, self.rect.center, 30, 10))
+            scene.animations.append(UltimateAnimation(enemy_dying_anim, self.rect.center, 30, 10))
             scene.enemies.remove(self)
 
+    def shift_hp(self, offset):
+        """Измененить значение здоровья на offset."""
+        if offset < 0:
+            enemy_auch_sound.play()
+        self.hp += offset
+        if self.hp <= 0:
+            self.hp = 0
+            self.is_alive = False
+        self.lbl_hp_showing_timer.restart(ENEMY_HP_SHOWING_TIMEOUT)
+
+    def _draw_hp(self, screen, camera):
+        """Отрисовать значение здоровья."""
+        self.lbl_hp.set_text("{}%".format(self.hp), topleft=self.rect.bottomleft)
+        screen.blit(self.lbl_hp.image, camera.apply(self.lbl_hp.rect))
+
+    def draw_hp_if_need(self, scene):
+        """Обёртка для таймера отрисовки здоровья."""
+        self.lbl_hp_showing_timer.update(scene.screen, scene.camera)
+
+    def refresh_img(self):
+        """Обновить текстуру при повороте."""
+        if self.x_vel > 0:
+            self.image = self.images[3]
+        elif self.x_vel < 0:
+            self.image = self.images[1]
+        if self.y_vel > 0:
+            self.image = self.images[2]
+        elif self.y_vel < 0:
+            self.image = self.images[0]
+
     def change_direction(self, x_vel, y_vel):
+        """Изменить направление движения."""
         if x_vel != 0:
             self.x_vel = 0
             self.y_vel = choice((-self.SPEED, self.SPEED))
@@ -82,6 +92,7 @@ class Enemy(Sprite):
         self.refresh_img()
 
     def collide(self, scene, x_vel, y_vel):
+        """Проверка на столкновение с объектами."""
         for wall in scene.walls:
             if self.frame_rect.colliderect(wall):
                 handle_collision(self.frame_rect, wall, x_vel, y_vel)
@@ -92,23 +103,28 @@ class Enemy(Sprite):
             self.change_direction(x_vel, y_vel)
 
     def veer(self):
+        """Обёртка для таймера блуждания"""
         self.change_direction(self.x_vel, self.y_vel)
         self.veer_timeout = randint(*self.VEER_TIMEOUT)
 
     def shoot(self, tgt_rect, plasmas, delta):
+        """Стрельба."""
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
-            x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
+            x_vel, y_vel = shoot(self.rect.center, tgt_rect.center, ENEMY_PLASMA_SPEED)
             plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
+        """Создать множество объектов в случайных местах"""
         for i in range(number):
             pos = choice(positions)
             group.add(cls(*pos))
 
 
 class BossEnemy(Enemy):
+    """Привидение-босс"""
+
     FRAME_SIZE = BOSS_ENEMY_FRAME_SIZE
     VEER_TIMEOUT = BOSS_ENEMY_VEER_TIMEOUT
     SHOOT_TIMEOUT = BOSS_ENEMY_SHOOT_TIMEOUT

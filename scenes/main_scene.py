@@ -16,6 +16,7 @@ from utils.config import *
 
 
 class MainScene(Scene):
+    """Главная игровая сцена."""
 
     def __init__(self, screen):
         super().__init__(screen, (0, 0, 0))
@@ -77,7 +78,7 @@ class MainScene(Scene):
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
             elif e.type == MOUSEBUTTONDOWN:
-                self.player.shoot(self.camera.apply(self.player), mouse.get_pos(),
+                self.player.shoot(self.camera.apply(self.player.rect), mouse.get_pos(),
                                   self.plasmas, self.delta_time)
 
         if not self.player.is_alive:
@@ -108,7 +109,7 @@ class MainScene(Scene):
 
     def draw_group(self, group):
         for obj in group:
-            self.screen.blit(obj.image, self.camera.apply(obj))
+            self.screen.blit(obj.image, self.camera.apply(obj.rect))
 
     def draw_objects(self):
         self.renderer.render_layer(self.screen, self.bg_layer)
@@ -117,10 +118,10 @@ class MainScene(Scene):
         self.draw_group(self.healthpoints)
         self.draw_group(self.traps)
         self.draw_group(self.plasmas)
-        self.screen.blit(self.player.image, self.camera.apply(self.player))
+        self.screen.blit(self.player.image, self.camera.apply(self.player.rect))
         self.draw_group(self.enemies)
         for e in self.enemies:
-            e.lbl_hp_showing_timer.update(self)
+            e.draw_hp_if_need(self)
         for a in self.animations:
             a.draw(self)
         self.stats.draw(self.screen)

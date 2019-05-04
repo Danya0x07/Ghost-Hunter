@@ -16,15 +16,19 @@ class Scene:
         self.return_code = None
 
     def check_events(self):
+        """Проверить события приложения."""
         pass
 
     def update_objects(self):
+        """Обновить объектов"""
         pass
 
     def draw_objects(self):
+        """Отрисовать объекты."""
         pass
 
     def mainloop(self):
+        """Главный цикл сцены."""
         self.return_code = None
         while self.return_code is None:
             self.check_events()

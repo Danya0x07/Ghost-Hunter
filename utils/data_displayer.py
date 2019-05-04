@@ -4,8 +4,10 @@ from utils.interface import Label
 
 
 class DataDisplayer:
+    """Визуализатор данных игры."""
 
     class SmartLabel(Label):
+        """Экономно обновляющаяся текстовая метка."""
 
         def __init__(self, text, fontsize, param=None):
             super().__init__(text, fontsize)

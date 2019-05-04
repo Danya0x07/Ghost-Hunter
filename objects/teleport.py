@@ -1,4 +1,5 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
+from pygame.transform import rotate
 
 from utils.util import EventTimer
 from utils.assets import teleport_images, teleport_sound
@@ -6,6 +7,8 @@ from utils.config import *
 
 
 class Teleport(Sprite):
+    """Телепорт."""
+
     images = teleport_images
 
     def __init__(self, x, y, id, tgt_id):
@@ -16,13 +19,11 @@ class Teleport(Sprite):
         self.tgt_id = tgt_id
         self.active = True
         self.current_anim_id = 0
-        self.anim_timer = EventTimer(self.change_anim)
+        self.anim_timer = EventTimer(self._change_anim)
 
-    def change_anim(self):
-        self.current_anim_id += 1
-        if self.current_anim_id > 3:
-            self.current_anim_id = 0
-        self.image = self.images[self.current_anim_id]
+    def _change_anim(self):
+        """Вращение."""
+        self.image = rotate(self.image, 90)
 
     def update(self, scene):
         if self.active and self.tgt_id:
@@ -46,7 +47,8 @@ class Teleport(Sprite):
         self.anim_timer.update(int(TELEPORT_ANIM_TIMEOUT * scene.delta_time), ())
 
     @staticmethod
-    def get_tp_by_id(group, id):
+    def get_tp_by_id(group, teleport_id):
+        """Получить телепорт из группы по id."""
         for tp in group:
-            if tp.id == id:
+            if tp.id == teleport_id:
                 return tp

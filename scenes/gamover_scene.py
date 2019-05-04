@@ -7,6 +7,7 @@ from utils.config import *
 
 
 class GameOverScene(Scene):
+    """Сцена поражения."""
 
     def __init__(self, screen, stats):
         super().__init__(screen, MENU_BG_COLOR)

@@ -3,7 +3,7 @@ from random import randint, choice
 from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
-from utils.util import calc_distance, handle_collision, shoot, EventTimer, TimeoutTimer, UltimateAnimation
+from utils.util import calc_distance, handle_collision, shoot, EventTimer, CountdownTimer, UltimateAnimation
 from utils.interface import Label
 from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
                           enemy_shoot_sound, enemy_auch_sound)
@@ -34,7 +34,7 @@ class Enemy(Sprite):
         self.shoot_timer = EventTimer(self.shoot)
         self.hp = self.HP
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
-        self.lbl_hp_showing_timer = TimeoutTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
+        self.lbl_hp_showing_timer = CountdownTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
         self.is_alive = True
 
     def update(self, scene):

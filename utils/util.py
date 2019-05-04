@@ -51,7 +51,7 @@ class EventTimer:
         else: self.counter += 1
 
 
-class TimeoutTimer:
+class CountdownTimer:
     """Таймер обратного отсчёта."""
 
     def __init__(self, handler, timeout):

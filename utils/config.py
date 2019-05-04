@@ -16,7 +16,7 @@ from pygame.display import Info as DisplayInfo
 di = DisplayInfo()
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (di.current_w, di.current_h)  # Или так,
 #SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (800, 600)  # или так.
-FPS = 60  # Макс. кол-во кадров в секунду
+FPS = 100  # Макс. кол-во кадров в секунду
 #-------------------------------------------------------------------------------
 
 # Служебное, тут лучше ничего не менять.

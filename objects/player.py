@@ -104,7 +104,7 @@ class Player(Sprite):
 
 
     def shoot(self, rel_rect, m_pos, plasmas, delta):
-        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED * delta)
+        x_vel, y_vel = shoot(rel_rect, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
         player_shoot_sound.play()
 

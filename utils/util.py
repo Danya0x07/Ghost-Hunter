@@ -77,7 +77,9 @@ class Animation:
         if self.current_im_index > self.MAX_INDEX:
             self.current_im_index = 0
 
-    def update(self, surface, camera):
-        surface.blit(self.image, camera.apply(self))
-        self.timer.update(self.timeout)
+    def draw(self, scene):
+        scene.screen.blit(self.image, scene.camera.apply(self))
+        self.timer.update(self.timeout * scene.delta_time)
         self.lifetime -= 1
+        if self.lifetime <= 0:
+            scene.animations.remove(self)

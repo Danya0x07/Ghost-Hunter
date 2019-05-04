@@ -122,8 +122,6 @@ class MainScene(Scene):
         for e in self.enemies:
             e.lbl_hp_showing_timer.update(self)
         for a in self.animations:
-            a.update(self.screen, self.camera)
-            if a.lifetime <= 0:
-                self.animations.remove(a)
+            a.draw(self)
         self.stats.draw(self.screen)
 

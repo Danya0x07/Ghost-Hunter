@@ -23,7 +23,7 @@ class Enemy(Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.x_vel = 0
-        self.y_vel = -1
+        self.y_vel = 0
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.FRAME_SIZE, center=self.rect.center)
@@ -49,13 +49,13 @@ class Enemy(Sprite):
         scene.screen.blit(self.lbl_hp.image, scene.camera.apply(self.lbl_hp))
 
     def refresh_img(self):
-        if self.x_vel > 0 and self.image is not self.images[3]:
+        if self.x_vel > 0:
             self.image = self.images[3]
-        elif self.x_vel < 0 and self.image is not self.images[1]:
+        elif self.x_vel < 0:
             self.image = self.images[1]
-        if self.y_vel > 0 and self.image is not self.images[2]:
+        if self.y_vel > 0:
             self.image = self.images[2]
-        elif self.y_vel < 0 and self.image is not self.images[0]:
+        elif self.y_vel < 0:
             self.image = self.images[0]
 
     def update(self, scene):
@@ -76,7 +76,7 @@ class Enemy(Sprite):
         if x_vel != 0:
             self.x_vel = 0
             self.y_vel = choice((-self.SPEED, self.SPEED))
-        elif y_vel != 0:
+        else:
             self.y_vel = 0
             self.x_vel = choice((-self.SPEED, self.SPEED))
         self.refresh_img()
@@ -98,7 +98,7 @@ class Enemy(Sprite):
     def shoot(self, tgt_rect, plasmas, delta):
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
-            x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED * delta)
+            x_vel, y_vel = shoot(self.rect, tgt_rect.center, ENEMY_PLASMA_SPEED)
             plasmas.add(self.PLASMA_TYPE(x_vel, y_vel, self.rect.center))
 
     @classmethod

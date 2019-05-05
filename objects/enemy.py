@@ -44,7 +44,7 @@ class Enemy(Sprite):
         self.collide(scene, 0, self.y_vel)
         self.rect.center = self.frame_rect.center
         self.veer_timer.update(scene.delta_time)
-        self.shoot_timer.update(scene.delta_time, (scene.player.rect, scene.plasmas, scene.delta_time))
+        self.shoot_timer.update(scene.delta_time, (scene.player.rect, scene.plasmas))
         if not self.is_alive:
             scene.player.score += self.kill_award
             UltimateAnimation(scene.animations, enemy_dying_anim, self.rect.center, 30, 10)
@@ -80,7 +80,7 @@ class Enemy(Sprite):
         elif self.y_vel < 0:
             self.image = self.images[0]
 
-    def change_direction(self, x_vel, y_vel):
+    def change_direction(self, x_vel):
         """Изменить направление движения."""
         if x_vel != 0:
             self.x_vel = 0
@@ -95,18 +95,18 @@ class Enemy(Sprite):
         for wall in scene.walls:
             if self.frame_rect.colliderect(wall):
                 handle_collision(self.frame_rect, wall, x_vel, y_vel)
-                self.change_direction(x_vel, y_vel)
+                self.change_direction(x_vel)
         furn = spritecollideany(self, scene.furniture, lambda s1, s2: s1.frame_rect.colliderect(s2.rect))
         if furn is not None:
             handle_collision(self.frame_rect, furn.rect, x_vel, y_vel)
-            self.change_direction(x_vel, y_vel)
+            self.change_direction(x_vel)
 
     def veer(self):
         """Обёртка для таймера блуждания"""
-        self.change_direction(self.x_vel, self.y_vel)
+        self.change_direction(self.x_vel)
         self.veer_timer.timeout = randint(*self.veer_timeout)
 
-    def shoot(self, tgt_rect, plasmas, delta):
+    def shoot(self, tgt_rect, plasmas):
         """Стрельба."""
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()

@@ -32,7 +32,7 @@ class Trap(Sprite):
             enemy.shift_hp(TRAP_OFFSET)
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             handle_collision(enemy.frame_rect, self.rect, enemy.x_vel, enemy.y_vel)
-            enemy.change_direction(enemy.x_vel, enemy.y_vel)
+            enemy.change_direction(enemy.x_vel)
         plasm = spritecollideany(self, scene.plasmas)
         if plasm:
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)

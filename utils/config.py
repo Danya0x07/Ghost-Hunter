@@ -23,17 +23,19 @@ SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (di.current_w, di.current_h)  # И
 FPS = 60  # Макс. кол-во кадров в секунду
 #-------------------------------------------------------------------------------
 
-UNIT_SCALE = 1.5  # Масштаб
+UNIT_SCALE = 2.0  # Масштаб
 UNIT_LENGTH = sqrt(UNIT_SCALE)
 UNIT_SIZE = (UNIT_LENGTH, UNIT_LENGTH)
 scu = lambda x: x * UNIT_SCALE
-scui = lambda x: int(scu(x))
-sctu = lambda t: tuple(int(x * UNIT_LENGTH) for x in t)
+scui = lambda x: round(scu(x))
+scuv = lambda x: x * UNIT_LENGTH
+scuvi = lambda x: round(scuv(x))
+sctu = lambda t: tuple(round(x * UNIT_LENGTH) for x in t)
 
 # Служебное, тут лучше ничего не менять.
 CENTER_OF_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-WALL_WIDTH = scui(50)
-WALL_HEIGHT = scui(50)
+WALL_WIDTH = scuvi(50)
+WALL_HEIGHT = scuvi(50)
 WALL_SIZE = (WALL_WIDTH, WALL_HEIGHT)
 TOTAL_LEVEL_SIZE = (WALL_WIDTH * 50, WALL_HEIGHT * 50)
 #-------------------------------------------------------------------------------

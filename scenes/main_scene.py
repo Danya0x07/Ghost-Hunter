@@ -45,10 +45,10 @@ class MainScene(Scene):
         obj_layer = layers[1]
         for obj in obj_layer.objects:
             obj_type = obj.properties['type']
-            obj_x = int(obj.x * UNIT_LENGTH)
-            obj_y = int(obj.y * UNIT_LENGTH)
-            obj_width = int(obj.width * UNIT_LENGTH)
-            obj_height = int(obj.height * UNIT_LENGTH)
+            obj_x = round(obj.x * UNIT_LENGTH)
+            obj_y = round(obj.y * UNIT_LENGTH)
+            obj_width = round(obj.width * UNIT_LENGTH)
+            obj_height = round(obj.height * UNIT_LENGTH)
             if obj_type == 'player':
                 self.player = Player(obj_x, obj_y - WALL_HEIGHT)
             elif obj_type == 'wall':
@@ -113,6 +113,7 @@ class MainScene(Scene):
         self.stats.update(self)
 
     def draw_objects(self):
+        self.screen.fill((0, 0, 0))
         self.renderer.render_layer(self.screen, self.bg_layer)
         self.draw_group(self.furniture)
         self.draw_group(self.teleports)

@@ -36,8 +36,8 @@ class MainScene(Scene):
         self.delta_time = 10
         self.wave = 0
 
-    def create_map(self, mapname):
-        world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(mapname))
+    def create_map(self, filename):
+        world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(filename))
         resources = helperspygame.ResourceLoaderPygame()
         resources.load(world_map)
         layers = helperspygame.get_layers_from_map(resources)
@@ -45,26 +45,26 @@ class MainScene(Scene):
         obj_layer = layers[1]
         for obj in obj_layer.objects:
             obj_type = obj.properties['type']
-            obj_x = rscaled(obj.x)
-            obj_y = rscaled(obj.y)
-            obj_width = rscaled(obj.width)
-            obj_height = rscaled(obj.height)
+            x = rscaled(obj.x)
+            y = rscaled(obj.y)
+            width = rscaled(obj.width)
+            height = rscaled(obj.height)
             if obj_type == 'player':
-                self.player = Player(obj_x, obj_y - WALL_HEIGHT)
+                self.player = Player(x, y - WALL_HEIGHT)
             elif obj_type == 'wall':
-                self.walls.append(Rect(obj_x, obj_y, obj_width, obj_height))
+                self.walls.append(Rect(x, y, width, height))
             elif obj_type == 'teleport':
                 s_id = obj.properties['id']
                 tgt_id = obj.properties['tgt_id']
-                self.teleports.add(Teleport(obj_x, obj_y - WALL_HEIGHT, s_id, tgt_id))
+                self.teleports.add(Teleport(x, y - WALL_HEIGHT, s_id, tgt_id))
             elif obj_type == 'gspawn':
-                self.enemy_spawn_positions.append((obj_x, obj_y - WALL_HEIGHT))
+                self.enemy_spawn_positions.append((x, y - WALL_HEIGHT))
             elif obj_type == 'hspawn':
-                self.hp_spawn_positions.append((obj_x, obj_y - WALL_HEIGHT))
+                self.hp_spawn_positions.append((x, y - WALL_HEIGHT))
             elif obj_type == 'sofa':
-                self.furniture.add(Furniture('sofa', obj_x, obj_y))
+                self.furniture.add(Furniture('sofa', x, y))
             elif obj_type == 'flower':
-                self.furniture.add(Furniture('flower', obj_x, obj_y - WALL_HEIGHT))
+                self.furniture.add(Furniture('flower', x, y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_spawn_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 
@@ -82,8 +82,7 @@ class MainScene(Scene):
             elif e.type == KEYUP:
                 self.player.set_direction(e.key, False)
             elif e.type == MOUSEBUTTONDOWN:
-                self.player.shoot(self.camera.apply(self.player.rect), mouse.get_pos(),
-                                  self.plasmas, self.delta_time)
+                self.player.shoot(self.camera.apply(self.player.rect), mouse.get_pos(), self.plasmas)
 
         if not self.player.is_alive:
             self.return_code = 'gameover'

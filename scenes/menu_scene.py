@@ -17,9 +17,7 @@ class MenuScene(Scene):
         self.frame_btn = Rect(0, 0, MENU_BTN_WIDTH, MENU_BTN_HEIGHT * MenuScene.NUM_OF_BTNS)
         self.frame_btn.centerx = self.screen_rect.centerx
         self.frame_btn.centery = self.screen_rect.centery + 50
-        self.create_widgets()
 
-    def create_widgets(self):
         self.btn_play     = Button("New Game", 'newgame',
                                    rectsize=MENU_BTN_SIZE, fontsize=MENU_BTN_FONT_SIZE,
                                    topleft=Button.get_btn_pos(self.frame_btn, 0, MENU_BTN_HEIGHT))

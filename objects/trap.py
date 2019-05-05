@@ -8,7 +8,7 @@ from utils.config import *
 
 
 class Trap(Sprite):
-    "Капкан для привидений."
+    """Капкан для привидений."""
 
     images = trap_images
 

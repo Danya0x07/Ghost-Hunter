@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-"""A game about ghost hunting.
+"""Игра про охоту на привидений.
 
-Player is a ghostbuster in a haunted library.
-Game is endless, the more ghosts player hunts down, the better
-ghostbuster he is.
+Шутер от 3 лица, вид сверху.
+Задача: уничтожить как можно больше привидений.
 """
 
 import sys

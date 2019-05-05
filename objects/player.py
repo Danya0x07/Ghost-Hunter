@@ -107,7 +107,7 @@ class Player(Sprite):
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
 
 
-    def shoot(self, rel_pos, m_pos, plasmas, delta):
+    def shoot(self, rel_pos, m_pos, plasmas):
         """Стрельба."""
         x_vel, y_vel = shoot(rel_pos, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))

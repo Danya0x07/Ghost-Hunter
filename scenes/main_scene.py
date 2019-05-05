@@ -41,26 +41,30 @@ class MainScene(Scene):
         resources = helperspygame.ResourceLoaderPygame()
         resources.load(world_map)
         layers = helperspygame.get_layers_from_map(resources)
-        self.bg_layer = layers[0]
+        self.bg_layer = layers[0].scale(layers[0], *UNIT_SIZE)
         obj_layer = layers[1]
         for obj in obj_layer.objects:
             obj_type = obj.properties['type']
+            obj_x = int(obj.x * UNIT_LENGTH)
+            obj_y = int(obj.y * UNIT_LENGTH)
+            obj_width = int(obj.width * UNIT_LENGTH)
+            obj_height = int(obj.height * UNIT_LENGTH)
             if obj_type == 'player':
-                self.player = Player(obj.x, obj.y - WALL_HEIGHT)
+                self.player = Player(obj_x, obj_y - WALL_HEIGHT)
             elif obj_type == 'wall':
-                self.walls.append(Rect(obj.x, obj.y, obj.width, obj.height))
+                self.walls.append(Rect(obj_x, obj_y, obj_width, obj_height))
             elif obj_type == 'teleport':
                 s_id = obj.properties['id']
                 tgt_id = obj.properties['tgt_id']
-                self.teleports.add(Teleport(obj.x, obj.y - WALL_HEIGHT, s_id, tgt_id))
+                self.teleports.add(Teleport(obj_x, obj_y - WALL_HEIGHT, s_id, tgt_id))
             elif obj_type == 'gspawn':
-                self.enemy_spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
+                self.enemy_spawn_positions.append((obj_x, obj_y - WALL_HEIGHT))
             elif obj_type == 'hspawn':
-                self.hp_spawn_positions.append((obj.x, obj.y - WALL_HEIGHT))
+                self.hp_spawn_positions.append((obj_x, obj_y - WALL_HEIGHT))
             elif obj_type == 'sofa':
-                self.furniture.add(Furniture('sofa', obj.x, obj.y))
+                self.furniture.add(Furniture('sofa', obj_x, obj_y))
             elif obj_type == 'flower':
-                self.furniture.add(Furniture('flower', obj.x, obj.y - WALL_HEIGHT))
+                self.furniture.add(Furniture('flower', obj_x, obj_y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_spawn_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 

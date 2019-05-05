@@ -41,14 +41,14 @@ class MainScene(Scene):
         resources = helperspygame.ResourceLoaderPygame()
         resources.load(world_map)
         layers = helperspygame.get_layers_from_map(resources)
-        self.bg_layer = layers[0].scale(layers[0], *UNIT_SIZE)
+        self.bg_layer = layers[0].scale(layers[0], UNIT_SCALE, UNIT_SCALE)
         obj_layer = layers[1]
         for obj in obj_layer.objects:
             obj_type = obj.properties['type']
-            obj_x = round(obj.x * UNIT_LENGTH)
-            obj_y = round(obj.y * UNIT_LENGTH)
-            obj_width = round(obj.width * UNIT_LENGTH)
-            obj_height = round(obj.height * UNIT_LENGTH)
+            obj_x = rscaled(obj.x)
+            obj_y = rscaled(obj.y)
+            obj_width = rscaled(obj.width)
+            obj_height = rscaled(obj.height)
             if obj_type == 'player':
                 self.player = Player(obj_x, obj_y - WALL_HEIGHT)
             elif obj_type == 'wall':

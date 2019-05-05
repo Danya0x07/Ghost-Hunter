@@ -9,7 +9,7 @@ from utils.config import *
 def load_texture(filename, size):
     """Загружает текстуру и масштабирует её."""
     texture = load(filename)
-    scaled_size = sctu(size)
+    scaled_size = size_rscaled(size)
     texture = scale(texture, scaled_size)
     return texture
 
@@ -30,7 +30,7 @@ def load_texture_atlas(filename, rows, cols, width, height):
     rects = get_atlas_rects(rows, cols, width, height)
     atlas = getImagesFromSpriteSheet(filename, width, height, rows, cols, rects)
     for i in range(len(atlas)):
-        atlas[i] = scale(atlas[i], sctu((width, height)))
+        atlas[i] = scale(atlas[i], size_rscaled((width, height)))
     return atlas
 
 

@@ -4,7 +4,7 @@ from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
 from utils.util import calc_distance, handle_collision, shoot
-from utils.timers import EventTimer, CountdownTimer
+from utils.timers import RegularTimer, CountdownTimer
 from utils.ultimate_animation import UltimateAnimation
 from utils.interface import Label
 from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
@@ -31,8 +31,8 @@ class Enemy(Sprite):
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
-        self.veer_timer = EventTimer(self.veer, self.veer_timeout[0])
-        self.shoot_timer = EventTimer(self.shoot, self.shoot_timeout)
+        self.veer_timer = RegularTimer(self.veer, self.veer_timeout[0])
+        self.shoot_timer = RegularTimer(self.shoot, self.shoot_timeout)
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
         self.lbl_hp_showing_timer = CountdownTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
         self.is_alive = True

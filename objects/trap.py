@@ -2,7 +2,7 @@ from pygame.sprite import Sprite, spritecollideany
 
 from utils.util import handle_collision
 from utils.ultimate_animation import UltimateAnimation
-from utils.timers import EventTimer
+from utils.timers import RegularTimer
 from utils.assets import trap_images, plasm_anim
 from utils.config import *
 
@@ -16,7 +16,7 @@ class Trap(Sprite):
         super().__init__()
         self.image = self.images[0]
         self.rect = self.image.get_rect(center=center)
-        self.anim_timer = EventTimer(self.change_img, TRAP_ANIM_TIMEOUT)
+        self.anim_timer = RegularTimer(self.change_img, TRAP_ANIM_TIMEOUT)
 
     def change_img(self):
         """Мигание."""

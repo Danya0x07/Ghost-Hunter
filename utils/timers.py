@@ -1,6 +1,6 @@
 # Таймеры общего назначения
 
-class EventTimer:
+class RegularTimer:
     """Таймер регулярного повторения."""
 
     def __init__(self, handler, timeout):

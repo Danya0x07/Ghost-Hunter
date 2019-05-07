@@ -1,6 +1,6 @@
 from pygame.sprite import Sprite
 
-from utils.timers import EventTimer
+from utils.timers import RegularTimer
 
 
 class UltimateAnimation(Sprite):
@@ -13,7 +13,7 @@ class UltimateAnimation(Sprite):
         self.current_im_index = 0
         self.image = images[0]
         self.rect = self.image.get_rect(center=position)
-        self.timer = EventTimer(self._update_img, timeout)
+        self.timer = RegularTimer(self._update_img, timeout)
         self.lifetime = lifetime
 
     def _update_img(self):

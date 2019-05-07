@@ -1,7 +1,7 @@
 from pygame.sprite import collide_rect, spritecollideany, Sprite
 from pygame.transform import rotate
 
-from utils.timers import EventTimer
+from utils.timers import RegularTimer
 from utils.assets import teleport_images, teleport_sound
 from utils.config import *
 
@@ -19,7 +19,7 @@ class Teleport(Sprite):
         self.tgt_id = tgt_id
         self.active = True
         self.current_anim_id = 0
-        self.anim_timer = EventTimer(self._change_anim, TELEPORT_ANIM_TIMEOUT)
+        self.anim_timer = RegularTimer(self._change_anim, TELEPORT_ANIM_TIMEOUT)
 
     def _change_anim(self):
         """Вращение."""

@@ -4,7 +4,7 @@ from pygame.locals import *
 from objects.trap import Trap
 from objects.plasma import PlayerPlasma
 from utils.util import handle_collision, calc_distance, shoot
-from utils.timers import EventTimer
+from utils.timers import RegularTimer
 from utils.assets import (player_images, player_walk_sound, player_shoot_sound,
                           player_auch_sound, trap_down_sound, trap_up_sound)
 from utils.config import *
@@ -27,7 +27,7 @@ class Player(Sprite):
         self.score = 0
         self.is_alive = True
         self.pk_level = 0
-        self.pkl_timer = EventTimer(self._refresh_pkl, PKL_UPDATE_TIMEOUT)
+        self.pkl_timer = RegularTimer(self._refresh_pkl, PKL_UPDATE_TIMEOUT)
 
     def shift_hp(self, offset):
         """Измененить значение здоровья на offset."""

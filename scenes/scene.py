@@ -30,6 +30,10 @@ class Scene:
     def mainloop(self):
         """Главный цикл сцены."""
         self.return_code = None
+        # Чтобы сбросить число, возвращаемое clock.get_time()
+        self.clock.tick(FPS)
+        self.clock.tick(FPS)
+
         while self.return_code is None:
             self.check_events()
             self.update_objects()

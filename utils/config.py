@@ -17,14 +17,13 @@ from pygame.display import Info as DisplayInfo
 
 
 # Экран
-di = DisplayInfo()
-SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (di.current_w, di.current_h)  # Или так,
-#SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (800, 600)  # или так.
+UNIT_SCALE = 1.9  # Масштаб
 FPS = 60  # Макс. кол-во кадров в секунду
-UNIT_SCALE = 1.7  # Масштаб
 #-------------------------------------------------------------------------------
 
 # Служебное, тут лучше ничего не менять.
+_di = DisplayInfo()
+SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT) = (_di.current_w, _di.current_h)
 UNIT_SCALE = sqrt(UNIT_SCALE)
 scaled = lambda val: val * UNIT_SCALE  # масштабирует значение
 rscaled = lambda val: round(scaled(val))  # матабирует и округляет значение

@@ -29,40 +29,6 @@ class Player(Sprite):
         self.pk_level = 0
         self.pkl_timer = RegularTimer(self._refresh_pkl, PKL_UPDATE_TIMEOUT)
 
-    def shift_hp(self, offset):
-        """Измененить значение здоровья на offset."""
-        if offset < 0:
-            player_auch_sound.play()
-        self.hp += offset
-        if self.hp > PLAYER_HP_MAX:
-            self.hp = PLAYER_HP_MAX
-        elif self.hp < 0:
-            self.hp = 0
-        if self.hp == 0:
-            self.is_alive = False
-            player_walk_sound.stop()
-
-    def set_direction(self, key, state):
-        """Установить направление движения через клавиатуру."""
-        img_num = None
-        if key == K_w:
-            self.dir.front = state
-            img_num = 0
-        elif key == K_s:
-            self.dir.back = state
-            img_num = 2
-        elif key == K_a:
-            self.dir.left = state
-            img_num = 1
-        elif key == K_d:
-            self.dir.right = state
-            img_num = 3
-        if state and img_num is not None:
-            self.image = self.images[img_num]
-            if not self.walk_sound_playing:
-                player_walk_sound.play(-1)
-                self.walk_sound_playing = True
-
     def update(self, scene):
         front, back, left, right = self.dir.get_dir_state()
         if front: self.y_vel = -PLAYER_SPEED
@@ -71,6 +37,7 @@ class Player(Sprite):
         if right: self.x_vel = PLAYER_SPEED
         if not (front or back): self.y_vel = 0
         if not (left or right): self.x_vel = 0
+        self.update_img()
         self.rect.x += int(self.x_vel * scene.delta_time)
         self.collide(scene, self.x_vel, 0)
         self.rect.y += int(self.y_vel * scene.delta_time)
@@ -88,6 +55,47 @@ class Player(Sprite):
         furn = spritecollideany(self, scene.furniture)
         if furn is not None:
             handle_collision(self.rect, furn.rect, x_vel, y_vel)
+
+    def shift_hp(self, offset):
+        """Измененить значение здоровья на offset."""
+        if offset < 0:
+            player_auch_sound.play()
+        self.hp += offset
+        if self.hp > PLAYER_HP_MAX:
+            self.hp = PLAYER_HP_MAX
+        elif self.hp < 0:
+            self.hp = 0
+        if self.hp == 0:
+            self.is_alive = False
+            player_walk_sound.stop()
+
+    def set_direction(self, key, state):
+        """Установить направление движения через клавиатуру."""
+        if key == K_w:
+            self.dir.front = state
+        elif key == K_s:
+            self.dir.back = state
+        elif key == K_a:
+            self.dir.left = state
+        elif key == K_d:
+            self.dir.right = state
+        if state and not self.walk_sound_playing:
+            player_walk_sound.play(-1)
+            self.walk_sound_playing = True
+
+    def update_img(self):
+        """Обновить текстуру в соответствии с текущим направлением движения."""
+        img_num = None
+        if self.x_vel > 0:
+            img_num = 3
+        elif self.x_vel < 0:
+            img_num = 1
+        if self.y_vel > 0:
+            img_num = 2
+        elif self.y_vel < 0:
+            img_num = 0
+        if img_num is not None and self.image is not self.images[img_num]:
+            self.image = self.images[img_num]
 
     def handle_trap(self, traps, wave):
         """Положить/взять капкан."""

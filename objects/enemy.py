@@ -38,7 +38,7 @@ class Enemy(Sprite):
     shoot_timeout = ENEMY_SHOOT_TIMEOUT
     speed = ENEMY_SPEED
     hp = ENEMY_HP_MAX
-    plasma_type = Plasma
+    PlasmaType = Plasma
     kill_award = 1
     images = enemy_images
 
@@ -129,7 +129,7 @@ class Enemy(Sprite):
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
             x_vel, y_vel = shoot(self.rect.center, tgt_rect.center, ENEMY_PLASMA_SPEED)
-            plasmas.add(self.plasma_type(x_vel, y_vel, self.rect.center))
+            plasmas.add(self.PlasmaType(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
@@ -147,6 +147,6 @@ class BossEnemy(Enemy):
     shoot_timeout = BOSS_ENEMY_SHOOT_TIMEOUT
     speed = BOSS_ENEMY_SPEED
     hp = BOSS_ENEMY_HP_MAX
-    plasma_type = BossPlasma
+    PlasmaType = BossPlasma
     kill_award = 3
     images = boss_enemy_images

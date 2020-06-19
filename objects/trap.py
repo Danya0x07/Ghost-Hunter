@@ -18,6 +18,7 @@
 
 from pygame.sprite import Sprite, spritecollideany
 
+from objects.plasma import PlayerPlasma
 from utils.util import handle_collision
 from utils.ultimate_animation import UltimateAnimation
 from utils.timers import RegularTimer
@@ -52,6 +53,6 @@ class Trap(Sprite):
             handle_collision(enemy.frame_rect, self.rect, enemy.x_vel, enemy.y_vel)
             enemy.change_direction(enemy.x_vel)
         plasm = spritecollideany(self, scene.plasmas)
-        if plasm:
+        if plasm is not None and type(plasm) != PlayerPlasma:
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             scene.plasmas.remove(plasm)

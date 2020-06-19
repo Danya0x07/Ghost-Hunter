@@ -120,23 +120,21 @@ class Player(Sprite):
         trap = spritecollideany(self, traps)
         if trap is not None:
             trap_up_sound.play()
-            traps.remove(trap)
+            trap.delete(traps)
             return
         if len(traps) <= wave:
             trap_down_sound.play()
-            trap = Trap(self.rect.center)
-            traps.add(trap)
+            traps.add(Trap.create(self.rect.center))
 
     def _refresh_pkl(self, enemies):
         """Обновить показание датчика ПК-активности."""
         min_distance = min([calc_distance(self.rect, enemy.rect) for enemy in enemies])
         self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
 
-
     def shoot(self, rel_pos, m_pos, plasmas):
         """Стрельба."""
         x_vel, y_vel = shoot(rel_pos, m_pos, PLAYER_PLASMA_SPEED)
-        plasmas.add(PlayerPlasma(x_vel, y_vel, self.rect.center))
+        plasmas.add(PlayerPlasma.create(x_vel, y_vel, self.rect.center))
         player_shoot_sound.play()
 
     class Direction:

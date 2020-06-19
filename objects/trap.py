@@ -16,9 +16,12 @@
 # along with Haunted_Library.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from collections import deque
+
 from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import PlayerPlasma
+from objects.pools import PoolableObject
 from utils.util import handle_collision
 from utils.ultimate_animation import UltimateAnimation
 from utils.timers import RegularTimer
@@ -26,15 +29,15 @@ from utils.assets import trap_images, plasm_anim
 from utils.config import *
 
 
-class Trap(Sprite):
+class Trap(Sprite, PoolableObject):
     """Капкан для привидений."""
 
     images = trap_images
+    pool = deque()
 
     def __init__(self, center):
         super().__init__()
-        self.image = self.images[0]
-        self.rect = self.image.get_rect(center=center)
+        self.reset(center)
         self.anim_timer = RegularTimer(self.change_img, TRAP_ANIM_TIMEOUT)
 
     def change_img(self):
@@ -55,4 +58,8 @@ class Trap(Sprite):
         plasm = spritecollideany(self, scene.plasmas)
         if plasm is not None and type(plasm) != PlayerPlasma:
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
-            scene.plasmas.remove(plasm)
+            plasm.delete(scene.plasmas)
+
+    def reset(self, center):
+        self.image = self.images[0]
+        self.rect = self.image.get_rect(center=center)

@@ -17,10 +17,12 @@
 #
 
 from random import randint, choice
+from collections import deque
 
 from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
+from objects.pools import PoolableObject
 from utils.util import calc_distance, handle_collision, shoot
 from utils.timers import RegularTimer, CountdownTimer
 from utils.ultimate_animation import UltimateAnimation
@@ -30,7 +32,7 @@ from utils.assets import (enemy_images, boss_enemy_images, enemy_dying_anim,
 from utils.config import *
 
 
-class Enemy(Sprite):
+class Enemy(Sprite, PoolableObject):
     """Привидение"""
 
     frame_size = ENEMY_FRAME_SIZE
@@ -41,19 +43,15 @@ class Enemy(Sprite):
     PlasmaType = Plasma
     kill_award = 1
     images = enemy_images
+    pool = deque()
 
     def __init__(self, x, y):
         super().__init__()
-        self.x_vel = 0
-        self.y_vel = 0
-        self.image = self.images[0]
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
+        self.reset(x, y)
         self.veer_timer = RegularTimer(self.veer, self.veer_timeout[0])
         self.shoot_timer = RegularTimer(self.shoot, self.shoot_timeout)
         self.lbl_hp = Label(ENEMY_HP_MAX, 16, bottomleft=self.frame_rect.bottomleft)
         self.lbl_hp_showing_timer = CountdownTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
-        self.is_alive = True
 
     def update(self, scene):
         self.frame_rect.x += int(self.x_vel * scene.delta_time)
@@ -66,7 +64,7 @@ class Enemy(Sprite):
         if not self.is_alive:
             scene.player.score += self.kill_award
             UltimateAnimation(scene.animations, enemy_dying_anim, self.rect.center, 30, 10)
-            scene.enemies.remove(self)
+            self.delete(scene.enemies)
 
     def shift_hp(self, offset):
         """Измененить значение здоровья на offset."""
@@ -129,17 +127,25 @@ class Enemy(Sprite):
         if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
             x_vel, y_vel = shoot(self.rect.center, tgt_rect.center, ENEMY_PLASMA_SPEED)
-            plasmas.add(self.PlasmaType(x_vel, y_vel, self.rect.center))
+            plasmas.add(self.PlasmaType.create(x_vel, y_vel, self.rect.center))
 
     @classmethod
     def random_spawn(cls, positions, group, number=1):
         """Создать множество объектов в случайных местах"""
         for i in range(number):
             pos = choice(positions)
-            group.add(cls(*pos))
+            group.add(cls.create(*pos))
+
+    def reset(self, x, y):
+        self.x_vel = 0
+        self.y_vel = 0
+        self.image = self.images[0]
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
+        self.is_alive = True
 
 
-class BossEnemy(Enemy):
+class BossEnemy(Enemy, PoolableObject):
     """Привидение-босс"""
 
     frame_size = BOSS_ENEMY_FRAME_SIZE
@@ -150,3 +156,4 @@ class BossEnemy(Enemy):
     PlasmaType = BossPlasma
     kill_award = 3
     images = boss_enemy_images
+    pool = deque()

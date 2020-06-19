@@ -106,7 +106,8 @@ class MainScene(Scene):
             self.return_code = 'gameover'
         if len(self.enemies) == 0:
             self.wave += 1
-            self.traps.empty()
+            for trap in self.traps:
+                trap.delete(self.traps)
             if self.wave % BOSS_ENEMY_SPAWN_DELAY == 0:
                 BossEnemy.random_spawn(self.enemy_spawn_positions, self.enemies, 1)
                 Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave - 1)

@@ -27,9 +27,9 @@ from utils.config import *
 class GameOverScene(Scene):
     """Сцена поражения."""
 
-    def __init__(self, screen, stats):
+    def __init__(self, screen):
         super().__init__(screen, MENU_BG_COLOR)
-        self.stats = stats
+        self.stats = None
         self.btn_back = Button("to menu", 'tomenu',
                                rectsize=(150, 60), fontsize=24, bottomleft=(0, SCREEN_HEIGHT))
         self.lbl_gameover = Label("Game Over!", 70, midbottom=self.screen_rect.center)
@@ -44,6 +44,9 @@ class GameOverScene(Scene):
 
     def update_objects(self):
         self.btn_back.update(mouse.get_pos())
+
+    def set_stats(self, stats):
+        self.stats = stats
 
     def draw_objects(self):
         self.screen.blit(self.space, (0, 0))

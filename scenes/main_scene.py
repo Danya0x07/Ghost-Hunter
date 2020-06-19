@@ -50,6 +50,7 @@ class MainScene(Scene):
         self.animations = Group()
         self.camera = Camera(TOTAL_LEVEL_SIZE)
         self.create_map('library_map_2.tmx')
+        self.player = Player(*self._player_coords)
         self.stats = DataDisplayer()
         self.delta_time = 10
         self.wave = 0
@@ -68,7 +69,7 @@ class MainScene(Scene):
             width = rscaled(obj.width)
             height = rscaled(obj.height)
             if obj_type == 'player':
-                self.player = Player(x, y - WALL_HEIGHT)
+                self._player_coords = (x, y - WALL_HEIGHT)
             elif obj_type == 'wall':
                 self.walls.append(Rect(x, y, width, height))
             elif obj_type == 'teleport':
@@ -148,3 +149,11 @@ class MainScene(Scene):
     def draw_group(self, group):
         for obj in group:
             self.screen.blit(obj.image, self.camera.apply(obj.rect))
+
+    def restart(self):
+        self.enemies.empty()
+        self.plasmas.empty()
+        self.traps.empty()
+        self.animations.empty()
+        self.player.set_coords(*self._player_coords)
+        self.wave = 0

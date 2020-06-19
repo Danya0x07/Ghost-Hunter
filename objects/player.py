@@ -36,7 +36,7 @@ class Player(Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = self.images[0]
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.set_coords(x, y)
         self.walk_sound_playing = False
         self.dir = Player.Direction()
         self.x_vel = 0
@@ -100,6 +100,9 @@ class Player(Sprite):
         if state and not self.walk_sound_playing:
             player_walk_sound.play(-1)
             self.walk_sound_playing = True
+
+    def set_coords(self, x, y):
+        self.rect = self.image.get_rect(topleft=(x, y))
 
     def update_img(self):
         """Обновить текстуру в соответствии с текущим направлением движения."""

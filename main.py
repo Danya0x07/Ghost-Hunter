@@ -71,7 +71,7 @@ if __name__ == '__main__':
             break
         else:
             if event_code == 'newgame':
-                game = MainScene(screen)
+                game.restart()
                 event_code = game.mainloop()
             elif event_code == 'continue':
                 event_code = game.mainloop()

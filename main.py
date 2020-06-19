@@ -24,9 +24,10 @@
 
 import sys
 
-from pygame import init, display, quit as quit_game
+from pygame import init as pg_init, display, quit as pg_quit
 from pygame.locals import FULLSCREEN
-init()
+
+pg_init()  # Next imports require videosystem being initialized.
 
 from scenes.main_scene import MainScene
 from scenes.menu_scene import MenuScene
@@ -52,15 +53,20 @@ def init_game():
 
 if __name__ == '__main__':
     if sys.platform == 'win32':
-        from ctypes import windll
-        windll.shcore.SetProcessDpiAwareness(1)
+        try:  # На древних машинах не находит schore, а разрешение и так норм.
+            from ctypes import windll
+            windll.shcore.SetProcessDpiAwareness(1)
+        except FileNotFoundError:
+            pass
+            
     screen = init_game()
     menu = MenuScene(screen)
     game = MainScene(screen)
+    
     while True:
         event_code = menu.mainloop()
         if event_code == 'exit':
-            quit_game()
+            pg_quit()
             break
         else:
             if event_code == 'newgame':

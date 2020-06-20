@@ -54,7 +54,6 @@ class MainScene(Scene):
         self.stats = DataDisplayer()
         self.delta_time = 10
         self.wave = 0
-        print(self.furniture)
 
     def create_map(self, filename):
         world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(filename))
@@ -160,5 +159,4 @@ class MainScene(Scene):
         self.player.reborn(*self._player_coords)
         while len(Furniture.pool) != 0:
             self.furniture.add(Furniture.create())
-        print(self.furniture)
         self.wave = 0

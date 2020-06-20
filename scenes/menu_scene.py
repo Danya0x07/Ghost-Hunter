@@ -78,3 +78,6 @@ class MenuScene(Scene):
         self.labels.draw(self.screen)
         for btn in self.buttons:
             btn.draw(self.screen)
+
+    def restart(self):
+        self.btn_continue.active = False

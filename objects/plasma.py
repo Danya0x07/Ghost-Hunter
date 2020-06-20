@@ -47,13 +47,16 @@ class Plasma(Sprite, PoolableObject):
                 self.delete(scene.plasmas)
                 break
 
-    def update(self, scene):
-        self.move(scene)
+    def handle_collision_with_furniture(self, scene):
         furn = spritecollideany(self, scene.furniture)
         if furn:
-            furn.shift_hp(randint(*self.offset))
+            furn.shift_hp(self.offset[1])
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             self.delete(scene.plasmas)
+
+    def update(self, scene):
+        self.move(scene)
+        self.handle_collision_with_furniture(scene)
         if collide_rect(self, scene.player):
             scene.player.shift_hp(randint(*self.offset))
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
@@ -82,13 +85,9 @@ class PlayerPlasma(Plasma, PoolableObject):
 
     def update(self, scene):
         self.move(scene)
+        self.handle_collision_with_furniture(scene)
         enemy = spritecollideany(self, scene.enemies)
         if enemy:
             enemy.shift_hp(randint(*self.offset))
-            UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
-            self.delete(scene.plasmas)
-        furn = spritecollideany(self, scene.furniture)
-        if furn:
-            furn.shift_hp(self.offset[1])
             UltimateAnimation(scene.animations, plasm_anim, self.rect.center, 9, 3)
             self.delete(scene.plasmas)

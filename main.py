@@ -78,3 +78,4 @@ if __name__ == '__main__':
             if event_code == 'gameover':
                 end.set_stats(game.stats)
                 end.mainloop()
+                menu.restart()

@@ -105,6 +105,7 @@ class MainScene(Scene):
 
         if not self.player.is_alive:
             self.return_code = 'gameover'
+            return
         if len(self.enemies) == 0:
             self.wave += 1
             for trap in self.traps:

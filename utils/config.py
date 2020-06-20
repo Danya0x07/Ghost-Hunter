@@ -28,14 +28,34 @@
 Изменение значения на некорректное может сломать игру.
 """
 
+from os.path import exists as file_exists
+from configparser import ConfigParser
 from math import sqrt
 
 from pygame import Color
 from pygame.display import Info as DisplayInfo
 
+def _read_range(section, key, default, type_, polarity=1):
+    value = _settings[section].get(key, default).replace(' ', '')
+    value = list(map(lambda x: polarity * type_(x), value.split(',')))
+    value.sort()
+    return tuple(value)
+
+_settings = ConfigParser()
+if not _settings.read('./settings.ini', 'utf-8'):
+    print("Файл с пользовательскими настройками(settings.ini) не обнаружен, ищем настройки по умолчанию.")
+    if not _settings.read('./utils/default_settings.ini', 'utf-8'):
+        print("Не найден файл с настройками по умолчанию(utils/default_settings.ini), до свидания.")
+        raise SystemExit
+
+_default_settings = ConfigParser()
+_default_settings.read('./utils/default_settings.ini', 'utf-8')
+for section in _default_settings:
+    if section not in _settings:
+        _settings[section] = {}
 
 # Экран
-UNIT_SCALE = 1.9  # Масштаб
+UNIT_SCALE = _settings['screen'].getfloat('unit_scale', 1.9)
 FPS = 60  # Макс. кол-во кадров в секунду
 #-------------------------------------------------------------------------------
 
@@ -71,37 +91,37 @@ LBL_TXT_DEFAULT_COLOR = Color('#FFFFFF')   # Цвет обычного текс�
 #-------------------------------------------------------------------------------
 
 # Игрок
-PLAYER_SPEED = scaled(0.48)   # Скорость перемещения
-PLAYER_HP_MAX = 100   # Здоровье
-PLAYER_PLASMA_SPEED = scaled(0.9)   # Скорость плазмы
-PLAYER_PLASMA_OFFSET = (-25, -15)   # Диапазон урона от плазмы
+PLAYER_SPEED = scaled(_settings['player'].getfloat('speed', 0.48))
+PLAYER_HP_MAX = _settings['player'].getint('hp', 100)
+PLAYER_PLASMA_SPEED = scaled(_settings['player'].getfloat('plasma_speed', 0.9))
+PLAYER_PLASMA_OFFSET = _read_range('player', 'plasma_damage', '15, 25', int, -1)
 #-------------------------------------------------------------------------------
 
 # Привидение
-ENEMY_SPEED = scaled(0.43)   # Скорость перемещения
+ENEMY_SPEED = scaled(_settings['ghost'].getfloat('speed', 0.43))
 ENEMY_FRAME_SIZE = size_rscaled((94, 94))   # Размер рамки для столкновений
-ENEMY_SHOOT_TIMEOUT = 600   # Задержка между выстрелами
-ENEMY_VEER_TIMEOUT = (1700, 4300)   # Диапазон задержки между автоматическими сменами курса
-ENEMY_MAX_SHOOT_DISTANCE = rscaled(600)   # Макс. дальнобойность
-ENEMY_HP_MAX = 100   # Здоровье
+ENEMY_SHOOT_TIMEOUT = _settings['ghost'].getint('shoot_timeout', 600)
+ENEMY_VEER_TIMEOUT = _read_range('ghost', 'veer_timeout', '1700, 4300', int)
+ENEMY_MAX_SHOOT_DISTANCE = rscaled(_settings['ghost'].getint('max_shoot_distance', 600))
+ENEMY_HP_MAX = _settings['ghost'].getint('hp', 100)
 ENEMY_HP_SHOWING_TIMEOUT = 4000   # Длительность отображения здоровья
-ENEMY_PLASMA_SPEED = scaled(0.8)   # Скорость плазмы
-ENEMY_PLASMA_OFFSET = (-15, -5)   # Диапазон урона от плазмы
+ENEMY_PLASMA_SPEED = scaled(_settings['ghost'].getfloat('plasma_speed', 0.8))
+ENEMY_PLASMA_OFFSET = _read_range('ghost', 'plasma_damage', '5, 15', int, -1)
 #-------------------------------------------------------------------------------
 
 # Привидение-босс
-BOSS_ENEMY_SPEED = scaled(0.4)   # Скорость перемещения
+BOSS_ENEMY_SPEED = scaled(_settings['bossghost'].getfloat('speed', 0.4))
 BOSS_ENEMY_FRAME_SIZE = size_rscaled((100, 100))   # Размер рамки для столкновений
-BOSS_ENEMY_SHOOT_TIMEOUT = 700   # Задержка между выстрелами
-BOSS_ENEMY_VEER_TIMEOUT = (2000, 4500)   # Диапазон задержки между автоматическими сменами курса
-BOSS_ENEMY_HP_MAX = 300   # Здоровье
-BOSS_ENEMY_SPAWN_DELAY = 3   # Раз во сколько волн появляется
-BOSS_ENEMY_PLASMA_SPEED = scaled(0.75)   # Скорость плазмы
-BOSS_ENEMY_PLASMA_OFFSET = (-20, -10)   # Диапазон урона от плазмы
+BOSS_ENEMY_SHOOT_TIMEOUT = _settings['bossghost'].getint('shoot_timeout', 700)
+BOSS_ENEMY_VEER_TIMEOUT = _read_range('bossghost', 'veer_timeout', '2000, 4500', int)
+BOSS_ENEMY_HP_MAX = _settings['bossghost'].getint('hp', 300)
+BOSS_ENEMY_SPAWN_DELAY = _settings['bossghost'].getint('spawn', 3)
+BOSS_ENEMY_PLASMA_SPEED = scaled(_settings['bossghost'].getfloat('plasma_speed', 0.75))
+BOSS_ENEMY_PLASMA_OFFSET = _read_range('bossghost', 'plasma_damage', '10, 20', int, -1)
 #-------------------------------------------------------------------------------
 
 # Капкан
-TRAP_OFFSET = -33   # Урон
+TRAP_OFFSET = -_settings['trap'].getint('damage', 33)
 TRAP_ANIM_TIMEOUT = 333   # Задержка анимации
 #-------------------------------------------------------------------------------
 
@@ -115,8 +135,8 @@ PKL_UPDATE_TIMEOUT = 500   # Задержка между обновлениям�
 #-------------------------------------------------------------------------------
 
 # Сгустки позитива
-HEALTHPOINT_OFFSET_RANGE = (17, 25)   # Диапазон
-HEALTHPOINT_NUMBER = 2   # Постоянное кол-во на карте
+HEALTHPOINT_OFFSET_RANGE = _read_range('healthpoint', 'heal', '17, 25', int)
+HEALTHPOINT_NUMBER = _settings['healthpoint'].getint('number', 2)
 #-------------------------------------------------------------------------------
 
 # Мебель

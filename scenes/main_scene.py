@@ -111,8 +111,9 @@ class MainScene(Scene):
             for trap in self.traps:
                 trap.delete(self.traps)
             if self.wave % BOSS_ENEMY_SPAWN_DELAY == 0:
-                BossEnemy.random_spawn(self.enemy_spawn_positions, self.enemies, 1)
-                Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave - 1)
+                boss_amount = self.wave // BOSS_ENEMY_SPAWN_DELAY
+                BossEnemy.random_spawn(self.enemy_spawn_positions, self.enemies, boss_amount)
+                Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave - boss_amount)
             else:
                 Enemy.random_spawn(self.enemy_spawn_positions, self.enemies, self.wave)
 

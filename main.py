@@ -36,8 +36,8 @@ from utils.config import *
 
 
 __author__ = "Daniel Efimenko"
-__copyright__ = "Copyright 2019, The Haunted_Library project"
-__credits__ = ["Daniel Efimenko", "Alexander Isaev", "Maxim Babenko"]
+__copyright__ = "Copyright 2019-2020, The Haunted_Library project"
+__credits__ = ["Daniel Efimenko", "Alexander Isaev", "Alexander Dorofeev"]
 __license__ = "GPL"
 __version__ = "1.2.0"
 __maintainer__ = "Daniel Efimenko"

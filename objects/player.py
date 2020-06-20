@@ -35,16 +35,7 @@ class Player(Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = self.images[0]
-        self.set_coords(x, y)
-        self.walk_sound_playing = False
-        self.dir = Player.Direction()
-        self.x_vel = 0
-        self.y_vel = 0
-        self.hp = PLAYER_HP_MAX
-        self.score = 0
-        self.is_alive = True
-        self.pk_level = 0
+        self.reborn(x, y)
         self.pkl_timer = RegularTimer(self._refresh_pkl, PKL_UPDATE_TIMEOUT)
 
     def update(self, scene):
@@ -139,6 +130,18 @@ class Player(Sprite):
         x_vel, y_vel = shoot(rel_pos, m_pos, PLAYER_PLASMA_SPEED)
         plasmas.add(PlayerPlasma.create(x_vel, y_vel, self.rect.center))
         player_shoot_sound.play()
+
+    def reborn(self, x, y):
+        self.image = self.images[0]
+        self.set_coords(x, y)
+        self.walk_sound_playing = False
+        self.dir = Player.Direction()
+        self.x_vel = 0
+        self.y_vel = 0
+        self.hp = PLAYER_HP_MAX
+        self.score = 0
+        self.is_alive = True
+        self.pk_level = 0
 
     class Direction:
         """Направление перемещения игрока."""

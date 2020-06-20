@@ -54,6 +54,7 @@ class MainScene(Scene):
         self.stats = DataDisplayer()
         self.delta_time = 10
         self.wave = 0
+        print(self.furniture)
 
     def create_map(self, filename):
         world_map = tmxreader.TileMapParser().parse_decode("resources/{}".format(filename))
@@ -81,9 +82,9 @@ class MainScene(Scene):
             elif obj_type == 'hspawn':
                 self.hp_spawn_positions.append((x, y - WALL_HEIGHT))
             elif obj_type == 'sofa':
-                self.furniture.add(Furniture('sofa', x, y))
+                self.furniture.add(Furniture.create('sofa', x, y))
             elif obj_type == 'flower':
-                self.furniture.add(Furniture('flower', x, y - WALL_HEIGHT))
+                self.furniture.add(Furniture.create('flower', x, y - WALL_HEIGHT))
         self.renderer = helperspygame.RendererPygame()
         HealthPoint.random_spawn(self.hp_spawn_positions, self.healthpoints, HEALTHPOINT_NUMBER)
 
@@ -156,5 +157,8 @@ class MainScene(Scene):
         self.plasmas.empty()
         self.traps.empty()
         self.animations.empty()
-        self.player.set_coords(*self._player_coords)
+        self.player.reborn(*self._player_coords)
+        while len(Furniture.pool) != 0:
+            self.furniture.add(Furniture.create())
+        print(self.furniture)
         self.wave = 0

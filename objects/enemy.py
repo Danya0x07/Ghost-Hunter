@@ -142,6 +142,7 @@ class Enemy(Sprite, PoolableObject):
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
+        self.hp = self.__class__.hp
         self.is_alive = True
 
 

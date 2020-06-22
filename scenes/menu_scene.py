@@ -50,9 +50,9 @@ class MenuScene(Scene):
         self.lbl_title = Label("Haunted Library", fontsize=70,
                                centerx=self.screen_rect.centerx,
                                centery=130)
-        self.lbl_v = Label("v1.1", fontsize=24,
+        self.lbl_v = Label("v1.2", fontsize=24,
                            bottomright=self.screen_rect.bottomright)
-        self.lbl_auth = Label("by Danya0x07, 2019", fontsize=24,
+        self.lbl_auth = Label("by Danya0x07, 2019-2020", fontsize=24,
                               bottomleft=self.screen_rect.bottomleft)
         self.labels = Group(self.lbl_title, self.lbl_v, self.lbl_auth)
 

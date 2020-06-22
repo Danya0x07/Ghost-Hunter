@@ -43,12 +43,14 @@ def get_atlas_rects(rows, cols, width, height):
     return rects
 
 
-def load_texture_atlas(filename, rows, cols, width, height):
+def load_texture_atlas(filename, rows, cols, width, height, size=None):
     """Загружает атлас текстур в виде списка Surface-ов."""
     rects = get_atlas_rects(rows, cols, width, height)
     atlas = getImagesFromSpriteSheet(filename, width, height, rows, cols, rects)
+    if size is None:
+        size = (width, height)
     for i in range(len(atlas)):
-        atlas[i] = scale(atlas[i], size_rscaled((width, height)))
+        atlas[i] = scale(atlas[i], size_rscaled(size))
     return atlas
 
 
@@ -68,7 +70,7 @@ boss_enemy_images = load_texture_atlas('resources/bossghost.png', 1, 4, 70, 70)
 sofa_images = load_texture_atlas('resources/sofa.png', 3, 1, 100, 50)
 flower_images = load_texture_atlas('resources/flower.png', 1, 3, 50, 50)
 teleport_images = load_texture_atlas('resources/teleport.png', 1, 4, 64, 64)
-trap_images = load_texture_atlas('resources/trap.png', 1, 2, 32, 32)
+trap_images = load_texture_atlas('resources/trap.png', 1, 2, 32, 32, (48, 48))
 enemy_dying_anim = load_texture_atlas('resources/ghostdie.png', 1, 3, 32, 32)
 plasm_anim = load_texture_atlas('resources/explasm.png', 1, 3, 32, 32)
 

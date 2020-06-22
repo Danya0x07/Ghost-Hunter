@@ -23,7 +23,7 @@ from pygame.sprite import Sprite, spritecollideany
 
 from objects.plasma import Plasma, BossPlasma
 from objects.pools import PoolableObject
-from utils.util import calc_distance, handle_collision, shoot
+from utils.util import calc_distance_sq, handle_collision, shoot
 from utils.timers import RegularTimer, CountdownTimer
 from utils.ultimate_animation import UltimateAnimation
 from utils.interface import Label
@@ -124,7 +124,7 @@ class Enemy(Sprite, PoolableObject):
 
     def shoot(self, tgt_rect, plasmas):
         """Стрельба."""
-        if calc_distance(self.rect, tgt_rect) <= ENEMY_MAX_SHOOT_DISTANCE:
+        if int(sqrt(calc_distance_sq(self.rect, tgt_rect))) <= ENEMY_MAX_SHOOT_DISTANCE:
             enemy_shoot_sound.play()
             x_vel, y_vel = shoot(self.rect.center, tgt_rect.center, ENEMY_PLASMA_SPEED)
             plasmas.add(self.PlasmaType.create(x_vel, y_vel, self.rect.center))

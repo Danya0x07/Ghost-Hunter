@@ -36,11 +36,11 @@ def shoot(src_pos, tgt_pos, plasm_spd):
     return x_vel, y_vel
 
 
-def calc_distance(rect_1, rect_2):
+def calc_distance_sq(rect_1, rect_2):
     """Вычислить расстояние между двумя прямоугольниками."""
-    dx = rect_1.centerx - rect_2.centerx
-    dy = rect_1.centery - rect_2.centery
-    distance = int(sqrt(dx ** 2 + dy ** 2))
+    dx = rect_1.x - rect_2.x
+    dy = rect_1.y - rect_2.y
+    distance = dx ** 2 + dy ** 2
     return distance
 
 

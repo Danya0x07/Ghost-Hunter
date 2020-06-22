@@ -16,12 +16,14 @@
 # along with Haunted_Library.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from math import sqrt
+
 from pygame.sprite import Sprite, spritecollideany
 from pygame.locals import *
 
 from objects.trap import Trap
 from objects.plasma import PlayerPlasma
-from utils.util import handle_collision, calc_distance, shoot
+from utils.util import handle_collision, calc_distance_sq, shoot
 from utils.timers import RegularTimer
 from utils.assets import (player_images, player_walk_sound, player_shoot_sound,
                           player_auch_sound, trap_down_sound, trap_up_sound)
@@ -122,8 +124,8 @@ class Player(Sprite):
 
     def _refresh_pkl(self, enemies):
         """Обновить показание датчика ПК-активности."""
-        min_distance = min([calc_distance(self.rect, enemy.rect) for enemy in enemies])
-        self.pk_level =  100 - min(min_distance * 100 // PKL_MAX_DISTANCE, 100)
+        min_distance = min([calc_distance_sq(self.rect, enemy.rect) for enemy in enemies])
+        self.pk_level =  100 - min(int(sqrt(min_distance)) * 100 // PKL_MAX_DISTANCE, 100)
 
     def shoot(self, rel_pos, m_pos, plasmas):
         """Стрельба."""

@@ -158,6 +158,10 @@ class MainScene(Scene):
         self.traps.empty()
         self.animations.empty()
         self.player.reborn(*self._player_coords)
+
+        for furn in self.furniture:
+            furn.reset()
         while len(Furniture.pool) != 0:
             self.furniture.add(Furniture.create())
+
         self.wave = 0

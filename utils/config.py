@@ -16,12 +16,16 @@
 # along with Haunted_Library.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 from os.path import exists as file_exists
 from configparser import ConfigParser
 from math import sqrt
 
 from pygame import Color
 from pygame.display import Info as DisplayInfo
+
+
+CLI_CONF_DEFAULTS = False
 
 
 def _read_setting(section, key, type_):
@@ -34,9 +38,15 @@ def _read_range(section, key, default, type_, polarity=1):
     value.sort()
     return tuple(value)
 
+for arg in sys.argv[1:]:
+    if arg.startswith('-'):
+        for key in arg:
+            if key == 'd':
+                CLI_CONF_DEFAULTS = True
+
 
 _settings = ConfigParser()
-if not _settings.read('./settings.ini', 'utf-8'):
+if not CLI_CONF_DEFAULTS and not _settings.read('./settings.ini', 'utf-8'):
     print("Файл с пользовательскими настройками(settings.ini) не обнаружен, ищем настройки по умолчанию.")
 
 _default_settings = ConfigParser()
@@ -44,9 +54,12 @@ if not _default_settings.read('./utils/default_settings.ini', 'utf-8'):
     print("Не найден файл с настройками по умолчанию(utils/default_settings.ini), до свидания.")
     raise SystemExit
 
-for section in _default_settings:
-    if section not in _settings:
-        _settings[section] = {}
+if CLI_CONF_DEFAULTS:
+    _settings = _default_settings
+else:
+    for section in _default_settings:
+        if section not in _settings:
+            _settings[section] = {}
 
 
 # Экран

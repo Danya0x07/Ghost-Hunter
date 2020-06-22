@@ -47,6 +47,7 @@ class Enemy(Sprite, PoolableObject):
 
     def __init__(self, x, y):
         super().__init__()
+        self.standby_timer = CountdownTimer(self._standby, ENEMY_STANDBY_TIMEOUT)
         self.reset(x, y)
         self.veer_timer = RegularTimer(self.veer, self.veer_timeout[0])
         self.shoot_timer = RegularTimer(self.shoot, self.shoot_timeout)
@@ -54,6 +55,11 @@ class Enemy(Sprite, PoolableObject):
         self.lbl_hp_showing_timer = CountdownTimer(self._draw_hp, ENEMY_HP_SHOWING_TIMEOUT)
 
     def update(self, scene):
+        self.is_active = True
+        self.standby_timer.update(scene.delta_time)
+        if not self.is_active:
+            return
+
         self.frame_rect.x += int(self.x_vel * scene.delta_time)
         self.collide(scene, self.x_vel, 0)
         self.frame_rect.y += int(self.y_vel * scene.delta_time)
@@ -61,6 +67,7 @@ class Enemy(Sprite, PoolableObject):
         self.rect.center = self.frame_rect.center
         self.veer_timer.update(scene.delta_time)
         self.shoot_timer.update(scene.delta_time, (scene.player.rect, scene.plasmas))
+
         if not self.is_alive:
             scene.player.score += self.kill_award
             UltimateAnimation(scene.animations, enemy_dying_anim, self.rect.center, 30, 10)
@@ -68,6 +75,9 @@ class Enemy(Sprite, PoolableObject):
 
     def shift_hp(self, offset):
         """Измененить значение здоровья на offset."""
+        if not self.is_active:
+            return
+
         if offset < 0:
             enemy_auch_sound.play()
         self.hp += offset
@@ -80,6 +90,10 @@ class Enemy(Sprite, PoolableObject):
         """Отрисовать значение здоровья."""
         self.lbl_hp.set_text("{}%".format(self.hp), topleft=self.rect.bottomleft)
         screen.blit(self.lbl_hp.image, camera.apply(self.lbl_hp.rect))
+
+    def _standby(self):
+        self.is_active = False
+        self.veer()
 
     def draw_hp_if_need(self, scene):
         """Обёртка для таймера отрисовки здоровья."""
@@ -143,7 +157,9 @@ class Enemy(Sprite, PoolableObject):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.frame_rect = self.image.get_rect(size=self.frame_size, center=self.rect.center)
         self.hp = self.__class__.hp
+        self.is_active = False
         self.is_alive = True
+        self.standby_timer.restart(ENEMY_STANDBY_TIMEOUT)
 
 
 class BossEnemy(Enemy, PoolableObject):

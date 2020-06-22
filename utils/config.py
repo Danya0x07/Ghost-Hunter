@@ -63,7 +63,8 @@ else:
 
 
 # Экран
-UNIT_SCALE = _read_setting('screen', 'unit_scale', float)
+UNIT_SCALE = _read_setting('game', 'unit_scale', float)
+ENEMY_STANDBY_TIMEOUT = 5000 if _read_setting('game', 'enemy_stdby', int) == 1 else 0
 FPS = 60  # Макс. кол-во кадров в секунду
 #-------------------------------------------------------------------------------
 

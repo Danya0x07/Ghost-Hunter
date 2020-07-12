@@ -21,7 +21,7 @@ from os.path import exists as file_exists
 from configparser import ConfigParser
 from math import sqrt
 
-from pygame import Color
+from pygame import Color, Rect
 from pygame.display import Info as DisplayInfo
 
 
@@ -80,6 +80,7 @@ WALL_HEIGHT = rscaled(50)
 WALL_SIZE = (WALL_WIDTH, WALL_HEIGHT)
 TOTAL_LEVEL_SIZE = (WALL_WIDTH * 50, WALL_HEIGHT * 50)
 CENTER_OF_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+WORLD_RECT = Rect((0, 0), TOTAL_LEVEL_SIZE)
 #-------------------------------------------------------------------------------
 
 # Меню

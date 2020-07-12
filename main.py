@@ -39,7 +39,7 @@ __author__ = "Daniel Efimenko"
 __copyright__ = "Copyright 2019-2020, The Haunted_Library project"
 __credits__ = ["Daniel Efimenko", "Alexander Isaev", "Alexander Dorofeev"]
 __license__ = "GPL"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Daniel Efimenko"
 __email__ = "dlef0xf8@gmail.com"
 __status__ = "Production"
@@ -56,14 +56,14 @@ if __name__ == '__main__':
         try:  # На древних машинах не находит schore, а разрешение и так норм.
             from ctypes import windll
             windll.shcore.SetProcessDpiAwareness(1)
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
-            
+
     screen = init_game()
     menu = MenuScene(screen)
     game = MainScene(screen)
     end = GameOverScene(screen)
-    
+
     while True:
         event_code = menu.mainloop()
         if event_code == 'exit':

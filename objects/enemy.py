@@ -136,6 +136,12 @@ class Enemy(Sprite, PoolableObject):
         self.change_direction(self.x_vel)
         self.veer_timer.timeout = randint(*self.veer_timeout)
 
+        # Попытка устранить плавающий баг с выкидыванием привидения
+        # за границы игрового мира.
+        if not self.frame_rect.colliderect(WORLD_RECT):
+            # Просто убивается. Пользователь вряд ли заметит такое.
+            self.is_alive = False
+
     def shoot(self, tgt_rect, plasmas):
         """Стрельба."""
         if int(sqrt(calc_distance_sq(self.rect, tgt_rect))) <= ENEMY_MAX_SHOOT_DISTANCE:
